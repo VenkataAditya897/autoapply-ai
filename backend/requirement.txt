@@ -1,0 +1,11 @@
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose
+fastapi
+uvicorn
+psycopg2-binary
+sqlalchemy
+python-dotenv
+telethon
+groq
+python-multipart

@@ -1,0 +1,143 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.core.db import get_db
+from app.core.deps import get_current_user
+
+from app.models.telegram_account import TelegramAccount
+from app.models.user_channel import UserChannel
+from fastapi import HTTPException
+
+from telethon import TelegramClient
+import asyncio
+from app.services.telegram_listener import start_user_listener
+import os
+from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
+
+SESSION_DIR = "sessions"
+os.makedirs(SESSION_DIR, exist_ok=True)
+active_clients = {}
+otp_storage = {} 
+router = APIRouter()
+
+
+
+# ---------------- SEND OTP ----------------
+@router.post("/send-otp")
+async def send_otp(phone: str):
+    if not phone.startswith("+"):
+        raise HTTPException(
+            status_code=400,
+            detail="Please include country code (e.g. +918978057144)"
+        )
+    session_name = os.path.join(SESSION_DIR, f"user_{phone}")
+
+
+    client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
+    await client.connect()
+
+    try:
+        result = await client.send_code_request(phone)
+
+        # ✅ STORE HASH
+        otp_storage[phone] = {
+            "phone_code_hash": result.phone_code_hash
+        }
+
+    except Exception as e:
+        print("❌ TELEGRAM ERROR send OTP:", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return {"message": "OTP sent"}
+
+# ---------------- VERIFY ----------------
+@router.post("/verify")
+async def verify(
+    phone: str,
+    code: str,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    session_name = os.path.join(SESSION_DIR, f"user_{phone}")
+
+
+    # ❌ check if OTP exists
+    if phone not in otp_storage:
+        raise HTTPException(status_code=400, detail="OTP not requested")
+
+    phone_code_hash = otp_storage[phone]["phone_code_hash"]
+
+    client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
+    await client.connect()
+
+    try:
+        await client.sign_in(
+            phone=phone,
+            code=code,
+            phone_code_hash=phone_code_hash
+        )
+    except Exception as e:
+        print("❌ TELEGRAM ERROR vefIFY OTP:", e)
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # ✅ cleanup
+    del otp_storage[phone]
+
+    acc = TelegramAccount(
+        user_id=user_id,
+        phone=phone,
+        session_name=session_name,
+        is_connected=True
+    )
+
+    db.add(acc)
+    db.commit()
+
+    return {"message": "connected"}
+
+# ---------------- ADD CHANNEL ----------------
+@router.post("/add-channel")
+def add_channel(
+    channel: str,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    db.add(UserChannel(user_id=user_id, channel_name=channel))
+    db.commit()
+
+    return {"message": "added"}
+
+
+# ---------------- START ----------------
+@router.post("/start")
+async def start_listener(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+    if not acc:
+        raise HTTPException(status_code=400, detail="Telegram not connected")
+
+    channels = [
+        c.channel_name
+        for c in db.query(UserChannel).filter_by(user_id=user_id)
+    ]
+
+    task = asyncio.create_task(
+        start_user_listener(user_id, acc.session_name, channels)
+    )
+
+    active_clients[user_id] = task
+
+    return {"message": "started"}
+
+# ---------------- STOP ----------------
+@router.post("/stop")
+async def stop_listener(user_id: int = Depends(get_current_user)):
+    task = active_clients.get(user_id)
+
+    if task:
+        task.cancel()
+        del active_clients[user_id]
+
+    return {"message": "stopped"}
