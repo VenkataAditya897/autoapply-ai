@@ -9,8 +9,6 @@
 │   │   ├── run_telegram.py
 │   │   ├── seed_data.py
 │   │   ├── test.py
-│   │   ├── user_+918978057144.session
-│   │   ├── user_+918978057144.session-journal
 │   │   ├── app/
 │   │   │   ├── main.py
 │   │   │   ├── __init__.py
@@ -26,6 +24,7 @@
 │   │   │   │   ├── classified_message.py
 │   │   │   │   ├── education.py
 │   │   │   │   ├── experience.py
+│   │   │   │   ├── google_account.py
 │   │   │   │   ├── job.py
 │   │   │   │   ├── profile.py
 │   │   │   │   ├── project.py
@@ -36,7 +35,9 @@
 │   │   │   │   ├── user_channel.py
 │   │   │   │   ├── __init__.py
 │   │   │   ├── routes/
+│   │   │   │   ├── analytics.py
 │   │   │   │   ├── auth.py
+│   │   │   │   ├── google_auth.py
 │   │   │   │   ├── profile.py
 │   │   │   │   ├── profile_details.py
 │   │   │   │   ├── telegram.py
@@ -54,10 +55,13 @@
 │   │   │   │   ├── context_builder.py
 │   │   │   │   ├── email_generator.py
 │   │   │   │   ├── email_processor.py
+│   │   │   │   ├── email_sender.py
 │   │   │   │   ├── router.py
 │   │   │   │   ├── telegram_listener.py
 │   │   │   │   ├── user_data.py
 │   │   │   │   ├── __init__.py
+│   │   ├── sessions/
+│   │   │   ├── user_+918978057144.session
 │   │   ├── uploads/
 │   ├── frontend/
 │   │   ├── .gitignore
@@ -74,14 +78,21 @@
 │   │   │   ├── layout.tsx
 │   │   │   ├── page.tsx
 │   │   │   ├── dashboard/
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── page.tsx
+│   │   │   ├── emails/
 │   │   │   │   ├── page.tsx
 │   │   │   ├── login/
 │   │   │   │   ├── page.tsx
 │   │   │   ├── onboarding/
 │   │   │   │   ├── page.tsx
+│   │   │   ├── others/
+│   │   │   │   ├── page.tsx
 │   │   │   ├── profile/
 │   │   │   │   ├── page.tsx
 │   │   │   ├── register/
+│   │   │   │   ├── page.tsx
+│   │   │   ├── telegram/
 │   │   │   │   ├── page.tsx
 │   │   ├── components/
 │   │   ├── context/
@@ -101,6 +112,9 @@ DATABASE_URL=postgresql://postgres:aditya01@localhost:5432/autoapply
 GROQ_API_KEY=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
 TELEGRAM_API_ID=34855418
 TELEGRAM_API_HASH=2b91a602f83f3414ab6b5af6fd39a5f0
+GOOGLE_CLIENT_ID=250168741529-t70npdv89s2j81vj84ec3kdsgjqss4qj.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\.gitignore
@@ -123,6 +137,7 @@ uploads/
 
 # venv
 venv/
+venv
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\create_job.py
@@ -167,6 +182,7 @@ python-dotenv
 telethon
 groq
 python-multipart
+requests
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\run_telegram.py
@@ -371,18 +387,6 @@ finally:
     db.close()
 
 ================================================================================
-📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\user_+918978057144.session
-================================================================================
-
-⚠️ Could not read file: 'utf-8' codec can't decode byte 0xb2 in position 109: invalid start byte
-
-================================================================================
-📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\user_+918978057144.session-journal
-================================================================================
-
-⚠️ Could not read file: 'utf-8' codec can't decode byte 0xb4 in position 12: invalid start byte
-
-================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\main.py
 ================================================================================
 
@@ -393,7 +397,6 @@ from app.models import user_channel
 from app.models.base import Base
 from app.core.db import engine
 from fastapi.middleware.cors import CORSMiddleware
-
 # import all models so SQLAlchemy sees them
 from app.models import user, profile as profile_model
 from app.routes import profile_details
@@ -403,6 +406,10 @@ from app.models import classified_message
 from app.models import certification
 from app.models import job
 from app.routes import telegram
+from app.routes import analytics
+from app.models import google_account
+from app.routes import google_auth
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -418,6 +425,8 @@ app.include_router(auth.router, prefix="/auth")
 app.include_router(profile.router, prefix="/profile")
 app.include_router(profile_details.router, prefix="/profile")
 app.include_router(telegram.router, prefix="/telegram")
+app.include_router(analytics.router, prefix="/analytics")
+app.include_router(google_auth.router, prefix="/auth")
 
 @app.get("/health")
 def health_check():
@@ -615,6 +624,23 @@ class Experience(Base):
     description = Column(String)
 
 ================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\models\google_account.py
+================================================================================
+
+from sqlalchemy import Column, Integer, String
+from app.models.base import Base
+
+class GoogleAccount(Base):
+    __tablename__ = "google_accounts"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+
+    email = Column(String)
+    access_token = Column(String)
+    refresh_token = Column(String)
+
+================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\models\job.py
 ================================================================================
 
@@ -638,6 +664,8 @@ class Job(Base):
     links = Column(ARRAY(String))
 
     message_text = Column(Text)
+    generated_subject = Column(Text)
+    generated_body = Column(Text)
 
     status = Column(String, default="pending")
 
@@ -719,7 +747,7 @@ class TelegramAccount(Base):
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\models\telegram_message.py
 ================================================================================
 
-from sqlalchemy import Column, Integer, Text, DateTime
+from sqlalchemy import Column, Integer, Text, DateTime,String
 from sqlalchemy.dialects.postgresql import JSON
 from datetime import datetime
 from app.models.base import Base
@@ -731,6 +759,7 @@ class TelegramMessage(Base):
     user_id = Column(Integer, nullable=True)
 
     message_text = Column(Text)
+    source = Column(String)
     raw_data = Column(JSON)  # ✅ IMPORTANT CHANGE
 
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -768,6 +797,116 @@ class UserChannel(Base):
 ================================================================================
 
 
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\routes\analytics.py
+================================================================================
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.core.db import get_db
+from app.core.deps import get_current_user
+from app.models.telegram_message import TelegramMessage
+from app.models.classified_message import ClassifiedMessage
+from app.models.job import Job
+from sqlalchemy import func
+from datetime import datetime, timedelta
+
+router = APIRouter()
+
+@router.get("/dashboard")
+def dashboard(
+    range: str = "day",  # day / week / month
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    # -------- TIME FILTER --------
+    now = datetime.utcnow()
+
+    if range == "day":
+        start = now - timedelta(days=1)
+    elif range == "week":
+        start = now - timedelta(days=7)
+    else:
+        start = now - timedelta(days=30)
+
+    # -------- TOTAL MESSAGES --------
+    total = db.query(TelegramMessage)\
+        .filter(TelegramMessage.user_id == user_id)\
+        .filter(TelegramMessage.created_at >= start)\
+        .count()
+
+    # -------- BY SOURCE --------
+    sources = db.query(
+        TelegramMessage.source,
+        func.count().label("count")
+    ).filter(TelegramMessage.user_id == user_id)\
+    .filter(TelegramMessage.created_at >= start)\
+    .group_by(TelegramMessage.source).all()
+
+    # -------- TYPES --------
+    types = db.query(
+        ClassifiedMessage.type,
+        func.count().label("count")
+    ).join(TelegramMessage, ClassifiedMessage.message_id == TelegramMessage.id)\
+    .filter(TelegramMessage.user_id == user_id)\
+    .filter(ClassifiedMessage.created_at >= start)\
+    .group_by(ClassifiedMessage.type).all()
+
+    # -------- LLM STATUS --------
+    llm = db.query(
+        Job.status,
+        func.count().label("count")
+    ).filter(Job.user_id == user_id)\
+    .filter(Job.created_at >= start)\
+    .group_by(Job.status).all()
+
+    # -------- LATEST MESSAGE --------
+    latest = db.query(TelegramMessage)\
+        .order_by(TelegramMessage.created_at.desc())\
+        .first()
+
+    sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.status == "sent")\
+        .count()
+
+    pending = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.status == "pending")\
+        .count()
+
+    return {
+        "total": total,
+        "sent": sent,
+        "pending": pending
+    }
+@router.get("/emails")
+def get_emails(
+    status: str = "all",
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    query = db.query(Job).filter(Job.user_id == user_id)
+
+    if status == "sent":
+        query = query.filter(Job.status == "sent")
+    elif status == "pending":
+        query = query.filter(Job.status == "pending")
+
+    jobs = query.order_by(Job.created_at.desc()).all()
+
+    return [
+        {
+            "id": j.id,
+            "message": j.message_text,
+            "status": j.status,
+            "created_at": j.created_at,
+            "subject": j.generated_subject,
+            "body": j.generated_body
+        }
+        for j in jobs
+    ]
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\routes\auth.py
@@ -843,6 +982,94 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Login failed")
 
 ================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\routes\google_auth.py
+================================================================================
+
+from fastapi import APIRouter, Depends
+from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
+from app.core.db import get_db
+from app.core.deps import get_current_user
+from app.models.google_account import GoogleAccount
+import requests
+import os
+router = APIRouter()
+
+CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+# ---------------- LOGIN ----------------
+
+
+@router.get("/google/login")
+def google_login(user_id: int = Depends(get_current_user)):
+    url = f"https://accounts.google.com/o/oauth2/v2/auth?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=consent&state={user_id}"
+    
+    return {"url": url}
+# ---------------- CALLBACK ----------------
+@router.get("/google/callback")
+def google_callback(
+    code: str,
+    state: str,   # 👈 THIS
+    db: Session = Depends(get_db)
+):
+    user_id = int(state) 
+    # exchange code
+    token_url = "https://oauth2.googleapis.com/token"
+
+    data = {
+        "code": code,
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "redirect_uri": REDIRECT_URI,
+        "grant_type": "authorization_code"
+    }
+
+    token_res = requests.post(token_url, data=data).json()
+
+    access_token = token_res.get("access_token")
+    refresh_token = token_res.get("refresh_token")
+
+    # get user email
+    user_info = requests.get(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"}
+    ).json()
+
+    email = user_info.get("email")
+
+    acc = db.query(GoogleAccount).filter_by(user_id=user_id).first()
+
+    if acc:
+        acc.access_token = access_token
+        acc.refresh_token = refresh_token
+        acc.email = email
+    else:
+        acc = GoogleAccount(
+            user_id=user_id,
+            email=email,
+            access_token=access_token,
+            refresh_token=refresh_token
+        )
+        db.add(acc)
+
+    db.commit()
+
+    return RedirectResponse("http://localhost:3000/dashboard")
+@router.get("/google/status")
+def gmail_status(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    acc = db.query(GoogleAccount).filter_by(user_id=user_id).first()
+
+    return {
+        "connected": acc is not None,
+        "email": acc.email if acc else None
+    }
+
+================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\routes\profile.py
 ================================================================================
 
@@ -859,7 +1086,8 @@ from app.models.education import Education
 from fastapi import UploadFile, File
 import shutil
 from app.models.job import Job
-
+import os
+os.makedirs("uploads", exist_ok=True)
 router = APIRouter()
 
 @router.post("/")
@@ -1054,7 +1282,8 @@ from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
-active_clients = {}
+active_clients = {}   # task
+active_sessions = {}  # client
 otp_storage = {} 
 router = APIRouter()
 
@@ -1121,14 +1350,22 @@ async def verify(
     # ✅ cleanup
     del otp_storage[phone]
 
-    acc = TelegramAccount(
-        user_id=user_id,
-        phone=phone,
-        session_name=session_name,
-        is_connected=True
-    )
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
 
-    db.add(acc)
+    if acc:
+        acc.phone = phone
+        acc.session_name = session_name
+        acc.is_connected = True
+    else:
+        acc = TelegramAccount(
+            user_id=user_id,
+            phone=phone,
+            session_name=session_name,
+            is_connected=True,
+            is_running=False
+        )
+        db.add(acc)
+
     db.commit()
 
     return {"message": "connected"}
@@ -1152,33 +1389,130 @@ async def start_listener(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user)
 ):
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+
     if not acc:
         raise HTTPException(status_code=400, detail="Telegram not connected")
-    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
 
     channels = [
         c.channel_name
         for c in db.query(UserChannel).filter_by(user_id=user_id)
     ]
 
+    if user_id in active_clients:
+        return {"message": "already running"}
+
     task = asyncio.create_task(
-        start_user_listener(user_id, acc.session_name, channels)
+        start_user_listener(user_id, acc.session_name, channels, active_sessions)
     )
 
     active_clients[user_id] = task
 
-    return {"message": "started"}
+    active_clients[user_id] = task
 
+    # ✅ ADD THIS (VERY IMPORTANT)
+    acc.is_running = True
+    db.commit()
+
+    return {"message": "started"}
 # ---------------- STOP ----------------
 @router.post("/stop")
-async def stop_listener(user_id: int = Depends(get_current_user)):
+async def stop_listener(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    # cancel task
     task = active_clients.get(user_id)
-
     if task:
         task.cancel()
         del active_clients[user_id]
 
+    # ✅ disconnect client (CRITICAL FIX)
+    client = active_sessions.get(user_id)
+    if client:
+        await client.disconnect()
+        del active_sessions[user_id]
+
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+    if acc:
+        acc.is_running = False
+        db.commit()
+
     return {"message": "stopped"}
+@router.get("/status")
+def get_status(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+
+    return {
+        "connected": acc.is_connected if acc else False,
+        "running": acc.is_running if acc else False,
+        "phone": acc.phone if acc else None
+    }
+@router.post("/disconnect")
+async def disconnect(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+
+    if not acc:
+        raise HTTPException(status_code=400, detail="Not connected")
+
+    # ✅ FIRST STOP EVERYTHING
+    task = active_clients.get(user_id)
+    if task:
+        task.cancel()
+        del active_clients[user_id]
+
+    client = active_sessions.get(user_id)
+    if client:
+        await client.disconnect()
+        del active_sessions[user_id]
+
+    # 🔥 NOW SAFE TO DELETE
+    try:
+        if os.path.exists(acc.session_name + ".session"):
+            os.remove(acc.session_name + ".session")
+
+        if os.path.exists(acc.session_name + ".session-journal"):
+            os.remove(acc.session_name + ".session-journal")
+
+    except Exception as e:
+        print("Error deleting session:", e)
+
+    acc.is_connected = False
+    acc.is_running = False
+
+    db.commit()
+
+    return {"message": "disconnected"}
+# ---------------- GET CHANNELS ----------------
+@router.get("/channels")
+def get_channels(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    channels = db.query(UserChannel).filter_by(user_id=user_id).all()
+    return [c.channel_name for c in channels]
+
+
+# ---------------- REMOVE CHANNEL ----------------
+@router.post("/remove-channel")
+def remove_channel(
+    channel: str,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    db.query(UserChannel).filter_by(
+        user_id=user_id,
+        channel_name=channel
+    ).delete()
+
+    db.commit()
+    return {"message": "removed"}
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\routes\__init__.py
@@ -1555,18 +1889,176 @@ Only JSON. No explanation.
 from app.services.user_data import get_user_data
 from app.services.context_builder import build_context
 from app.services.email_generator import generate_email
+from app.services.email_sender import send_email
 
 def process_email_job(db, job, user_id):
-    # 1️⃣ Fetch user data
-    user_data = get_user_data(db, user_id)
+    try:
+        user_data = get_user_data(db, user_id)
 
-    # 2️⃣ Build context
-    context = build_context(user_data, job.message_text)
+        context = build_context(user_data, job.message_text)
 
-    # 3️⃣ Generate email
-    email = generate_email(context, job.message_text)
+        email = generate_email(context, job.message_text)
 
-    return email
+        subject = email.get("subject")
+        body = email.get("body")
+
+        # ✅ SEND EMAIL
+        if job.emails and len(job.emails) > 0:
+            profile = user_data.get("profile")
+            resume_path = profile.resume_url if profile else None
+
+            success = send_email(
+                db,
+                user_id,
+                job.emails[0],
+                subject,
+                body,
+                attachment_path=resume_path
+            )
+        else:
+            success = False
+
+        # ✅ UPDATE STATUS
+        if success:
+            job.status = "sent"
+        else:
+            job.status = "pending"
+
+        job.generated_subject = subject
+        job.generated_body = body
+
+        db.commit()
+
+        return email
+
+    except Exception as e:
+        print("ERROR:", e)
+        job.status = "pending"
+        db.commit()
+        return None
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\email_sender.py
+================================================================================
+
+import base64
+import requests
+import os
+from app.models.google_account import GoogleAccount
+
+CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+
+# ---------------- REFRESH TOKEN ----------------
+def refresh_access_token(refresh_token):
+    url = "https://oauth2.googleapis.com/token"
+
+    data = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "refresh_token": refresh_token,
+        "grant_type": "refresh_token"
+    }
+
+    res = requests.post(url, data=data).json()
+
+    return res.get("access_token")
+
+
+# ---------------- SEND EMAIL ----------------
+def send_email(db, user_id, to_email, subject, body, attachment_path=None):
+    acc = db.query(GoogleAccount).filter_by(user_id=user_id).first()
+
+    if not acc:
+        print("❌ Gmail not connected")
+        return False
+
+    access_token = acc.access_token
+
+    # 🔥 TRY NORMAL SEND
+    success = _send_with_token(access_token, acc.email, to_email, subject, body, attachment_path)
+
+    # 🔥 IF FAILED → REFRESH TOKEN
+    if not success and acc.refresh_token:
+        print("🔄 Refreshing token...")
+
+        new_token = refresh_access_token(acc.refresh_token)
+
+        if not new_token:
+            print("❌ Failed to refresh token")
+            return False
+
+        acc.access_token = new_token
+        db.commit()
+
+        # retry
+        return _send_with_token(new_token, acc.email, to_email, subject, body, attachment_path)
+
+    return success
+
+
+# ---------------- INTERNAL SEND ----------------
+def _send_with_token(access_token, from_email, to_email, subject, body, attachment_path):
+    if attachment_path:
+        raw_message = build_mime_message(from_email, to_email, subject, body, attachment_path)
+    else:
+        message = f"""From: {from_email}
+To: {to_email}
+Subject: {subject}
+
+{body}
+"""
+        raw_message = base64.urlsafe_b64encode(message.encode()).decode()
+
+    url = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    res = requests.post(url, headers=headers, json={"raw": raw_message})
+
+    return res.status_code == 200
+
+
+# ---------------- ATTACHMENT SUPPORT ----------------
+def build_mime_message(from_email, to_email, subject, body, file_path):
+    import mimetypes
+
+    boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+
+    mime_type, _ = mimetypes.guess_type(file_path)
+    mime_type = mime_type or "application/octet-stream"
+
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+
+    encoded_file = base64.b64encode(file_data).decode()
+
+    message = f"""From: {from_email}
+To: {to_email}
+Subject: {subject}
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="{boundary}"
+
+--{boundary}
+Content-Type: text/plain; charset="UTF-8"
+
+{body}
+
+--{boundary}
+Content-Type: {mime_type}
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="{file_path.split('/')[-1]}"
+
+{encoded_file}
+
+--{boundary}--
+"""
+
+    return base64.urlsafe_b64encode(message.encode()).decode()
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\router.py
@@ -1579,16 +2071,17 @@ def route_message(db, classified, telegram_msg):
         user_id=telegram_msg.user_id,
         message_id=telegram_msg.id,
         type=classified.type,
-
         emails=classified.emails,
         phones=classified.phones,
         links=classified.links,
-
         message_text=telegram_msg.message_text
     )
 
     db.add(job)
     db.commit()
+    db.refresh(job)
+
+    return job  # ✅ IMPORTANT
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\telegram_listener.py
@@ -1600,54 +2093,68 @@ from app.models.telegram_message import TelegramMessage
 from app.services.classifier import classify_message
 from app.models.classified_message import ClassifiedMessage
 from app.services.router import route_message
+from app.services.email_processor import process_email_job
+from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
-api_id = 34855418
-api_hash = "2b91a602f83f3414ab6b5af6fd39a5f0"
-
-
-async def start_user_listener(user_id, session_name, channels):
-    client = TelegramClient(session_name, api_id, api_hash)
-
-    await client.start()
-
-    @client.on(events.NewMessage(chats=channels))
-    async def handler(event):
-        db = SessionLocal()
-
+async def start_user_listener(user_id, session_name, channels, client_store):
+    while True:  # 🔥 NEVER STOP LOOP
         try:
-            text = event.raw_text
+            print(f"🚀 Starting listener for user {user_id}")
 
-            telegram_msg = TelegramMessage(
-                user_id=user_id,
-                message_text=text,
-                raw_data={}
-            )
-            db.add(telegram_msg)
-            db.commit()
-            db.refresh(telegram_msg)
+            client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
+            await client.start()
 
-            result = classify_message(text)
+            client_store[user_id] = client
 
-            classified = ClassifiedMessage(
-                message_id=telegram_msg.id,
-                type=result["type"],
-                emails=result["emails"],
-                phones=result["phones"],
-                links=result["links"]
-            )
+            @client.on(events.NewMessage(chats=channels))
+            async def handler(event):
+                db = SessionLocal()
+                try:
+                    text = event.raw_text
+                    chat = await event.get_chat()
+                    source = getattr(chat, "title", "unknown")
 
-            db.add(classified)
-            db.commit()
+                    telegram_msg = TelegramMessage(
+                        user_id=user_id,
+                        message_text=text,
+                        source=source,
+                        raw_data={}
+                    )
+                    db.add(telegram_msg)
+                    db.commit()
+                    db.refresh(telegram_msg)
 
-            route_message(db, classified, telegram_msg)
+                    result = classify_message(text)
+
+                    classified = ClassifiedMessage(
+                        message_id=telegram_msg.id,
+                        type=result["type"],
+                        emails=result["emails"],
+                        phones=result["phones"],
+                        links=result["links"]
+                    )
+
+                    db.add(classified)
+                    db.commit()
+
+                    job = route_message(db, classified, telegram_msg)
+
+                    if job.type == "email":
+                        process_email_job(db, job, user_id)
+
+                except Exception as e:
+                    print("❌ Handler error:", e)
+                finally:
+                    db.close()
+
+            await client.run_until_disconnected()
 
         except Exception as e:
-            print("❌ Error:", e)
+            print(f"🔥 Listener crashed for user {user_id}:", e)
 
-        finally:
-            db.close()
-
-    await client.run_until_disconnected()
+        # 🔁 AUTO RESTART AFTER CRASH
+        print(f"🔄 Restarting listener for user {user_id} in 5s...")
+        await asyncio.sleep(5)
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\user_data.py
@@ -1679,6 +2186,12 @@ def get_user_data(db, user_id):
 ================================================================================
 
 
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\sessions\user_+918978057144.session
+================================================================================
+
+⚠️ Could not read file: 'utf-8' codec can't decode byte 0xb2 in position 109: invalid start byte
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\.gitignore
@@ -1914,31 +2427,181 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\app\globals.css
 ================================================================================
 
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F9FAFB;
+  --foreground: #111827;
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --secondary: #6B7280;
+  --border: #E5E7EB;
+  --card: rgba(255, 255, 255, 0.6);
+  --card-solid: #ffffff;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(37,99,235,0.12), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 0 3px rgba(37,99,235,0.15);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Glass morphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Input focus styles */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 100px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(37,99,235,0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-blue {
+  animation: pulse-blue 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mesh gradient background */
+.mesh-bg {
+  background: 
+    radial-gradient(at 20% 20%, rgba(37,99,235,0.08) 0%, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(124,58,237,0.06) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(16,185,129,0.04) 0%, transparent 50%),
+    #F9FAFB;
+}
+
+/* Dot pattern */
+.dot-pattern {
+  background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0f4f8 25%, #e8edf2 50%, #f0f4f8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Card hover */
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Progress bar */
+.progress-fill {
+  background: linear-gradient(90deg, #2563EB, #7C3AED);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 
@@ -1947,23 +2610,12 @@ body {
 ================================================================================
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "Generated by create next app",
+  title: "AutoApply.ai — Apply to Jobs Automatically with AI",
+  description: "AutoApply reads job posts, understands your profile, and generates personalized applications instantly.",
 };
 
 export default function RootLayout({
@@ -1972,11 +2624,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang="en" className="h-full">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="min-h-full flex flex-col antialiased">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
@@ -1991,106 +2644,520 @@ export default function RootLayout({
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function LandingPage() {
   const router = useRouter();
+  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      {/* ---------------- NAVBAR ---------------- */}
-      <div className="flex justify-between items-center px-10 py-5 border-b">
-        <h1 className="text-xl font-bold">AutoApply AI</h1>
+    <div className="min-h-screen mesh-bg overflow-x-hidden">
 
-        <div className="space-x-4">
-          <button onClick={() => router.push("/login")}>Login</button>
+      {/* ── NAVBAR ── */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0,
+          zIndex: 100,
+          padding: "0 2.5rem",
+          height: "68px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: scrolled ? "rgba(249,250,251,0.85)" : "transparent",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(229,231,235,0.8)" : "1px solid transparent",
+          transition: "all 0.3s cubic-bezier(0.4,0,0.2,1)",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{
+            width: "36px", height: "36px",
+            background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+            borderRadius: "10px",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 4px 12px rgba(37,99,235,0.35)",
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" strokeWidth="0"/>
+            </svg>
+          </div>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.1rem", color: "#111827" }}>
+            AutoApply<span style={{ color: "#2563EB" }}>.ai</span>
+          </span>
+        </div>
+
+        {/* Nav links (desktop) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="hidden md:flex">
+          {["Features", "How it works", "Pricing"].map(link => (
+            <a key={link} href="#" style={{
+              fontFamily: "var(--font-body)", fontSize: "0.9rem", fontWeight: 500,
+              color: "#6B7280", textDecoration: "none",
+              transition: "color 0.2s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#2563EB")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#6B7280")}
+            >{link}</a>
+          ))}
+        </div>
+
+        {/* CTA buttons */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              background: "transparent",
+              border: "1px solid #E5E7EB",
+              borderRadius: "10px",
+              padding: "8px 18px",
+              fontSize: "0.875rem", fontWeight: 500,
+              color: "#374151", cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.color = "#2563EB"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.color = "#374151"; }}
+          >
+            Log in
+          </button>
           <button
             onClick={() => router.push("/register")}
-            className="bg-black text-white px-4 py-2 rounded"
+            style={{
+              background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
+              border: "none",
+              borderRadius: "10px",
+              padding: "8px 20px",
+              fontSize: "0.875rem", fontWeight: 600,
+              color: "white", cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(37,99,235,0.35)",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 18px rgba(37,99,235,0.45)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 12px rgba(37,99,235,0.35)"; }}
           >
-            Get Started
+            Get Started Free
           </button>
         </div>
-      </div>
+      </nav>
 
-      {/* ---------------- HERO ---------------- */}
-      <div className="flex flex-col items-center text-center px-6 py-20">
-        <h1 className="text-5xl font-bold mb-6">
-          Apply to Jobs Automatically with AI
-        </h1>
+      {/* ── HERO ── */}
+      <section style={{ paddingTop: "140px", paddingBottom: "100px", paddingLeft: "5%", paddingRight: "5%", maxWidth: "1200px", margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "80px", flexWrap: "wrap" }}>
 
-        <p className="text-lg text-gray-600 max-w-2xl mb-8">
-          Connect your Telegram job channels, and let AI generate personalized
-          job applications instantly — no manual work needed.
+          {/* Left: Copy */}
+          <div style={{ flex: "1", minWidth: "320px", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)", transition: "all 0.8s cubic-bezier(0.4,0,0.2,1)" }}>
+            {/* Badge */}
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: "8px",
+              background: "#EFF6FF", border: "1px solid #BFDBFE",
+              borderRadius: "100px", padding: "6px 14px",
+              marginBottom: "28px",
+            }}>
+              <div style={{ width: "6px", height: "6px", background: "#2563EB", borderRadius: "50%", animation: "pulse-blue 2s infinite" }} />
+              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "#2563EB", fontFamily: "var(--font-body)" }}>
+                AI-Powered Job Applications
+              </span>
+            </div>
+
+            <h1 style={{
+              fontFamily: "var(--font-display)", fontWeight: 800,
+              fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
+              lineHeight: 1.1, letterSpacing: "-0.03em",
+              color: "#111827", marginBottom: "20px",
+            }}>
+              Apply to Jobs<br />
+              <span style={{
+                background: "linear-gradient(135deg, #2563EB 0%, #7C3AED 100%)",
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+              }}>
+                Automatically
+              </span>{" "}
+              with AI
+            </h1>
+
+            <p style={{
+              fontSize: "1.1rem", lineHeight: 1.7, color: "#6B7280",
+              maxWidth: "500px", marginBottom: "36px",
+              fontFamily: "var(--font-body)", fontWeight: 400,
+            }}>
+              AutoApply reads job posts from Telegram, understands your profile, and generates personalized application emails — instantly, while you sleep.
+            </p>
+
+            <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+              <button
+                onClick={() => router.push("/register")}
+                style={{
+                  background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                  border: "none", borderRadius: "12px",
+                  padding: "14px 28px", fontSize: "1rem", fontWeight: 600,
+                  color: "white", cursor: "pointer",
+                  boxShadow: "0 6px 20px rgba(37,99,235,0.4)",
+                  display: "flex", alignItems: "center", gap: "8px",
+                  transition: "all 0.25s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 10px 30px rgba(37,99,235,0.5)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(37,99,235,0.4)"; }}
+              >
+                Start for Free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+              <button
+                style={{
+                  background: "white", border: "1px solid #E5E7EB",
+                  borderRadius: "12px", padding: "14px 28px",
+                  fontSize: "1rem", fontWeight: 500,
+                  color: "#374151", cursor: "pointer",
+                  display: "flex", alignItems: "center", gap: "8px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                  transition: "all 0.25s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.1)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)"; }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+                </svg>
+                See Demo
+              </button>
+            </div>
+
+            {/* Social proof */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "40px" }}>
+              <div style={{ display: "flex" }}>
+                {["#2563EB","#7C3AED","#10B981","#F59E0B"].map((c, i) => (
+                  <div key={i} style={{
+                    width: "28px", height: "28px", borderRadius: "50%",
+                    background: c, border: "2px solid white",
+                    marginLeft: i > 0 ? "-8px" : "0",
+                  }} />
+                ))}
+              </div>
+              <p style={{ fontSize: "0.85rem", color: "#6B7280" }}>
+                <strong style={{ color: "#111827" }}>2,400+</strong> applications sent this week
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Demo card */}
+          <div style={{
+            flex: "1", minWidth: "300px", maxWidth: "460px",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(40px)",
+            transition: "all 0.9s cubic-bezier(0.4,0,0.2,1) 0.15s",
+            animation: "float 5s ease-in-out infinite",
+          }}>
+            <DemoCard />
+          </div>
+        </div>
+      </section>
+
+      {/* ── LOGOS / TRUST ── */}
+      <section style={{ padding: "32px 5%", borderTop: "1px solid #E5E7EB", borderBottom: "1px solid #E5E7EB", background: "rgba(255,255,255,0.5)" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: "48px" }}>
+          <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.1em", textTransform: "uppercase" }}>Works with channels from</p>
+          {["Naukri Jobs", "LinkedIn India", "We Work Remotely", "AngelList", "Freshers Jobs"].map(name => (
+            <span key={name} style={{ fontSize: "0.9rem", fontWeight: 600, color: "#9CA3AF", letterSpacing: "-0.01em" }}>{name}</span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FEATURES ── */}
+      <section style={{ padding: "100px 5%", maxWidth: "1200px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "64px" }}>
+          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2563EB", letterSpacing: "0.1em", textTransform: "uppercase" }}>Features</span>
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(1.8rem, 3vw, 2.8rem)", color: "#111827", marginTop: "12px", letterSpacing: "-0.02em" }}>
+            Everything you need to land the job
+          </h2>
+          <p style={{ color: "#6B7280", fontSize: "1.05rem", marginTop: "12px", maxWidth: "480px", margin: "12px auto 0" }}>
+            From job detection to email delivery — AutoApply handles the entire pipeline.
+          </p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "24px" }}>
+          {features.map((f, i) => (
+            <FeatureCard key={i} {...f} delay={i * 80} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section style={{ padding: "100px 5%", background: "linear-gradient(135deg, #1E3A8A 0%, #1E1B4B 100%)", position: "relative", overflow: "hidden" }}>
+        {/* BG dots */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+
+        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative" }}>
+          <div style={{ textAlign: "center", marginBottom: "64px" }}>
+            <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#93C5FD", letterSpacing: "0.1em", textTransform: "uppercase" }}>How It Works</span>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(1.8rem, 3vw, 2.6rem)", color: "white", marginTop: "12px", letterSpacing: "-0.02em" }}>
+              Three steps to autopilot
+            </h2>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "32px" }}>
+            {steps.map((s, i) => (
+              <div key={i} style={{
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "20px",
+                padding: "32px",
+                textAlign: "center",
+                transition: "all 0.3s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(0)"; }}
+              >
+                <div style={{
+                  width: "52px", height: "52px", borderRadius: "16px",
+                  background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 20px",
+                  boxShadow: "0 6px 20px rgba(37,99,235,0.4)",
+                  fontFamily: "var(--font-display)", fontWeight: 800,
+                  fontSize: "1.3rem", color: "white",
+                }}>
+                  {i + 1}
+                </div>
+                <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.1rem", color: "white", marginBottom: "10px" }}>{s.title}</h3>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", lineHeight: 1.6 }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section style={{ padding: "100px 5%", textAlign: "center" }}>
+        <div style={{
+          maxWidth: "600px", margin: "0 auto",
+          background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+          borderRadius: "28px", padding: "64px 48px",
+          boxShadow: "0 20px 60px rgba(37,99,235,0.3)",
+          position: "relative", overflow: "hidden",
+        }}>
+          <div style={{ position: "absolute", top: "-60px", right: "-60px", width: "200px", height: "200px", background: "rgba(255,255,255,0.08)", borderRadius: "50%" }} />
+          <div style={{ position: "absolute", bottom: "-40px", left: "-40px", width: "140px", height: "140px", background: "rgba(255,255,255,0.06)", borderRadius: "50%" }} />
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2rem", color: "white", marginBottom: "16px", position: "relative" }}>
+            Start Applying Smarter Today
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "1rem", marginBottom: "32px", position: "relative" }}>
+            Join thousands of candidates who let AI handle their job applications.
+          </p>
+          <button
+            onClick={() => router.push("/register")}
+            style={{
+              background: "white", border: "none", borderRadius: "12px",
+              padding: "14px 32px", fontSize: "1rem", fontWeight: 700,
+              color: "#2563EB", cursor: "pointer",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+              transition: "all 0.25s", position: "relative",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.3)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.2)"; }}
+          >
+            Get Started — It&apos;s Free
+          </button>
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer style={{ background: "#F3F4F6", borderTop: "1px solid #E5E7EB", padding: "48px 5%" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: "30px", height: "30px",
+              background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+              borderRadius: "8px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#111827" }}>AutoApply.ai</span>
+          </div>
+          <div style={{ display: "flex", gap: "28px" }}>
+            {["Privacy", "Terms", "Contact"].map(link => (
+              <a key={link} href="#" style={{ fontSize: "0.875rem", color: "#6B7280", textDecoration: "none", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#2563EB")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#6B7280")}
+              >{link}</a>
+            ))}
+          </div>
+          <p style={{ fontSize: "0.8rem", color: "#9CA3AF" }}>© 2025 AutoApply.ai. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+/* ── DEMO CARD ── */
+function DemoCard() {
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.7)",
+      backdropFilter: "blur(20px)",
+      border: "1px solid rgba(255,255,255,0.5)",
+      borderRadius: "24px",
+      padding: "28px",
+      boxShadow: "0 20px 60px rgba(37,99,235,0.12), 0 4px 20px rgba(0,0,0,0.06)",
+    }}>
+      {/* Job message bubble */}
+      <div style={{
+        background: "#F0F9FF",
+        border: "1px solid #BAE6FD",
+        borderRadius: "16px",
+        padding: "16px 20px",
+        marginBottom: "20px",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+          <div style={{ width: "28px", height: "28px", background: "linear-gradient(135deg, #0EA5E9, #2563EB)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+          </div>
+          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0369A1" }}>Telegram Job Alert</span>
+        </div>
+        <p style={{ fontSize: "0.82rem", color: "#374151", lineHeight: 1.6 }}>
+          🚀 <strong>Python Backend Developer</strong> needed at TechCorp. 2+ yrs exp with FastAPI, PostgreSQL. Apply to hr@techcorp.com
         </p>
-
-        <button
-          onClick={() => router.push("/register")}
-          className="bg-black text-white px-6 py-3 rounded text-lg"
-        >
-          Start Free
-        </button>
       </div>
 
-      {/* ---------------- FEATURES ---------------- */}
-      <div className="grid md:grid-cols-3 gap-8 px-10 py-16 bg-gray-50">
-        <Feature
-          title="AI Email Generation"
-          desc="Automatically generates job application emails tailored to each role."
-        />
-        <Feature
-          title="Telegram Job Sync"
-          desc="Fetch jobs directly from Telegram channels in real-time."
-        />
-        <Feature
-          title="Auto Personalization"
-          desc="Uses your profile, skills, and experience for perfect applications."
-        />
-      </div>
-
-      {/* ---------------- HOW IT WORKS ---------------- */}
-      <div className="px-10 py-20">
-        <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-
-        <div className="grid md:grid-cols-3 gap-8 text-center">
-          <Step number="1" title="Create Profile" />
-          <Step number="2" title="Connect Telegram" />
-          <Step number="3" title="Auto Apply" />
+      {/* Arrow */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+        <div style={{
+          width: "40px", height: "40px",
+          background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+          borderRadius: "50%",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 4px 14px rgba(37,99,235,0.4)",
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
         </div>
       </div>
 
-      {/* ---------------- CTA ---------------- */}
-      <div className="text-center py-20 bg-black text-white">
-        <h2 className="text-3xl font-bold mb-6">
-          Stop Manually Applying to Jobs
-        </h2>
+      {/* Email preview */}
+      <div style={{
+        background: "white",
+        border: "1px solid #E5E7EB",
+        borderRadius: "16px",
+        padding: "16px 20px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", paddingBottom: "12px", borderBottom: "1px solid #F3F4F6" }}>
+          <div style={{ width: "28px", height: "28px", background: "#DCFCE7", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "#111827" }}>Application Generated ✓</p>
+            <p style={{ fontSize: "0.7rem", color: "#9CA3AF" }}>To: hr@techcorp.com</p>
+          </div>
+          <span style={{ marginLeft: "auto", fontSize: "0.7rem", background: "#DCFCE7", color: "#16A34A", padding: "3px 8px", borderRadius: "100px", fontWeight: 600 }}>Sent</span>
+        </div>
+        <p style={{ fontSize: "0.78rem", color: "#374151", lineHeight: 1.6 }}>
+          <strong>Subject:</strong> Application for Python Backend Developer<br /><br />
+          Dear Hiring Manager,<br /><br />
+          I am a backend developer with 3+ years experience in FastAPI and PostgreSQL...
+        </p>
+      </div>
 
-        <button
-          onClick={() => router.push("/register")}
-          className="bg-white text-black px-6 py-3 rounded text-lg"
-        >
-          Get Started Now
-        </button>
+      {/* Badge */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: "100px", padding: "6px 14px" }}>
+          <div style={{ width: "6px", height: "6px", background: "#22C55E", borderRadius: "50%" }} />
+          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#16A34A" }}>AI generated & sent in 3.2s</span>
+        </div>
       </div>
     </div>
   );
 }
 
-/* ---------------- COMPONENTS ---------------- */
-
-function Feature({ title, desc }: any) {
+/* ── FEATURE CARD ── */
+function FeatureCard({ icon, title, desc, color, delay }: any) {
   return (
-    <div className="border p-6 bg-white rounded shadow-sm">
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-600">{desc}</p>
+    <div
+      className="card-hover"
+      style={{
+        background: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(16px)",
+        border: "1px solid rgba(255,255,255,0.5)",
+        borderRadius: "20px",
+        padding: "28px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+      }}
+    >
+      <div style={{
+        width: "48px", height: "48px", borderRadius: "14px",
+        background: color + "18",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        marginBottom: "18px",
+        fontSize: "1.5rem",
+      }}>
+        {icon}
+      </div>
+      <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.05rem", color: "#111827", marginBottom: "8px" }}>{title}</h3>
+      <p style={{ color: "#6B7280", fontSize: "0.875rem", lineHeight: 1.6 }}>{desc}</p>
     </div>
   );
 }
 
-function Step({ number, title }: any) {
+const features = [
+  { icon: "🎯", color: "#2563EB", title: "Smart Job Detection", desc: "Listens to Telegram job channels 24/7 and instantly detects relevant job postings." },
+  { icon: "✍️", color: "#7C3AED", title: "AI Email Generation", desc: "Crafts personalized, professional application emails tailored to each job description." },
+  { icon: "📱", color: "#10B981", title: "Telegram Integration", desc: "Connect your Telegram account in minutes and start receiving job alerts." },
+  { icon: "🧠", color: "#F59E0B", title: "Profile Intelligence", desc: "Learns your skills, experience, and projects to write better applications every time." },
+];
+
+const steps = [
+  { title: "Connect Telegram", desc: "Link your Telegram account and subscribe to job channels you want to monitor." },
+  { title: "Add Your Profile", desc: "Fill in your skills, experience, and projects. AutoApply learns who you are." },
+  { title: "AutoApply Does the Rest", desc: "Sit back while AI reads jobs, writes emails, and sends applications on your behalf." },
+];
+
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\app\dashboard\layout.tsx
+================================================================================
+
+"use client";
+
+import Link from "next/link";
+
+export default function DashboardLayout({ children }: any) {
   return (
-    <div>
-      <div className="text-3xl font-bold mb-2">{number}</div>
-      <p>{title}</p>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      {/* SIDEBAR */}
+      <aside
+        style={{
+          width: "220px",
+          background: "white",
+          borderRight: "1px solid #E5E7EB",
+          padding: "20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        <h2>AutoApply</h2>
+
+        <Link href="/dashboard">Dashboard</Link>
+        <Link href="/emails">Emails</Link>
+        <Link href="/telegram">Telegram</Link>
+        <Link href="/others">Others</Link>
+        <Link href="/profile">Profile</Link>
+      </aside>
+
+      {/* PAGE CONTENT */}
+      <main style={{ flex: 1, padding: "20px" }}>{children}</main>
     </div>
   );
 }
@@ -2103,121 +3170,133 @@ function Step({ number, title }: any) {
 "use client";
 
 import { useEffect, useState } from "react";
-import api from "@/services/api";
+import API from "@/services/api";
 
 export default function Dashboard() {
-  const [data, setData] = useState<any>(null);
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [channel, setChannel] = useState("");
+  const [data, setData] = useState<any>({});
+  const [error, setError] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const res = await API.get("/analytics/dashboard");
+      setData(res.data);
+    } catch {
+      setError("Failed to load dashboard");
+    }
+  };
 
   useEffect(() => {
-    api.get("/profile/dashboard").then((res) => {
-      setData(res.data);
-    });
+    fetchData();
+    const i = setInterval(fetchData, 5000);
+    return () => clearInterval(i);
   }, []);
 
-  if (!data) return <div className="p-10">Loading...</div>;
+  const Card = ({ title, value }: any) => (
+    <div
+      style={{
+        padding: "20px",
+        background: "white",
+        borderRadius: "16px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        flex: 1,
+      }}
+    >
+      <h3>{value}</h3>
+      <p style={{ color: "#6B7280" }}>{title}</p>
+    </div>
+  );
+  const start = async () => {
+    await API.post("/telegram/start");
+  };
+
+  const stop = async () => {
+    await API.post("/telegram/stop");
+  };
 
   return (
-    <div className="p-10 space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div>
+      <h1 style={{ fontSize: "22px", fontWeight: 700 }}>Dashboard</h1>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="border p-4">
-          <p>Total Experience</p>
-          <h2 className="text-xl">{data.total_experience}</h2>
-        </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <div className="border p-4">
-          <p>Skills</p>
-          <h2 className="text-xl">{data.skills_count}</h2>
-        </div>
-
-        <div className="border p-4">
-          <p>Profile Completion</p>
-          <h2 className="text-xl">{data.profile_completeness}%</h2>
-        </div>
+      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+        <Card title="Total Messages" value={data.total || 0} />
+        <Card title="Emails Sent" value={data.sent || 0} />
+        <Card title="Pending" value={data.pending || 0} />
       </div>
-
-      <div>
-        <h2 className="text-xl font-bold">Recent Jobs</h2>
-
-        {data.recent_jobs.length === 0 ? (
-          <p>No jobs yet</p>
-        ) : (
-          data.recent_jobs.map((job: any) => (
-            <div key={job.id} className="border p-3 mt-2">
-              <p>{job.message_text}</p>
-            </div>
-          ))
-        )}
+      <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+        <button onClick={start}>Start Listener</button>
+        <button onClick={stop}>Stop Listener</button>
       </div>
-      <div className="mt-10 space-y-4">
-        <h2 className="text-xl font-bold">Telegram</h2>
+    </div>
+  );
+}
 
-        <input
-          placeholder="Phone (+91...)"
-          className="border p-2"
-          onChange={(e) => setPhone(e.target.value)}
-        />
 
-        <button
-          disabled={!phone}
-          onClick={() => {
-            if (!phone.startsWith("+")) {
-              setPhoneError(
-                "Please include country code without any spaces (e.g. +918978057144)",
-              );
-              return;
-            }
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\app\emails\page.tsx
+================================================================================
 
-            setPhoneError("");
+"use client";
 
-            api.post("/telegram/send-otp", null, { params: { phone } });
+import { useEffect, useState } from "react";
+import api from "@/services/api";
+
+export default function Emails() {
+  const [emails, setEmails] = useState<any[]>([]);
+  const [filter, setFilter] = useState("all");
+
+  const load = async () => {
+    const res = await api.get(`/analytics/emails?status=${filter}`);
+    setEmails(res.data);
+  };
+
+  useEffect(() => {
+    load();
+  }, [filter]);
+  const fetchEmails = async () => {
+    try {
+      const res = await api.get("/analytics/emails");
+      setEmails(res.data);
+    } catch {}
+  };
+  useEffect(() => {
+    fetchEmails();
+
+    const i = setInterval(fetchEmails, 3000);
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <div>
+      <h1>Emails</h1>
+
+      <select onChange={(e) => setFilter(e.target.value)}>
+        <option value="all">All</option>
+        <option value="sent">Sent</option>
+        <option value="pending">Pending</option>
+      </select>
+
+      {emails.map((e) => (
+        <div
+          key={e.id}
+          style={{
+            background: "white",
+            padding: "15px",
+            marginTop: "10px",
+            borderRadius: "12px",
           }}
         >
-          Send OTP
-        </button>
-        {phoneError && <p className="text-red-500">{phoneError}</p>}
+          <h3>{e.subject}</h3>
+          <p>Status: {e.status}</p>
+          <p>{new Date(e.created_at).toLocaleString()}</p>
 
-        <input
-          placeholder="OTP"
-          className="border p-2"
-          onChange={(e) => setOtp(e.target.value)}
-        />
-
-        <button
-          onClick={() =>
-            api.post("/telegram/verify", null, { params: { phone, code: otp } })
-          }
-        >
-          Verify
-        </button>
-
-        <input
-          placeholder="Channel name"
-          className="border p-2"
-          onChange={(e) => setChannel(e.target.value)}
-        />
-
-        <button
-          onClick={() =>
-            api.post("/telegram/add-channel", null, { params: { channel } })
-          }
-        >
-          Add Channel
-        </button>
-
-        <button onClick={() => api.post("/telegram/start")}>
-          Start Listening
-        </button>
-
-        <button onClick={() => api.post("/telegram/stop")}>
-          Stop Listening
-        </button>
-      </div>
+          <details>
+            <summary>View Email</summary>
+            <p>{e.body}</p>
+          </details>
+        </div>
+      ))}
     </div>
   );
 }
@@ -2232,6 +3311,7 @@ export default function Dashboard() {
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -2239,49 +3319,218 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError("Email and password required");
-      return;
-    }
+    if (!email || !password) { setError("Please fill in all fields"); return; }
     try {
-      setError("");
+      setError(""); setLoading(true);
       const res = await login(email, password);
-
-      if (res.has_profile) {
-        router.push("/dashboard");
-      } else {
-        router.push("/onboarding");
-      }
+      res.has_profile ? router.push("/dashboard") : router.push("/onboarding");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 p-10 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold">Login</h1>
+    <div style={{ minHeight: "100vh", display: "flex" }}>
 
-      <input
-        className="border p-2"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      {/* ── LEFT PANEL ── */}
+      <div style={{
+        flex: "1", minWidth: "0",
+        background: "linear-gradient(135deg, #1E3A8A 0%, #1E1B4B 60%, #0F172A 100%)",
+        display: "flex", flexDirection: "column",
+        justifyContent: "center", alignItems: "center",
+        padding: "48px", position: "relative", overflow: "hidden",
+      }} className="hidden lg:flex">
+        {/* BG orbs */}
+        <div style={{ position: "absolute", top: "10%", left: "10%", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", bottom: "15%", right: "5%", width: "200px", height: "200px", background: "radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
-      <input
-        className="border p-2"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <div style={{ position: "relative", maxWidth: "400px", textAlign: "center" }}>
+          {/* Logo */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "48px" }}>
+            <div style={{ width: "44px", height: "44px", background: "linear-gradient(135deg, #2563EB, #7C3AED)", borderRadius: "13px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(37,99,235,0.5)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.3rem", color: "white" }}>AutoApply<span style={{ color: "#93C5FD" }}>.ai</span></span>
+          </div>
 
-      <button className="bg-black text-white p-2" onClick={handleLogin}>
-        Login
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2rem", color: "white", lineHeight: 1.2, marginBottom: "16px", letterSpacing: "-0.02em" }}>
+            Let AI handle your<br />job applications
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "48px" }}>
+            Connect once, apply everywhere. AutoApply monitors job channels and sends personalized emails while you focus on what matters.
+          </p>
+
+          {/* Stats */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            {[
+              { n: "2,400+", l: "Applications sent" },
+              { n: "94%", l: "Response rate" },
+              { n: "3.2s", l: "Avg generation time" },
+              { n: "50+", l: "Job channels supported" },
+            ].map((s, i) => (
+              <div key={i} style={{
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "14px", padding: "16px",
+              }}>
+                <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.5rem", color: "white" }}>{s.n}</div>
+                <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.5)", marginTop: "2px" }}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL ── */}
+      <div style={{
+        flex: "1", minWidth: "0", maxWidth: "560px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "48px 40px",
+        background: "#F9FAFB",
+      }}>
+        <div style={{ width: "100%", maxWidth: "400px" }}>
+
+          {/* Mobile logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "40px" }} className="lg:hidden">
+            <div style={{ width: "36px", height: "36px", background: "linear-gradient(135deg, #2563EB, #7C3AED)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#111827" }}>AutoApply<span style={{ color: "#2563EB" }}>.ai</span></span>
+          </div>
+
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.75rem", color: "#111827", marginBottom: "8px", letterSpacing: "-0.02em" }}>Welcome back</h1>
+          <p style={{ color: "#6B7280", fontSize: "0.9rem", marginBottom: "36px" }}>
+            Don&apos;t have an account?{" "}
+            <Link href="/register" style={{ color: "#2563EB", fontWeight: 600, textDecoration: "none" }}>Sign up free</Link>
+          </p>
+
+          {/* Form card */}
+          <div style={{
+            background: "rgba(255,255,255,0.8)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.6)",
+            borderRadius: "20px",
+            padding: "32px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.07)",
+          }}>
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Email address</label>
+              <input
+                type="email"
+                value={email}
+                placeholder="you@example.com"
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleLogin()}
+                style={{
+                  width: "100%", padding: "12px 16px",
+                  border: "1.5px solid #E5E7EB", borderRadius: "12px",
+                  fontSize: "0.9rem", color: "#111827",
+                  background: "white",
+                  transition: "all 0.2s",
+                  outline: "none",
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151" }}>Password</label>
+                <a href="#" style={{ fontSize: "0.8rem", color: "#2563EB", textDecoration: "none", fontWeight: 500 }}>Forgot password?</a>
+              </div>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  placeholder="••••••••"
+                  onChange={e => setPassword(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleLogin()}
+                  style={{
+                    width: "100%", padding: "12px 44px 12px 16px",
+                    border: "1.5px solid #E5E7EB", borderRadius: "12px",
+                    fontSize: "0.9rem", color: "#111827",
+                    background: "white", transition: "all 0.2s", outline: "none",
+                  }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; }}
+                  onBlur={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", padding: 0 }}
+                >
+                  {showPassword
+                    ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  }
+                </button>
+              </div>
+            </div>
+
+            {/* Remember me */}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
+              <div
+                onClick={() => setRemember(!remember)}
+                style={{
+                  width: "18px", height: "18px", borderRadius: "5px",
+                  border: remember ? "none" : "1.5px solid #D1D5DB",
+                  background: remember ? "#2563EB" : "white",
+                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                {remember && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+              </div>
+              <label onClick={() => setRemember(!remember)} style={{ fontSize: "0.85rem", color: "#6B7280", cursor: "pointer" }}>Remember me</label>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div style={{ background: "#FEF2F2", border: "1px solid #FCA5A5", borderRadius: "10px", padding: "10px 14px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <p style={{ fontSize: "0.82rem", color: "#DC2626" }}>{error}</p>
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              onClick={handleLogin}
+              disabled={loading}
+              style={{
+                width: "100%", padding: "13px",
+                background: loading ? "#93C5FD" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                border: "none", borderRadius: "12px",
+                fontSize: "0.95rem", fontWeight: 700,
+                color: "white", cursor: loading ? "not-allowed" : "pointer",
+                boxShadow: loading ? "none" : "0 4px 14px rgba(37,99,235,0.4)",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                transition: "all 0.25s",
+              }}
+              onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(37,99,235,0.5)"; } }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = loading ? "none" : "0 4px 14px rgba(37,99,235,0.4)"; }}
+            >
+              {loading ? (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" style={{ animation: "spin-slow 0.8s linear infinite" }}>
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  </svg>
+                  Signing in...
+                </>
+              ) : "Sign in"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -2293,18 +3542,19 @@ export default function LoginPage() {
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "@/services/api";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+
+const TOTAL_STEPS = 4;
 
 export default function Onboarding() {
   const { token } = useAuth();
   const router = useRouter();
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // ---------------- BASIC ----------------
   const [basic, setBasic] = useState({
     first_name: "",
     last_name: "",
@@ -2313,29 +3563,9 @@ export default function Onboarding() {
     linkedin: "",
     github: "",
   });
-  useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
-    api
-      .get("/profile")
-      .then((res) => {
-        if (res.data.profile) {
-          router.push("/dashboard"); // already onboarded
-        }
-      })
-      .catch(() => {
-        router.push("/login");
-      });
-  }, []);
-
-  // ---------------- SKILLS ----------------
+  const [countryCode, setCountryCode] = useState("+91");
   const [skillInput, setSkillInput] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
-
-  // ---------------- EXPERIENCE ----------------
   const [experience, setExperience] = useState([
     {
       company: "",
@@ -2346,13 +3576,9 @@ export default function Onboarding() {
       current: false,
     },
   ]);
-
-  // ---------------- PROJECTS ----------------
   const [projects, setProjects] = useState([
     { name: "", description: "", tech: "" },
   ]);
-
-  // ---------------- EDUCATION ----------------
   const [education, setEducation] = useState([
     {
       college: "",
@@ -2363,80 +3589,78 @@ export default function Onboarding() {
       end_year: "",
     },
   ]);
-
-  // ---------------- HANDLERS ----------------
-  const addExperience = () =>
-    setExperience([
-      ...experience,
-      {
-        company: "",
-        role: "",
-        start_date: "",
-        end_date: "",
-        description: "",
-        current: false,
-      },
-    ]);
-
-  const addProject = () =>
-    setProjects([...projects, { name: "", description: "", tech: "" }]);
-
-  const addEducation = () =>
-    setEducation([
-      ...education,
-      {
-        college: "",
-        degree: "",
-        gpa: "",
-        type: "cgpa",
-        start_year: "",
-        end_year: "",
-      },
-    ]);
-
-  // ---------------- SUBMIT ----------------
-  const handleSubmit = async () => {
-    // 🔥 VALIDATION
-
-    if (skills.length === 0) {
-      alert("Please add at least one skill");
-      setLoading(false);
+  const [gmail, setGmail] = useState<any>(null);
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
       return;
     }
+    api
+      .get("/profile")
+      .then((res) => {
+        if (res.data.profile) router.push("/dashboard");
+      })
+      .catch(() => router.push("/login"));
+  }, [token]);
+  useEffect(() => {
+    fetchGmailStatus();
+  }, []);
 
-    const validEducation = education.filter((e) => e.college && e.degree);
+  const fetchGmailStatus = async () => {
+    try {
+      const res = await api.get("/auth/google/status");
+      setGmail(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const addSkill = (val: string) => {
+    const vals = val
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const newSkills = [...skills];
+    vals.forEach((v) => {
+      if (!newSkills.some((s) => s.toLowerCase() === v.toLowerCase()))
+        newSkills.push(v);
+    });
+    setSkills(newSkills);
+    setSkillInput("");
+  };
 
-    if (validEducation.length === 0) {
-      alert("At least one education is required");
-      setLoading(false);
+  const handleSubmit = async () => {
+    if (!gmail?.connected) {
+      alert("Please connect Gmail before finishing onboarding");
+      return;
+    }
+    if (skills.length === 0) {
+      alert("Add at least one skill");
+      return;
+    }
+    const validEdu = education.filter((e) => e.college && e.degree);
+    if (validEdu.length === 0) {
+      alert("Add at least one education entry");
       return;
     }
     if (loading) return;
     setLoading(true);
-
     try {
-      await api.post("/profile", basic);
-
-      for (let s of skills) {
+      await api.post("/profile", {
+        ...basic,
+        phone: countryCode + basic.phone.replace(countryCode, ""),
+      });
+      for (const s of skills)
         if (s.trim()) await api.post("/profile/skills", { name: s });
-      }
-
-      for (let exp of experience) {
+      for (const exp of experience) {
         const { current, ...cleanExp } = exp;
-
         if (!cleanExp.company || !cleanExp.role) continue;
-
         await api.post("/profile/experience", cleanExp);
       }
-
-      for (let p of projects) {
+      for (const p of projects) {
         if (!p.name) continue;
         await api.post("/profile/projects", p);
       }
-
-      for (let e of education) {
-        if (!e.college || !e.degree) continue;
-
+      for (const e of validEdu)
         await api.post("/profile/education", {
           college: e.college,
           degree: e.degree,
@@ -2444,430 +3668,1368 @@ export default function Onboarding() {
           start_year: e.start_year,
           end_year: e.end_year,
         });
-      }
-
       router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("Error saving data");
     } finally {
       setLoading(false);
     }
   };
-  const [countryCode, setCountryCode] = useState("+91");
+
+  const inputStyle = {
+    width: "100%",
+    padding: "11px 16px",
+    border: "1.5px solid #E5E7EB",
+    borderRadius: "12px",
+    fontSize: "0.875rem",
+    color: "#111827",
+    background: "white",
+    outline: "none",
+    transition: "all 0.2s",
+    fontFamily: "var(--font-body)",
+  };
+  const focusIn = (e: any) => {
+    e.currentTarget.style.borderColor = "#2563EB";
+    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)";
+  };
+  const focusOut = (e: any) => {
+    e.currentTarget.style.borderColor = "#E5E7EB";
+    e.currentTarget.style.boxShadow = "none";
+  };
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "0.78rem",
+    fontWeight: 600,
+    color: "#374151",
+    marginBottom: "6px",
+  };
+  const connectGoogle = async () => {
+    try {
+      const res = await api.get("/auth/google/login"); // ✅ uses token automatically
+      window.location.href = res.data.url;
+    } catch (e) {
+      console.log(e);
+      alert("Login failed. Please login again.");
+    }
+  };
 
   return (
-    <div className="max-w-3xl mx-auto p-10 flex flex-col gap-10">
-      {/* ---------------- BASIC ---------------- */}
-      <div>
-        <h2 className="text-xl font-bold mb-3">Basic Info</h2>
-
-        <input
-          placeholder="First Name"
-          className="border p-2 w-full mb-2"
-          onChange={(e) => setBasic({ ...basic, first_name: e.target.value })}
-        />
-
-        <input
-          placeholder="Last Name"
-          className="border p-2 w-full mb-2"
-          onChange={(e) => setBasic({ ...basic, last_name: e.target.value })}
-        />
-
-        {/* PHONE WITH COUNTRY CODE */}
-        <div className="flex gap-2 mb-2">
-          <select
-            className="border p-2"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-          >
-            <option value="+91">🇮🇳 +91</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-          </select>
-
-          <input
-            placeholder="Phone"
-            className="border p-2 w-full"
-            onChange={(e) =>
-              setBasic({
-                ...basic,
-                phone: countryCode + e.target.value,
-              })
-            }
-          />
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#F9FAFB",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "40px 20px",
+      }}
+    >
+      {/* Logo */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "40px",
+        }}
+      >
+        <div
+          style={{
+            width: "36px",
+            height: "36px",
+            background: "linear-gradient(135deg, #2563EB, #7C3AED)",
+            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
         </div>
-
-        <input
-          placeholder="Location"
-          className="border p-2 w-full"
-          onChange={(e) => setBasic({ ...basic, location: e.target.value })}
-        />
+        <span
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 700,
+            fontSize: "1.1rem",
+            color: "#111827",
+          }}
+        >
+          AutoApply<span style={{ color: "#2563EB" }}>.ai</span>
+        </span>
       </div>
 
-      {/* ---------------- SKILLS ---------------- */}
-      <div>
-        <h2 className="text-xl font-bold mb-3">Skills</h2>
-
-        <div className="border p-2 flex flex-wrap gap-2">
-          {skills.map((s, i) => (
+      {/* Progress */}
+      <div style={{ width: "100%", maxWidth: "680px", marginBottom: "32px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "12px",
+          }}
+        >
+          <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#6B7280" }}>
+            Step {step} of {TOTAL_STEPS}
+          </p>
+          <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2563EB" }}>
+            {Math.round((step / TOTAL_STEPS) * 100)}% complete
+          </p>
+        </div>
+        <div
+          style={{
+            height: "6px",
+            background: "#E5E7EB",
+            borderRadius: "100px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            className="progress-fill"
+            style={{
+              height: "100%",
+              width: `${(step / TOTAL_STEPS) * 100}%`,
+              borderRadius: "100px",
+            }}
+          />
+        </div>
+        {/* Steps indicator */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
+          {["Basic Info", "Skills", "Experience", "Education"].map((s, i) => (
             <div
               key={i}
-              className="bg-gray-200 px-2 py-1 rounded flex items-center gap-1"
+              style={{
+                flex: 1,
+                padding: "8px",
+                textAlign: "center",
+                borderRadius: "10px",
+                background:
+                  step === i + 1
+                    ? "#EFF6FF"
+                    : step > i + 1
+                      ? "#F0FDF4"
+                      : "white",
+                border: `1.5px solid ${step === i + 1 ? "#BFDBFE" : step > i + 1 ? "#BBF7D0" : "#E5E7EB"}`,
+                transition: "all 0.3s",
+              }}
             >
-              {s}
-              <span
-                className="cursor-pointer text-red-500"
-                onClick={() => setSkills(skills.filter((_, idx) => idx !== i))}
+              <p
+                style={{
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  color:
+                    step === i + 1
+                      ? "#2563EB"
+                      : step > i + 1
+                        ? "#16A34A"
+                        : "#9CA3AF",
+                }}
               >
-                ×
-              </span>
+                {step > i + 1 ? "✓ " : ""}
+                {s}
+              </p>
             </div>
           ))}
-
-          <input
-            className="outline-none flex-1"
-            placeholder="Type skill + Enter"
-            value={skillInput}
-            onChange={(e) => setSkillInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === ",") {
-                e.preventDefault();
-
-                const values = skillInput
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean);
-
-                const newSkills = [...skills];
-
-                values.forEach((val) => {
-                  if (
-                    !newSkills.some(
-                      (s) => s.toLowerCase() === val.toLowerCase(),
-                    )
-                  ) {
-                    newSkills.push(val);
-                  }
-                });
-
-                setSkills(newSkills);
-                setSkillInput("");
-              }
-            }}
-            onPaste={(e) => {
-              const pasted = e.clipboardData.getData("text");
-
-              if (pasted.includes(",")) {
-                e.preventDefault();
-
-                const values = pasted
-                  .split(",")
-                  .map((s) => s.trim())
-                  .filter(Boolean);
-
-                const newSkills = [...skills];
-
-                values.forEach((val) => {
-                  if (
-                    !newSkills.some(
-                      (s) => s.toLowerCase() === val.toLowerCase(),
-                    )
-                  ) {
-                    newSkills.push(val);
-                  }
-                });
-
-                setSkills(newSkills);
-                setSkillInput("");
-              }
-            }}
-          />
         </div>
       </div>
 
-      {/* ---------------- EXPERIENCE ---------------- */}
-      <div>
-        <h2 className="text-xl font-bold mb-3">Experience</h2>
-
-        {experience.map((exp, i) => (
-          <div key={i} className="border p-4 mb-3">
-            {/* REMOVE BUTTON */}
-            <button
-              onClick={() =>
-                setExperience(experience.filter((_, idx) => idx !== i))
-              }
-              className="text-red-500 text-sm mb-2"
+      {/* Form card */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "680px",
+          background: "rgba(255,255,255,0.85)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255,255,255,0.6)",
+          borderRadius: "24px",
+          padding: "40px",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.07)",
+        }}
+      >
+        {/* ── STEP 1: Basic Info ── */}
+        {step === 1 && (
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 800,
+                fontSize: "1.5rem",
+                color: "#111827",
+                marginBottom: "6px",
+              }}
             >
-              Remove
-            </button>
-
-            <input
-              placeholder="Company"
-              value={exp.company}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...experience];
-                updated[i].company = e.target.value;
-                setExperience(updated);
+              Let's start with the basics
+            </h2>
+            <p
+              style={{
+                color: "#6B7280",
+                fontSize: "0.875rem",
+                marginBottom: "28px",
               }}
-            />
+            >
+              This information will be used to personalize your applications.
+            </p>
 
-            <input
-              placeholder="Role"
-              value={exp.role}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...experience];
-                updated[i].role = e.target.value;
-                setExperience(updated);
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "16px",
+                marginBottom: "16px",
               }}
-            />
+            >
+              <div>
+                <label style={labelStyle}>First Name</label>
+                <input
+                  style={inputStyle}
+                  placeholder="Venkata"
+                  value={basic.first_name}
+                  onChange={(e) =>
+                    setBasic({ ...basic, first_name: e.target.value })
+                  }
+                  onFocus={focusIn}
+                  onBlur={focusOut}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>Last Name</label>
+                <input
+                  style={inputStyle}
+                  placeholder="Aditya"
+                  value={basic.last_name}
+                  onChange={(e) =>
+                    setBasic({ ...basic, last_name: e.target.value })
+                  }
+                  onFocus={focusIn}
+                  onBlur={focusOut}
+                />
+              </div>
+            </div>
 
-            <input
-              placeholder="Start Date"
-              value={exp.start_date}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...experience];
-                updated[i].start_date = e.target.value;
-                setExperience(updated);
-              }}
-            />
+            <div style={{ marginBottom: "16px" }}>
+              <label style={labelStyle}>Phone Number</label>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  style={{
+                    padding: "11px 12px",
+                    border: "1.5px solid #E5E7EB",
+                    borderRadius: "12px",
+                    background: "white",
+                    fontSize: "0.875rem",
+                    outline: "none",
+                    cursor: "pointer",
+                    color: "#111827",
+                  }}
+                >
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+61">🇦🇺 +61</option>
+                  <option value="+971">🇦🇪 +971</option>
+                </select>
+                <input
+                  style={{ ...inputStyle, flex: 1 }}
+                  placeholder="9876543210"
+                  value={basic.phone}
+                  onChange={(e) =>
+                    setBasic({ ...basic, phone: e.target.value })
+                  }
+                  onFocus={focusIn}
+                  onBlur={focusOut}
+                />
+              </div>
+            </div>
 
-            {/* STILL WORKING */}
-            <label className="flex items-center gap-2 mb-2">
+            <div style={{ marginBottom: "16px" }}>
+              <label style={labelStyle}>Location</label>
               <input
-                type="checkbox"
-                onChange={(e) => {
-                  const updated = [...experience];
-                  updated[i].current = e.target.checked;
-                  updated[i].end_date = e.target.checked ? "Present" : "";
-                  setExperience(updated);
+                style={inputStyle}
+                placeholder="Hyderabad, India"
+                value={basic.location}
+                onChange={(e) =>
+                  setBasic({ ...basic, location: e.target.value })
+                }
+                onFocus={focusIn}
+                onBlur={focusOut}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "16px",
+              }}
+            >
+              <div>
+                <label style={labelStyle}>LinkedIn (optional)</label>
+                <input
+                  style={inputStyle}
+                  placeholder="linkedin.com/in/you"
+                  value={basic.linkedin}
+                  onChange={(e) =>
+                    setBasic({ ...basic, linkedin: e.target.value })
+                  }
+                  onFocus={focusIn}
+                  onBlur={focusOut}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>GitHub (optional)</label>
+                <input
+                  style={inputStyle}
+                  placeholder="github.com/you"
+                  value={basic.github}
+                  onChange={(e) =>
+                    setBasic({ ...basic, github: e.target.value })
+                  }
+                  onFocus={focusIn}
+                  onBlur={focusOut}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 2: Skills ── */}
+        {step === 2 && (
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 800,
+                fontSize: "1.5rem",
+                color: "#111827",
+                marginBottom: "6px",
+              }}
+            >
+              What are your skills?
+            </h2>
+            <p
+              style={{
+                color: "#6B7280",
+                fontSize: "0.875rem",
+                marginBottom: "28px",
+              }}
+            >
+              Type a skill and press Enter or comma. These power your AI
+              applications.
+            </p>
+
+            <div
+              style={{
+                minHeight: "120px",
+                padding: "14px",
+                border: "1.5px solid #E5E7EB",
+                borderRadius: "16px",
+                background: "white",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
+                alignContent: "flex-start",
+                cursor: "text",
+              }}
+              onClick={() => document.getElementById("skill-input")?.focus()}
+            >
+              {skills.map((s, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: "#EFF6FF",
+                    border: "1px solid #BFDBFE",
+                    borderRadius: "100px",
+                    padding: "5px 12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    color: "#2563EB",
+                  }}
+                >
+                  {s}
+                  <button
+                    onClick={() =>
+                      setSkills(skills.filter((_, idx) => idx !== i))
+                    }
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#93C5FD",
+                      padding: 0,
+                      fontSize: "1rem",
+                      lineHeight: 1,
+                      display: "flex",
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <input
+                id="skill-input"
+                value={skillInput}
+                placeholder={
+                  skills.length === 0
+                    ? "e.g. Python, React, FastAPI..."
+                    : "Add more..."
+                }
+                onChange={(e) => setSkillInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === ",") {
+                    e.preventDefault();
+                    addSkill(skillInput);
+                  }
+                }}
+                onPaste={(e) => {
+                  const pasted = e.clipboardData.getData("text");
+                  if (pasted.includes(",")) {
+                    e.preventDefault();
+                    addSkill(pasted);
+                  }
+                }}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  fontSize: "0.875rem",
+                  color: "#111827",
+                  minWidth: "160px",
+                  flex: 1,
+                  background: "transparent",
                 }}
               />
-              Still Working
-            </label>
+            </div>
 
-            <input
-              className="border p-2 w-full mb-2"
-              disabled={exp.current}
-              value={exp.current ? "Present" : exp.end_date}
-              onChange={(e) => {
-                const updated = [...experience];
-                updated[i].end_date = e.target.value;
-                setExperience(updated);
-              }}
-            />
+            {skills.length > 0 && (
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  color: "#10B981",
+                  marginTop: "8px",
+                  fontWeight: 600,
+                }}
+              >
+                ✓ {skills.length} skill{skills.length > 1 ? "s" : ""} added
+              </p>
+            )}
 
-            <textarea
-              placeholder="Description"
-              value={exp.description}
-              className="border p-2 w-full"
-              onChange={(e) => {
-                const updated = [...experience];
-                updated[i].description = e.target.value;
-                setExperience(updated);
-              }}
-            />
+            {/* Suggestions */}
+            <div style={{ marginTop: "20px" }}>
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                  marginBottom: "10px",
+                }}
+              >
+                POPULAR SKILLS — click to add
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {[
+                  "Python",
+                  "FastAPI",
+                  "React",
+                  "Node.js",
+                  "PostgreSQL",
+                  "Docker",
+                  "Machine Learning",
+                  "JavaScript",
+                  "AWS",
+                  "Git",
+                ]
+                  .filter((s) => !skills.includes(s))
+                  .map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSkills([...skills, s])}
+                      style={{
+                        background: "#F9FAFB",
+                        border: "1.5px solid #E5E7EB",
+                        borderRadius: "100px",
+                        padding: "5px 12px",
+                        fontSize: "0.8rem",
+                        fontWeight: 500,
+                        color: "#6B7280",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#EFF6FF";
+                        e.currentTarget.style.borderColor = "#BFDBFE";
+                        e.currentTarget.style.color = "#2563EB";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "#F9FAFB";
+                        e.currentTarget.style.borderColor = "#E5E7EB";
+                        e.currentTarget.style.color = "#6B7280";
+                      }}
+                    >
+                      + {s}
+                    </button>
+                  ))}
+              </div>
+            </div>
           </div>
-        ))}
+        )}
 
-        <button onClick={addExperience} className="text-blue-500">
-          + Add Experience
-        </button>
-      </div>
-      {/* ---------------- PROJECTS ---------------- */}
-      <div>
-        <h2 className="text-xl font-bold mb-3">Projects (Optional)</h2>
+        {/* ── STEP 3: Experience ── */}
+        {step === 3 && (
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 800,
+                fontSize: "1.5rem",
+                color: "#111827",
+                marginBottom: "6px",
+              }}
+            >
+              Your work experience
+            </h2>
+            <p
+              style={{
+                color: "#6B7280",
+                fontSize: "0.875rem",
+                marginBottom: "28px",
+              }}
+            >
+              Add your relevant work history. This helps AI write better
+              applications.
+            </p>
 
-        {projects.map((proj, i) => (
-          <div key={i} className="border p-4 mb-3">
+            {experience.map((exp, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#F9FAFB",
+                  border: "1.5px solid #E5E7EB",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  marginBottom: "16px",
+                  position: "relative",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <h4
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 700,
+                      fontSize: "0.9rem",
+                      color: "#374151",
+                    }}
+                  >
+                    Experience {i + 1}
+                  </h4>
+                  {experience.length > 1 && (
+                    <button
+                      onClick={() =>
+                        setExperience(experience.filter((_, idx) => idx !== i))
+                      }
+                      style={{
+                        background: "#FEF2F2",
+                        border: "1px solid #FCA5A5",
+                        borderRadius: "8px",
+                        padding: "4px 10px",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                        color: "#DC2626",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "12px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <div>
+                    <label style={labelStyle}>Company</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="TechCorp"
+                      value={exp.company}
+                      onChange={(e) => {
+                        const u = [...experience];
+                        u[i].company = e.target.value;
+                        setExperience(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Role</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="Backend Developer"
+                      value={exp.role}
+                      onChange={(e) => {
+                        const u = [...experience];
+                        u[i].role = e.target.value;
+                        setExperience(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "12px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <div>
+                    <label style={labelStyle}>Start Date</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="2022-01"
+                      value={exp.start_date}
+                      onChange={(e) => {
+                        const u = [...experience];
+                        u[i].start_date = e.target.value;
+                        setExperience(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>End Date</label>
+                    <input
+                      style={{
+                        ...inputStyle,
+                        background: exp.current ? "#F3F4F6" : "white",
+                      }}
+                      placeholder="2023-06"
+                      value={exp.current ? "Present" : exp.end_date}
+                      disabled={exp.current}
+                      onChange={(e) => {
+                        const u = [...experience];
+                        u[i].end_date = e.target.value;
+                        setExperience(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <div
+                    onClick={() => {
+                      const u = [...experience];
+                      u[i].current = !u[i].current;
+                      u[i].end_date = u[i].current ? "Present" : "";
+                      setExperience(u);
+                    }}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "5px",
+                      border: exp.current ? "none" : "1.5px solid #D1D5DB",
+                      background: exp.current ? "#2563EB" : "white",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {exp.current && (
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                  <label
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "#6B7280",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      const u = [...experience];
+                      u[i].current = !u[i].current;
+                      u[i].end_date = u[i].current ? "Present" : "";
+                      setExperience(u);
+                    }}
+                  >
+                    Currently working here
+                  </label>
+                </div>
+                <div>
+                  <label style={labelStyle}>Description</label>
+                  <textarea
+                    style={{
+                      ...inputStyle,
+                      minHeight: "90px",
+                      resize: "vertical" as const,
+                    }}
+                    placeholder="Describe your responsibilities and achievements..."
+                    value={exp.description}
+                    onChange={(e) => {
+                      const u = [...experience];
+                      u[i].description = e.target.value;
+                      setExperience(u);
+                    }}
+                    onFocus={focusIn}
+                    onBlur={focusOut}
+                  />
+                </div>
+              </div>
+            ))}
+
             <button
               onClick={() =>
-                setProjects(projects.filter((_, idx) => idx !== i))
+                setExperience([
+                  ...experience,
+                  {
+                    company: "",
+                    role: "",
+                    start_date: "",
+                    end_date: "",
+                    description: "",
+                    current: false,
+                  },
+                ])
               }
-              className="text-red-500 text-sm mb-2"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "#EFF6FF",
+                border: "1.5px dashed #BFDBFE",
+                borderRadius: "12px",
+                padding: "10px 20px",
+                color: "#2563EB",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                width: "100%",
+                justifyContent: "center",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#DBEAFE")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "#EFF6FF")
+              }
             >
-              Remove
+              + Add Another Experience
             </button>
-
-            <input
-              placeholder="Project Name"
-              value={proj.name}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...projects];
-                updated[i].name = e.target.value;
-                setProjects(updated);
-              }}
-            />
-
-            <textarea
-              placeholder="Description"
-              value={proj.description}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...projects];
-                updated[i].description = e.target.value;
-                setProjects(updated);
-              }}
-            />
-
-            <input
-              placeholder="Tech (comma separated)"
-              value={proj.tech}
-              className="border p-2 w-full"
-              onChange={(e) => {
-                const updated = [...projects];
-                updated[i].tech = e.target.value;
-                setProjects(updated);
-              }}
-            />
           </div>
-        ))}
+        )}
 
-        <button onClick={addProject} className="text-blue-500">
-          + Add Project
-        </button>
-      </div>
-
-      {/* ---------------- EDUCATION ---------------- */}
-      <div>
-        <h2 className="text-xl font-bold mb-3">Education</h2>
-
-        {education.map((edu, i) => (
-          <div key={i} className="border p-4 mb-3">
-            {/* REMOVE */}
-            <button
-              onClick={() =>
-                setEducation(education.filter((_, idx) => idx !== i))
-              }
-              className="text-red-500 text-sm mb-2"
-            >
-              Remove
-            </button>
-
-            {/* COLLEGE */}
-            <input
-              placeholder="College"
-              value={edu.college}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].college = e.target.value;
-                setEducation(updated);
-              }}
-            />
-
-            {/* DEGREE */}
-            <input
-              placeholder="Degree (e.g. B.Tech)"
-              value={edu.degree}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].degree = e.target.value;
-                setEducation(updated);
-              }}
-            />
-
-            {/* TYPE */}
-            <select
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].type = e.target.value;
-                setEducation(updated);
+        {/* ── STEP 4: Projects + Education ── */}
+        {step === 4 && (
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontWeight: 800,
+                fontSize: "1.5rem",
+                color: "#111827",
+                marginBottom: "6px",
               }}
             >
-              <option value="cgpa">CGPA</option>
-              <option value="percentage">Percentage</option>
-            </select>
-
-            {/* GPA */}
-            <input
-              placeholder={
-                edu.type === "cgpa"
-                  ? "CGPA (e.g. 8.5)"
-                  : "Percentage (e.g. 85%)"
-              }
-              value={edu.gpa}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].gpa = e.target.value;
-                setEducation(updated);
+              Projects & Education
+            </h2>
+            <p
+              style={{
+                color: "#6B7280",
+                fontSize: "0.875rem",
+                marginBottom: "28px",
               }}
-            />
+            >
+              Almost done! Add your projects and education details.
+            </p>
 
-            {/* START YEAR */}
-            <input
-              placeholder="Start Year (e.g. 2021)"
-              value={edu.start_year}
-              className="border p-2 w-full mb-2"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].start_year = e.target.value;
-                setEducation(updated);
-              }}
-            />
+            {/* Education */}
+            <div style={{ marginBottom: "28px" }}>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  color: "#111827",
+                  marginBottom: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <span
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    background: "#EFF6FF",
+                    borderRadius: "8px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  🎓
+                </span>
+                Education
+              </h3>
+              {education.map((edu, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: "#F9FAFB",
+                    border: "1.5px solid #E5E7EB",
+                    borderRadius: "16px",
+                    padding: "20px",
+                    marginBottom: "14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.82rem",
+                        fontWeight: 700,
+                        color: "#6B7280",
+                      }}
+                    >
+                      Education {i + 1}
+                    </span>
+                    {education.length > 1 && (
+                      <button
+                        onClick={() =>
+                          setEducation(education.filter((_, idx) => idx !== i))
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          color: "#EF4444",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "12px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <label style={labelStyle}>College / University</label>
+                      <input
+                        style={inputStyle}
+                        placeholder="Sreenidhi Institute..."
+                        value={edu.college}
+                        onChange={(e) => {
+                          const u = [...education];
+                          u[i].college = e.target.value;
+                          setEducation(u);
+                        }}
+                        onFocus={focusIn}
+                        onBlur={focusOut}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Degree</label>
+                      <input
+                        style={inputStyle}
+                        placeholder="B.Tech"
+                        value={edu.degree}
+                        onChange={(e) => {
+                          const u = [...education];
+                          u[i].degree = e.target.value;
+                          setEducation(u);
+                        }}
+                        onFocus={focusIn}
+                        onBlur={focusOut}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>GPA / Percentage</label>
+                      <input
+                        style={inputStyle}
+                        placeholder="8.5"
+                        value={edu.gpa}
+                        onChange={(e) => {
+                          const u = [...education];
+                          u[i].gpa = e.target.value;
+                          setEducation(u);
+                        }}
+                        onFocus={focusIn}
+                        onBlur={focusOut}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Start Year</label>
+                      <input
+                        style={inputStyle}
+                        placeholder="2021"
+                        value={edu.start_year}
+                        onChange={(e) => {
+                          const u = [...education];
+                          u[i].start_year = e.target.value;
+                          setEducation(u);
+                        }}
+                        onFocus={focusIn}
+                        onBlur={focusOut}
+                      />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>End Year</label>
+                      <input
+                        style={inputStyle}
+                        placeholder="2025"
+                        value={edu.end_year}
+                        onChange={(e) => {
+                          const u = [...education];
+                          u[i].end_year = e.target.value;
+                          setEducation(u);
+                        }}
+                        onFocus={focusIn}
+                        onBlur={focusOut}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={() =>
+                  setEducation([
+                    ...education,
+                    {
+                      college: "",
+                      degree: "",
+                      gpa: "",
+                      type: "cgpa",
+                      start_year: "",
+                      end_year: "",
+                    },
+                  ])
+                }
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "#EFF6FF",
+                  border: "1.5px dashed #BFDBFE",
+                  borderRadius: "12px",
+                  padding: "10px 20px",
+                  color: "#2563EB",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  width: "100%",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#DBEAFE")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "#EFF6FF")
+                }
+              >
+                + Add Education
+              </button>
+            </div>
 
-            {/* END YEAR */}
-            <input
-              placeholder="End Year (e.g. 2025)"
-              value={edu.end_year}
-              className="border p-2 w-full"
-              onChange={(e) => {
-                const updated = [...education];
-                updated[i].end_year = e.target.value;
-                setEducation(updated);
-              }}
-            />
+            {/* Projects */}
+            <div>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  color: "#111827",
+                  marginBottom: "14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <span
+                  style={{
+                    width: "28px",
+                    height: "28px",
+                    background: "#F0FDF4",
+                    borderRadius: "8px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  🚀
+                </span>
+                Projects{" "}
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                    marginLeft: "4px",
+                  }}
+                >
+                  Optional
+                </span>
+              </h3>
+              {projects.map((proj, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: "#F9FAFB",
+                    border: "1.5px solid #E5E7EB",
+                    borderRadius: "16px",
+                    padding: "20px",
+                    marginBottom: "14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "14px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.82rem",
+                        fontWeight: 700,
+                        color: "#6B7280",
+                      }}
+                    >
+                      Project {i + 1}
+                    </span>
+                    {projects.length > 1 && (
+                      <button
+                        onClick={() =>
+                          setProjects(projects.filter((_, idx) => idx !== i))
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          color: "#EF4444",
+                          fontSize: "0.78rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Project Name</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="AI CRM System"
+                      value={proj.name}
+                      onChange={(e) => {
+                        const u = [...projects];
+                        u[i].name = e.target.value;
+                        setProjects(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Description</label>
+                    <textarea
+                      style={{
+                        ...inputStyle,
+                        minHeight: "80px",
+                        resize: "vertical" as const,
+                      }}
+                      placeholder="What does this project do?"
+                      value={proj.description}
+                      onChange={(e) => {
+                        const u = [...projects];
+                        u[i].description = e.target.value;
+                        setProjects(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Tech Stack</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="React, Node.js, MongoDB"
+                      value={proj.tech}
+                      onChange={(e) => {
+                        const u = [...projects];
+                        u[i].tech = e.target.value;
+                        setProjects(u);
+                      }}
+                      onFocus={focusIn}
+                      onBlur={focusOut}
+                    />
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={() =>
+                  setProjects([
+                    ...projects,
+                    { name: "", description: "", tech: "" },
+                  ])
+                }
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "#F0FDF4",
+                  border: "1.5px dashed #BBF7D0",
+                  borderRadius: "12px",
+                  padding: "10px 20px",
+                  color: "#16A34A",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  width: "100%",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#DCFCE7")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "#F0FDF4")
+                }
+              >
+                + Add Project
+              </button>
+            </div>
+            {/* 🔥 GMAIL CONNECTION */}
+            <div style={{ marginBottom: "28px" }}>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  marginBottom: "10px",
+                }}
+              >
+                📧 Connect Gmail (Required)
+              </h3>
+
+              {gmail?.connected ? (
+                <p style={{ color: "green", fontWeight: 600 }}>
+                  ✅ Connected: {gmail.email}
+                </p>
+              ) : (
+                <button onClick={connectGoogle}>Connect Gmail</button>
+              )}
+
+              {!gmail?.connected && (
+                <p
+                  style={{ color: "red", marginTop: "8px", fontSize: "0.8rem" }}
+                >
+                  ⚠️ You must connect Gmail before finishing
+                </p>
+              )}
+            </div>
           </div>
-        ))}
+        )}
 
-        <button onClick={addEducation} className="text-blue-500">
-          + Add Education
-        </button>
-        <input
-          placeholder="LinkedIn (optional)"
-          className="border p-2 w-full mb-2"
-          onChange={(e) => setBasic({ ...basic, linkedin: e.target.value })}
-        />
-
-        <input
-          placeholder="GitHub (optional)"
-          className="border p-2 w-full"
-          onChange={(e) => setBasic({ ...basic, github: e.target.value })}
-        />
-        {/* ---------------- RESUME ---------------- */}
-        <div>
-          <h2 className="text-xl font-bold mb-3">Resume</h2>
-
-          <input
-            type="file"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-
-              const formData = new FormData();
-              formData.append("file", file);
-
-              await api.post("/profile/upload-resume", formData);
+        {/* ── NAV BUTTONS ── */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "36px",
+            paddingTop: "24px",
+            borderTop: "1px solid #F3F4F6",
+          }}
+        >
+          <button
+            onClick={() => setStep((s) => s - 1)}
+            disabled={step === 1}
+            style={{
+              padding: "11px 24px",
+              borderRadius: "12px",
+              border: "1.5px solid #E5E7EB",
+              background: step === 1 ? "#F9FAFB" : "white",
+              color: step === 1 ? "#D1D5DB" : "#374151",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              cursor: step === 1 ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              transition: "all 0.2s",
             }}
-          />
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+
+          {step < TOTAL_STEPS ? (
+            <button
+              onClick={() => setStep((s) => s + 1)}
+              style={{
+                padding: "11px 28px",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                border: "none",
+                color: "white",
+                fontSize: "0.875rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                boxShadow: "0 4px 14px rgba(37,99,235,0.4)",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow =
+                  "0 6px 20px rgba(37,99,235,0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 14px rgba(37,99,235,0.4)";
+              }}
+            >
+              Continue
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              style={{
+                padding: "11px 28px",
+                borderRadius: "12px",
+                background: loading
+                  ? "#93C5FD"
+                  : "linear-gradient(135deg, #10B981, #059669)",
+                border: "none",
+                color: "white",
+                fontSize: "0.875rem",
+                fontWeight: 700,
+                cursor: loading ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                boxShadow: loading ? "none" : "0 4px 14px rgba(16,185,129,0.4)",
+                transition: "all 0.2s",
+              }}
+            >
+              {loading ? "Saving..." : "Finish Setup 🎉"}
+            </button>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* ---------------- SUBMIT ---------------- */}
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="bg-black text-white p-3"
-      >
-        {loading ? "Saving..." : "Save Profile"}
-      </button>
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\app\others\page.tsx
+================================================================================
+
+"use client";
+
+import { useEffect, useState } from "react";
+import API from "@/services/api";
+
+export default function Others() {
+  const [data, setData] = useState<any[]>([]);
+
+  const load = async () => {
+    try {
+      const res = await API.get("/analytics/emails"); // reuse jobs
+      setData(res.data);
+    } catch {}
+  };
+
+  useEffect(() => {
+    load();
+    const i = setInterval(load, 3000);
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <div>
+      <h1>Other Messages</h1>
+
+      {data.map((d) => (
+        <div key={d.id} style={{ marginTop: "10px" }}>
+          <p>{d.message}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -2881,64 +5043,286 @@ export default function Onboarding() {
 
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({});
+  const [skills, setSkills] = useState<string[]>([]);
+  const [experience, setExperience] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [newSkill, setNewSkill] = useState("");
+  const [dragOver, setDragOver] = useState(false);
+  const [resumeName, setResumeName] = useState<string | null>(null);
+  const { logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    api.get("/profile").then((res) => {
-      setProfile(res.data.profile);
-    });
+    api.get("/profile").then(res => {
+      setProfile(res.data.profile || {});
+      setSkills(res.data.skills?.map((s: any) => s.name) || []);
+      setExperience(res.data.experience || []);
+    }).catch(() => router.push("/login"));
   }, []);
 
   const updateProfile = async () => {
-    await api.post("/profile", profile);
-    alert("Updated!");
+    setLoading(true);
+    try {
+      await api.post("/profile", { first_name: profile.first_name, last_name: profile.last_name, phone: profile.phone, location: profile.location, linkedin: profile.linkedin, github: profile.github });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch { alert("Error saving"); }
+    finally { setLoading(false); }
   };
 
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    await api.post("/profile/upload-resume", formData);
+    setResumeName(file.name);
+  };
+
+  const inputStyle = {
+    width: "100%", padding: "11px 16px",
+    border: "1.5px solid #E5E7EB", borderRadius: "12px",
+    fontSize: "0.875rem", color: "#111827",
+    background: "white", outline: "none", transition: "all 0.2s",
+    fontFamily: "var(--font-body)",
+  };
+  const focusIn = (e: any) => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; };
+  const focusOut = (e: any) => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; };
+  const labelStyle: React.CSSProperties = { display: "block", fontSize: "0.78rem", fontWeight: 600, color: "#374151", marginBottom: "6px" };
+  const cardStyle = { background: "rgba(255,255,255,0.8)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.6)", borderRadius: "20px", padding: "28px", boxShadow: "0 2px 12px rgba(0,0,0,0.05)", marginBottom: "24px" };
+
   return (
-    <div className="p-10 space-y-4">
-      <h1 className="text-2xl font-bold">Edit Profile</h1>
+    <div style={{ minHeight: "100vh", background: "#F9FAFB", display: "flex" }}>
 
-      <input
-        className="border p-2 w-full"
-        value={profile?.phone || ""}
-        placeholder="Phone"
-        onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-      />
+      {/* ── SIDEBAR (minimal) ── */}
+      <aside style={{ width: "220px", background: "white", borderRight: "1px solid #E5E7EB", display: "flex", flexDirection: "column", padding: "24px 16px", position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 50 }} className="hidden lg:flex">
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "32px" }}>
+          <div style={{ width: "36px", height: "36px", background: "linear-gradient(135deg, #2563EB, #7C3AED)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#111827" }}>AutoApply<span style={{ color: "#2563EB" }}>.ai</span></span>
+        </div>
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px" }}>
+          {[
+            { label: "Dashboard", href: "/dashboard", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg> },
+            { label: "Profile", href: "/profile", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, active: true },
+          ].map(item => (
+            <Link key={item.href} href={item.href} style={{
+              display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px",
+              borderRadius: "12px", textDecoration: "none",
+              background: item.active ? "#EFF6FF" : "transparent",
+              color: item.active ? "#2563EB" : "#6B7280",
+              fontSize: "0.875rem", fontWeight: item.active ? 700 : 500,
+            }}>{item.icon}{item.label}</Link>
+          ))}
+        </nav>
+        <button onClick={() => { logout(); router.push("/login"); }} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 12px", background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "0.875rem", borderRadius: "12px", transition: "all 0.2s" }}
+          onMouseEnter={e => { e.currentTarget.style.background = "#FEF2F2"; e.currentTarget.style.color = "#EF4444"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#9CA3AF"; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
+      </aside>
 
-      <input
-        className="border p-2 w-full"
-        value={profile?.linkedin || ""}
-        placeholder="LinkedIn"
-        onChange={(e) => setProfile({ ...profile, linkedin: e.target.value })}
-      />
+      {/* ── MAIN ── */}
+      <main style={{ flex: 1, marginLeft: "220px", padding: "32px" }} className="ml-0 lg:ml-56">
 
-      <input
-        className="border p-2 w-full"
-        value={profile?.github || ""}
-        placeholder="GitHub"
-        onChange={(e) => setProfile({ ...profile, github: e.target.value })}
-      />
+        {/* Header */}
+        <div style={{ marginBottom: "28px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.5rem", color: "#111827", marginBottom: "4px" }}>Profile Settings</h1>
+            <p style={{ color: "#6B7280", fontSize: "0.875rem" }}>Keep your profile updated for better AI-generated applications.</p>
+          </div>
 
-      {/* RESUME REPLACE */}
-      <input
-        type="file"
-        onChange={async (e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
+          {/* Save button */}
+          <button
+            onClick={updateProfile} disabled={loading}
+            style={{
+              padding: "11px 28px",
+              background: saved ? "linear-gradient(135deg, #10B981, #059669)" : loading ? "#93C5FD" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+              border: "none", borderRadius: "12px",
+              color: "white", fontSize: "0.875rem", fontWeight: 700,
+              cursor: loading ? "not-allowed" : "pointer",
+              display: "flex", alignItems: "center", gap: "8px",
+              boxShadow: loading ? "none" : "0 4px 14px rgba(37,99,235,0.35)",
+              transition: "all 0.3s",
+            }}
+          >
+            {saved ? (
+              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg> Saved!</>
+            ) : loading ? "Saving..." : (
+              <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes</>
+            )}
+          </button>
+        </div>
 
-          const formData = new FormData();
-          formData.append("file", file);
+        {/* ── PERSONAL INFO ── */}
+        <div style={cardStyle}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#111827", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ width: "32px", height: "32px", background: "#EFF6FF", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            Personal Information
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            <div>
+              <label style={labelStyle}>First Name</label>
+              <input style={inputStyle} value={profile?.first_name || ""} onChange={e => setProfile({ ...profile, first_name: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+            </div>
+            <div>
+              <label style={labelStyle}>Last Name</label>
+              <input style={inputStyle} value={profile?.last_name || ""} onChange={e => setProfile({ ...profile, last_name: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+            </div>
+            <div>
+              <label style={labelStyle}>Phone</label>
+              <input style={inputStyle} value={profile?.phone || ""} placeholder="+91 9876543210" onChange={e => setProfile({ ...profile, phone: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+            </div>
+            <div>
+              <label style={labelStyle}>Location</label>
+              <input style={inputStyle} value={profile?.location || ""} placeholder="Hyderabad, India" onChange={e => setProfile({ ...profile, location: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+            </div>
+          </div>
+        </div>
 
-          await api.post("/profile/upload-resume", formData);
-          alert("Resume updated!");
-        }}
-      />
+        {/* ── LINKS ── */}
+        <div style={cardStyle}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#111827", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ width: "32px", height: "32px", background: "#F0FDF4", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            Professional Links
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            <div>
+              <label style={labelStyle}>LinkedIn URL</label>
+              <div style={{ position: "relative" }}>
+                <div style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#0A66C2" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                </div>
+                <input style={{ ...inputStyle, paddingLeft: "40px" }} value={profile?.linkedin || ""} placeholder="linkedin.com/in/you" onChange={e => setProfile({ ...profile, linkedin: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>GitHub URL</label>
+              <div style={{ position: "relative" }}>
+                <div style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "#24292F" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                </div>
+                <input style={{ ...inputStyle, paddingLeft: "40px" }} value={profile?.github || ""} placeholder="github.com/you" onChange={e => setProfile({ ...profile, github: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <button className="bg-black text-white p-2" onClick={updateProfile}>
-        Save
-      </button>
+        {/* ── RESUME ── */}
+        <div style={cardStyle}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#111827", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ width: "32px", height: "32px", background: "#FFFBEB", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </span>
+            Resume / CV
+          </h3>
+
+          <div
+            onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={e => { e.preventDefault(); setDragOver(false); const file = e.dataTransfer.files[0]; if (file) handleFileUpload(file); }}
+            style={{
+              border: `2px dashed ${dragOver ? "#2563EB" : "#E5E7EB"}`,
+              borderRadius: "16px", padding: "40px",
+              textAlign: "center",
+              background: dragOver ? "#EFF6FF" : "#F9FAFB",
+              transition: "all 0.2s", cursor: "pointer",
+            }}
+            onClick={() => document.getElementById("resume-input")?.click()}
+          >
+            <div style={{ fontSize: "2rem", marginBottom: "12px" }}>
+              {resumeName ? "📄" : "☁️"}
+            </div>
+            {resumeName ? (
+              <>
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#16A34A", marginBottom: "4px" }}>{resumeName}</p>
+                <p style={{ fontSize: "0.78rem", color: "#6B7280" }}>Click to replace</p>
+              </>
+            ) : profile?.resume_url ? (
+              <>
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#374151", marginBottom: "4px" }}>Resume uploaded</p>
+                <p style={{ fontSize: "0.78rem", color: "#6B7280" }}>Click or drag to replace</p>
+              </>
+            ) : (
+              <>
+                <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#374151", marginBottom: "4px" }}>Drop your resume here</p>
+                <p style={{ fontSize: "0.78rem", color: "#9CA3AF" }}>PDF, DOC, DOCX — max 10MB</p>
+              </>
+            )}
+            <input id="resume-input" type="file" accept=".pdf,.doc,.docx" style={{ display: "none" }} onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(f); }} />
+          </div>
+        </div>
+
+        {/* ── SKILLS ── */}
+        <div style={cardStyle}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#111827", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ width: "32px", height: "32px", background: "#F5F3FF", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
+            Skills
+          </h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "14px" }}>
+            {skills.map((s, i) => (
+              <div key={i} style={{ background: "#EFF6FF", border: "1px solid #BFDBFE", borderRadius: "100px", padding: "5px 14px", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.8rem", fontWeight: 600, color: "#2563EB" }}>
+                {s}
+                <button onClick={() => setSkills(skills.filter((_, idx) => idx !== i))} style={{ background: "none", border: "none", cursor: "pointer", color: "#93C5FD", padding: 0, fontSize: "1rem" }}>×</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <input style={{ ...inputStyle, flex: 1 }} placeholder="Add a skill and press Enter" value={newSkill} onChange={e => setNewSkill(e.target.value)} onFocus={focusIn} onBlur={focusOut}
+              onKeyDown={e => {
+                if (e.key === "Enter" && newSkill.trim()) {
+                  if (!skills.includes(newSkill.trim())) { setSkills([...skills, newSkill.trim()]); api.post("/profile/skills", { name: newSkill.trim() }); }
+                  setNewSkill("");
+                }
+              }}
+            />
+            <button
+              onClick={() => { if (newSkill.trim() && !skills.includes(newSkill.trim())) { setSkills([...skills, newSkill.trim()]); api.post("/profile/skills", { name: newSkill.trim() }); setNewSkill(""); } }}
+              style={{ padding: "11px 18px", background: "linear-gradient(135deg, #2563EB, #1D4ED8)", border: "none", borderRadius: "12px", color: "white", fontSize: "0.82rem", fontWeight: 700, cursor: "pointer" }}
+            >Add</button>
+          </div>
+        </div>
+
+        {/* ── EXPERIENCE (read only preview) ── */}
+        {experience.length > 0 && (
+          <div style={cardStyle}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#111827", marginBottom: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ width: "32px", height: "32px", background: "#EFF6FF", borderRadius: "8px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </span>
+              Work Experience
+              <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#9CA3AF", marginLeft: "4px" }}>— edit from onboarding</span>
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {experience.map((exp: any, i: number) => (
+                <div key={i} style={{ background: "#F9FAFB", border: "1.5px solid #E5E7EB", borderRadius: "14px", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                  <div style={{ width: "40px", height: "40px", background: "#EFF6FF", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#111827", marginBottom: "2px" }}>{exp.role}</p>
+                    <p style={{ fontSize: "0.82rem", color: "#6B7280" }}>{exp.company} · {exp.start_date} – {exp.end_date}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
@@ -2953,6 +5337,7 @@ export default function ProfilePage() {
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -2960,44 +5345,402 @@ export default function RegisterPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const strength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 10 ? 2 : 3;
+  const strengthLabels = ["", "Weak", "Good", "Strong"];
+  const strengthColors = ["", "#EF4444", "#F59E0B", "#10B981"];
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      setError("Email and password required");
-      return;
-    }
+    if (!email || !password) { setError("Please fill in all fields"); return; }
+    if (password !== confirmPassword) { setError("Passwords do not match"); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters"); return; }
     try {
-      setError("");
+      setError(""); setLoading(true);
       await register(email, password);
       router.push("/login");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 p-10 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold">Register</h1>
+    <div style={{ minHeight: "100vh", display: "flex" }}>
 
-      <input
-        className="border p-2"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      {/* ── LEFT PANEL ── */}
+      <div style={{
+        flex: "1", minWidth: "0",
+        background: "linear-gradient(135deg, #1E3A8A 0%, #1E1B4B 60%, #0F172A 100%)",
+        display: "flex", flexDirection: "column",
+        justifyContent: "center", alignItems: "center",
+        padding: "48px", position: "relative", overflow: "hidden",
+      }} className="hidden lg:flex">
+        <div style={{ position: "absolute", top: "10%", left: "10%", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", bottom: "15%", right: "5%", width: "200px", height: "200px", background: "radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
 
-      <input
-        className="border p-2"
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <div style={{ position: "relative", maxWidth: "400px", textAlign: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "48px" }}>
+            <div style={{ width: "44px", height: "44px", background: "linear-gradient(135deg, #2563EB, #7C3AED)", borderRadius: "13px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(37,99,235,0.5)" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.3rem", color: "white" }}>AutoApply<span style={{ color: "#93C5FD" }}>.ai</span></span>
+          </div>
 
-      <button className="bg-black text-white p-2" onClick={handleRegister}>
-        Register
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
+          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "2rem", color: "white", lineHeight: 1.2, marginBottom: "16px", letterSpacing: "-0.02em" }}>
+            Your AI job application assistant awaits
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "40px" }}>
+            Set up in 5 minutes. Start receiving personalized applications today.
+          </p>
+
+          {/* Feature list */}
+          {[
+            "Monitors Telegram job channels 24/7",
+            "AI-written personalized emails",
+            "Smart profile matching",
+            "Instant delivery to recruiters",
+          ].map((f, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px", textAlign: "left" }}>
+              <div style={{ width: "20px", height: "20px", background: "linear-gradient(135deg, #10B981, #059669)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.875rem" }}>{f}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── RIGHT PANEL ── */}
+      <div style={{
+        flex: "1", minWidth: "0", maxWidth: "560px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "48px 40px", background: "#F9FAFB",
+      }}>
+        <div style={{ width: "100%", maxWidth: "400px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "40px" }} className="lg:hidden">
+            <div style={{ width: "36px", height: "36px", background: "linear-gradient(135deg, #2563EB, #7C3AED)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "#111827" }}>AutoApply<span style={{ color: "#2563EB" }}>.ai</span></span>
+          </div>
+
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.75rem", color: "#111827", marginBottom: "8px", letterSpacing: "-0.02em" }}>Create your account</h1>
+          <p style={{ color: "#6B7280", fontSize: "0.9rem", marginBottom: "36px" }}>
+            Already have an account?{" "}
+            <Link href="/login" style={{ color: "#2563EB", fontWeight: 600, textDecoration: "none" }}>Sign in</Link>
+          </p>
+
+          <div style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.6)", borderRadius: "20px", padding: "32px", boxShadow: "0 8px 32px rgba(0,0,0,0.07)" }}>
+
+            {/* Email */}
+            <div style={{ marginBottom: "18px" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Email address</label>
+              <input
+                type="email" value={email} placeholder="you@example.com"
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleRegister()}
+                style={{ width: "100%", padding: "12px 16px", border: "1.5px solid #E5E7EB", borderRadius: "12px", fontSize: "0.9rem", color: "#111827", background: "white", outline: "none", transition: "all 0.2s" }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}
+              />
+            </div>
+
+            {/* Password */}
+            <div style={{ marginBottom: "10px" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Password</label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"} value={password} placeholder="Min. 6 characters"
+                  onChange={e => setPassword(e.target.value)}
+                  style={{ width: "100%", padding: "12px 44px 12px 16px", border: "1.5px solid #E5E7EB", borderRadius: "12px", fontSize: "0.9rem", color: "#111827", background: "white", outline: "none", transition: "all 0.2s" }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; }}
+                  onBlur={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", padding: 0 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              {/* Strength bar */}
+              {password.length > 0 && (
+                <div style={{ marginTop: "8px" }}>
+                  <div style={{ display: "flex", gap: "4px", marginBottom: "4px" }}>
+                    {[1,2,3].map(i => (
+                      <div key={i} style={{ flex: 1, height: "3px", borderRadius: "100px", background: i <= strength ? strengthColors[strength] : "#E5E7EB", transition: "all 0.3s" }} />
+                    ))}
+                  </div>
+                  <p style={{ fontSize: "0.75rem", color: strengthColors[strength], fontWeight: 600 }}>{strengthLabels[strength]}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Confirm */}
+            <div style={{ marginBottom: "24px" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Confirm password</label>
+              <input
+                type="password" value={confirmPassword} placeholder="Re-enter password"
+                onChange={e => setConfirmPassword(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleRegister()}
+                style={{
+                  width: "100%", padding: "12px 16px",
+                  border: `1.5px solid ${confirmPassword && confirmPassword !== password ? "#FCA5A5" : "#E5E7EB"}`,
+                  borderRadius: "12px", fontSize: "0.9rem", color: "#111827", background: "white", outline: "none", transition: "all 0.2s"
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = "#2563EB"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = confirmPassword && confirmPassword !== password ? "#FCA5A5" : "#E5E7EB"; e.currentTarget.style.boxShadow = "none"; }}
+              />
+              {confirmPassword && confirmPassword !== password && (
+                <p style={{ fontSize: "0.75rem", color: "#EF4444", marginTop: "4px" }}>Passwords do not match</p>
+              )}
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div style={{ background: "#FEF2F2", border: "1px solid #FCA5A5", borderRadius: "10px", padding: "10px 14px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <p style={{ fontSize: "0.82rem", color: "#DC2626" }}>{error}</p>
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              onClick={handleRegister} disabled={loading}
+              style={{
+                width: "100%", padding: "13px",
+                background: loading ? "#93C5FD" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                border: "none", borderRadius: "12px",
+                fontSize: "0.95rem", fontWeight: 700,
+                color: "white", cursor: loading ? "not-allowed" : "pointer",
+                boxShadow: loading ? "none" : "0 4px 14px rgba(37,99,235,0.4)",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                transition: "all 0.25s",
+              }}
+              onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(37,99,235,0.5)"; } }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = loading ? "none" : "0 4px 14px rgba(37,99,235,0.4)"; }}
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </button>
+
+            <p style={{ fontSize: "0.75rem", color: "#9CA3AF", textAlign: "center", marginTop: "16px" }}>
+              By signing up, you agree to our{" "}
+              <a href="#" style={{ color: "#6B7280", textDecoration: "underline" }}>Terms</a>{" "}and{" "}
+              <a href="#" style={{ color: "#6B7280", textDecoration: "underline" }}>Privacy Policy</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\frontend\app\telegram\page.tsx
+================================================================================
+
+"use client";
+
+import { useEffect, useState } from "react";
+import api from "@/services/api";
+
+export default function TelegramPage() {
+  const [state, setState] = useState<any>({});
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+
+  const [channels, setChannels] = useState<string[]>([]);
+  const [channel, setChannel] = useState("");
+
+  const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
+
+  const load = async () => {
+    const res = await api.get("/telegram/status");
+    setState(res.data);
+  };
+
+  useEffect(() => {
+    load();
+    loadChannels();
+
+    const i = setInterval(load, 3000);
+    return () => clearInterval(i);
+  }, []);
+
+  const loadChannels = async () => {
+    try {
+      const res = await api.get("/telegram/channels"); // 👈 we’ll add backend
+      setChannels(res.data);
+    } catch {}
+  };
+
+  const blockIfRunning = () => {
+    if (state.running) {
+      setError("Stop listener before making changes");
+      return true;
+    }
+    return false;
+  };
+
+  // ---------------- OTP FLOW ----------------
+
+  const sendOtp = async () => {
+    try {
+      await api.post("/telegram/send-otp", null, {
+        params: { phone },
+      });
+      setOtpSent(true);
+      setMsg("OTP sent!");
+    } catch (e: any) {
+      setError(e.response?.data?.detail || "Failed to send OTP");
+    }
+  };
+
+  const verifyOtp = async () => {
+    try {
+      await api.post("/telegram/verify", null, {
+        params: { phone, code: otp },
+      });
+      setMsg("Connected successfully!");
+      setOtpSent(false);
+      load();
+    } catch (e: any) {
+      setError(e.response?.data?.detail || "Invalid OTP");
+    }
+  };
+
+  // ---------------- CHANNEL ----------------
+
+  const addChannel = async () => {
+    if (blockIfRunning()) return;
+
+    await api.post("/telegram/add-channel", null, {
+      params: { channel },
+    });
+
+    setChannel("");
+    loadChannels();
+  };
+
+  const removeChannel = async (name: string) => {
+    if (blockIfRunning()) return;
+
+    await api.post("/telegram/remove-channel", null, {
+      params: { channel: name },
+    });
+
+    loadChannels();
+  };
+
+  return (
+    <div>
+      <h1>Telegram Integration</h1>
+
+      {/* STATUS */}
+      <div style={{ marginTop: "20px" }}>
+        <p>Status: {state.connected ? "🟢 Connected" : "🔴 Not Connected"}</p>
+
+        <p>Phone: {state.phone || "-"}</p>
+
+        <p>Listener: {state.running ? "🟢 Running" : "🔴 Stopped"}</p>
+      </div>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {msg && <p style={{ color: "green" }}>{msg}</p>}
+
+      {/* CONNECT FLOW */}
+      {!state.connected && (
+        <div style={{ marginTop: "20px" }}>
+          <input
+            placeholder="+91XXXXXXXXXX"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+
+          <button onClick={sendOtp}>Send OTP</button>
+
+          {otpSent && (
+            <>
+              <input
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <button onClick={verifyOtp}>Verify</button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* CHANNELS */}
+      {state.connected && (
+        <>
+          <div style={{ marginTop: "20px" }}>
+            <h3>Channels</h3>
+
+            {channels.length === 0 && <p>No channels added</p>}
+
+            {channels.map((c) => (
+              <div
+                key={c}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "5px",
+                }}
+              >
+                <span>{c}</span>
+                <button onClick={() => removeChannel(c)}>Remove</button>
+              </div>
+            ))}
+
+            <input
+              placeholder="@channel"
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+            />
+
+            <button onClick={addChannel}>Add Channel</button>
+          </div>
+
+          {/* CONTROLS */}
+          <div style={{ marginTop: "20px" }}>
+            <button
+              onClick={async () => {
+                await api.post("/telegram/start");
+                load();
+              }}
+            >
+              Start Listener
+            </button>
+
+            <button
+              onClick={async () => {
+                await api.post("/telegram/stop");
+                load();
+              }}
+            >
+              Stop Listener
+            </button>
+
+            <button
+              onClick={async () => {
+                if (blockIfRunning()) return;
+                await api.post("/telegram/disconnect");
+                load();
+              }}
+            >
+              Disconnect
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -3032,11 +5775,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const res = await api.post("/auth/login", { email, password });
-
       localStorage.setItem("token", res.data.access_token);
       setToken(res.data.access_token);
-
-      return res.data; // 🔥 IMPORTANT
+      return res.data;
     } catch (err: any) {
       throw new Error(err.response?.data?.detail || "Login failed");
     }
@@ -3075,12 +5816,11 @@ export function useAuth() {
 
 import axios from "axios";
 
-const api = axios.create({
+const API = axios.create({
   baseURL: "http://localhost:8000",
 });
 
-// attach token automatically
-api.interceptors.request.use((config) => {
+API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
   if (token) {
@@ -3090,5 +5830,5 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export default api;
+export default API;
 

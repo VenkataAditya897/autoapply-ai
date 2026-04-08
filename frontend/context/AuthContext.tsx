@@ -23,11 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const res = await api.post("/auth/login", { email, password });
-
       localStorage.setItem("token", res.data.access_token);
       setToken(res.data.access_token);
-
-      return res.data; // 🔥 IMPORTANT
+      return res.data;
     } catch (err: any) {
       throw new Error(err.response?.data?.detail || "Login failed");
     }

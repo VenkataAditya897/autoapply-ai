@@ -11,7 +11,8 @@ from app.models.education import Education
 from fastapi import UploadFile, File
 import shutil
 from app.models.job import Job
-
+import os
+os.makedirs("uploads", exist_ok=True)
 router = APIRouter()
 
 @router.post("/")

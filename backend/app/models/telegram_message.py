@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, DateTime
+from sqlalchemy import Column, Integer, Text, DateTime,String
 from sqlalchemy.dialects.postgresql import JSON
 from datetime import datetime
 from app.models.base import Base
@@ -10,6 +10,7 @@ class TelegramMessage(Base):
     user_id = Column(Integer, nullable=True)
 
     message_text = Column(Text)
+    source = Column(String)
     raw_data = Column(JSON)  # ✅ IMPORTANT CHANGE
 
     created_at = Column(DateTime, default=datetime.utcnow)

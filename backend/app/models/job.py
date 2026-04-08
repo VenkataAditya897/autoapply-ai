@@ -18,6 +18,8 @@ class Job(Base):
     links = Column(ARRAY(String))
 
     message_text = Column(Text)
+    generated_subject = Column(Text)
+    generated_body = Column(Text)
 
     status = Column(String, default="pending")
 

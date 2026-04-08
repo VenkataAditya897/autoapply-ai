@@ -4,51 +4,65 @@ from app.models.telegram_message import TelegramMessage
 from app.services.classifier import classify_message
 from app.models.classified_message import ClassifiedMessage
 from app.services.router import route_message
+from app.services.email_processor import process_email_job
+from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
-api_id = 34855418
-api_hash = "2b91a602f83f3414ab6b5af6fd39a5f0"
-
-
-async def start_user_listener(user_id, session_name, channels):
-    client = TelegramClient(session_name, api_id, api_hash)
-
-    await client.start()
-
-    @client.on(events.NewMessage(chats=channels))
-    async def handler(event):
-        db = SessionLocal()
-
+async def start_user_listener(user_id, session_name, channels, client_store):
+    while True:  # 🔥 NEVER STOP LOOP
         try:
-            text = event.raw_text
+            print(f"🚀 Starting listener for user {user_id}")
 
-            telegram_msg = TelegramMessage(
-                user_id=user_id,
-                message_text=text,
-                raw_data={}
-            )
-            db.add(telegram_msg)
-            db.commit()
-            db.refresh(telegram_msg)
+            client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
+            await client.start()
 
-            result = classify_message(text)
+            client_store[user_id] = client
 
-            classified = ClassifiedMessage(
-                message_id=telegram_msg.id,
-                type=result["type"],
-                emails=result["emails"],
-                phones=result["phones"],
-                links=result["links"]
-            )
+            @client.on(events.NewMessage(chats=channels))
+            async def handler(event):
+                db = SessionLocal()
+                try:
+                    text = event.raw_text
+                    chat = await event.get_chat()
+                    source = getattr(chat, "title", "unknown")
 
-            db.add(classified)
-            db.commit()
+                    telegram_msg = TelegramMessage(
+                        user_id=user_id,
+                        message_text=text,
+                        source=source,
+                        raw_data={}
+                    )
+                    db.add(telegram_msg)
+                    db.commit()
+                    db.refresh(telegram_msg)
 
-            route_message(db, classified, telegram_msg)
+                    result = classify_message(text)
+
+                    classified = ClassifiedMessage(
+                        message_id=telegram_msg.id,
+                        type=result["type"],
+                        emails=result["emails"],
+                        phones=result["phones"],
+                        links=result["links"]
+                    )
+
+                    db.add(classified)
+                    db.commit()
+
+                    job = route_message(db, classified, telegram_msg)
+
+                    if job.type == "email":
+                        process_email_job(db, job, user_id)
+
+                except Exception as e:
+                    print("❌ Handler error:", e)
+                finally:
+                    db.close()
+
+            await client.run_until_disconnected()
 
         except Exception as e:
-            print("❌ Error:", e)
+            print(f"🔥 Listener crashed for user {user_id}:", e)
 
-        finally:
-            db.close()
-
-    await client.run_until_disconnected()
+        # 🔁 AUTO RESTART AFTER CRASH
+        print(f"🔄 Restarting listener for user {user_id} in 5s...")
+        await asyncio.sleep(5)
