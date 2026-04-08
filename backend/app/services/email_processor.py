@@ -41,7 +41,7 @@ def process_email_job(db, job, user_id):
 
         db.commit()
 
-        return email
+        return success
 
     except Exception as e:
         print("ERROR:", e)

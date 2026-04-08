@@ -7,11 +7,24 @@ from app.services.router import route_message
 from app.services.email_processor import process_email_job
 from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 from app.queue import push_job
+from app.models.telegram_account import TelegramAccount
 
+import asyncio
 async def start_user_listener(user_id, session_name, channels, client_store):
     while True:  # 🔥 NEVER STOP LOOP
         try:
             print(f"🟢 Listener ACTIVE for user {user_id}")
+            db_check = SessionLocal()
+
+            acc = db_check.query(TelegramAccount).filter_by(user_id=user_id).first()
+
+            if not acc or not acc.is_running:
+                print(f"🛑 Stopping listener for {user_id}")
+                db_check.close()
+                return  # 🔥 EXIT LOOP COMPLETELY
+
+            db_check.close()
+            # ✅ END OF FIX
 
             client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
             await client.start()

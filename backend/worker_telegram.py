@@ -39,7 +39,7 @@ async def main():
                 print(f"🚀 Starting listener for user {user_id}")
 
                 # ✅ mark BEFORE starting (CRITICAL FIX)
-                active_sessions[user_id] = True
+                active_sessions[user_id] = "starting"
 
                 asyncio.create_task(
                     start_user_listener(

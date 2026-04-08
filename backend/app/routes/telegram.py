@@ -10,13 +10,13 @@ from fastapi import HTTPException
 from telethon import TelegramClient
 import os
 from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
+import redis
 
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
 
-otp_storage = {} 
 router = APIRouter()
-
+r = redis.Redis(host="localhost", port=6379, db=0)
 
 
 # ---------------- SEND OTP ----------------
@@ -37,9 +37,7 @@ async def send_otp(phone: str):
         result = await client.send_code_request(phone)
 
         # ✅ STORE HASH
-        otp_storage[phone] = {
-            "phone_code_hash": result.phone_code_hash
-        }
+        r.set(f"otp:{phone}", result.phone_code_hash, ex=300)
 
     except Exception as e:
         print("❌ TELEGRAM ERROR send OTP:", e)
@@ -59,10 +57,14 @@ async def verify(
 
 
     # ❌ check if OTP exists
-    if phone not in otp_storage:
-        raise HTTPException(status_code=400, detail="OTP not requested")
+    phone_code_hash = r.get(f"otp:{phone}")
 
-    phone_code_hash = otp_storage[phone]["phone_code_hash"]
+    if not phone_code_hash:
+        raise HTTPException(status_code=400, detail="OTP expired or not requested")
+
+    phone_code_hash = phone_code_hash.decode()
+
+    
 
     client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
     await client.connect()
@@ -77,8 +79,6 @@ async def verify(
         print("❌ TELEGRAM ERROR vefIFY OTP:", e)
         raise HTTPException(status_code=400, detail=str(e))
 
-    # ✅ cleanup
-    del otp_storage[phone]
 
     acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
 

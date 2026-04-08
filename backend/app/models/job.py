@@ -20,6 +20,7 @@ class Job(Base):
     message_text = Column(Text)
     generated_subject = Column(Text)
     generated_body = Column(Text)
+    retry_count = Column(Integer, default=0)
 
     status = Column(String, default="pending")
 
