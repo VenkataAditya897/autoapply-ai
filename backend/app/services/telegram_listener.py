@@ -6,11 +6,12 @@ from app.models.classified_message import ClassifiedMessage
 from app.services.router import route_message
 from app.services.email_processor import process_email_job
 from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
+from app.queue import push_job
 
 async def start_user_listener(user_id, session_name, channels, client_store):
     while True:  # 🔥 NEVER STOP LOOP
         try:
-            print(f"🚀 Starting listener for user {user_id}")
+            print(f"🟢 Listener ACTIVE for user {user_id}")
 
             client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
             await client.start()
@@ -50,8 +51,9 @@ async def start_user_listener(user_id, session_name, channels, client_store):
 
                     job = route_message(db, classified, telegram_msg)
 
+
                     if job.type == "email":
-                        process_email_job(db, job, user_id)
+                        push_job(job.id)
 
                 except Exception as e:
                     print("❌ Handler error:", e)
@@ -62,6 +64,9 @@ async def start_user_listener(user_id, session_name, channels, client_store):
 
         except Exception as e:
             print(f"🔥 Listener crashed for user {user_id}:", e)
+            # ❌ remove broken session
+            if user_id in client_store:
+                del client_store[user_id]
 
         # 🔁 AUTO RESTART AFTER CRASH
         print(f"🔄 Restarting listener for user {user_id} in 5s...")

@@ -3,7 +3,7 @@ import os
 OUTPUT_FILE = "project_structure_report.txt"
 
 # Folders to ignore completely
-IGNORE_DIRS = {"__pycache__", ".venv", "venv", ".git", "node_modules",".next"}
+IGNORE_DIRS = {"__pycache__", ".venv", "venv", ".git", "node_modules",".next","frontend"}
 
 # File extensions to ignore (binary / unnecessary)
 IGNORE_EXTENSIONS = {

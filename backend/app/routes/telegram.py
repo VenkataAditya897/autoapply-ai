@@ -8,15 +8,12 @@ from app.models.user_channel import UserChannel
 from fastapi import HTTPException
 
 from telethon import TelegramClient
-import asyncio
-from app.services.telegram_listener import start_user_listener
 import os
 from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
-active_clients = {}   # task
-active_sessions = {}  # client
+
 otp_storage = {} 
 router = APIRouter()
 
@@ -132,22 +129,11 @@ async def start_listener(
         for c in db.query(UserChannel).filter_by(user_id=user_id)
     ]
 
-    if user_id in active_clients:
-        return {"message": "already running"}
-
-    task = asyncio.create_task(
-        start_user_listener(user_id, acc.session_name, channels, active_sessions)
-    )
-
-    active_clients[user_id] = task
-
-    active_clients[user_id] = task
-
-    # ✅ ADD THIS (VERY IMPORTANT)
+    # ✅ ONLY mark as running
     acc.is_running = True
     db.commit()
 
-    return {"message": "started"}
+    return {"message": "listener scheduled"}
 # ---------------- STOP ----------------
 @router.post("/stop")
 async def stop_listener(
@@ -155,16 +141,7 @@ async def stop_listener(
     user_id: int = Depends(get_current_user)
 ):
     # cancel task
-    task = active_clients.get(user_id)
-    if task:
-        task.cancel()
-        del active_clients[user_id]
-
-    # ✅ disconnect client (CRITICAL FIX)
-    client = active_sessions.get(user_id)
-    if client:
-        await client.disconnect()
-        del active_sessions[user_id]
+    
 
     acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
     if acc:
@@ -195,16 +172,7 @@ async def disconnect(
         raise HTTPException(status_code=400, detail="Not connected")
 
     # ✅ FIRST STOP EVERYTHING
-    task = active_clients.get(user_id)
-    if task:
-        task.cancel()
-        del active_clients[user_id]
-
-    client = active_sessions.get(user_id)
-    if client:
-        await client.disconnect()
-        del active_sessions[user_id]
-
+    
     # 🔥 NOW SAFE TO DELETE
     try:
         if os.path.exists(acc.session_name + ".session"):

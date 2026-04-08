@@ -1,3 +1,0 @@
-from app.services.telegram_listener import start_telegram_listener
-
-start_telegram_listener()
