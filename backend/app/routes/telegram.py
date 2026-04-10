@@ -11,6 +11,8 @@ from telethon import TelegramClient
 import os
 from app.core.config import TELEGRAM_API_ID, TELEGRAM_API_HASH
 import redis
+from app.services.telegram_listener import is_running
+from worker_telegram import active_sessions  # 👈 import this
 
 SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
@@ -21,13 +23,21 @@ r = redis.Redis(host="localhost", port=6379, db=0)
 
 # ---------------- SEND OTP ----------------
 @router.post("/send-otp")
-async def send_otp(phone: str):
+async def send_otp(phone: str,user_id: int = Depends(get_current_user)):
     if not phone.startswith("+"):
         raise HTTPException(
             status_code=400,
             detail="Please include country code (e.g. +918978057144)"
         )
     session_name = os.path.join(SESSION_DIR, f"user_{phone}")
+    client_existing = active_sessions.get(user_id)
+
+    if client_existing and client_existing != "starting":
+        try:
+            await client_existing.disconnect()
+            print("🛑 Stopped existing listener before OTP")
+        except Exception as e:
+            print("Error stopping existing client:", e)
 
 
     client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
@@ -42,6 +52,8 @@ async def send_otp(phone: str):
     except Exception as e:
         print("❌ TELEGRAM ERROR send OTP:", e)
         raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        await client.disconnect()
 
     return {"message": "OTP sent"}
 
@@ -78,6 +90,8 @@ async def verify(
     except Exception as e:
         print("❌ TELEGRAM ERROR vefIFY OTP:", e)
         raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        await client.disconnect()
 
 
     acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
@@ -161,6 +175,7 @@ def get_status(
         "running": acc.is_running if acc else False,
         "phone": acc.phone if acc else None
     }
+
 @router.post("/disconnect")
 async def disconnect(
     db: Session = Depends(get_db),
@@ -171,9 +186,29 @@ async def disconnect(
     if not acc:
         raise HTTPException(status_code=400, detail="Not connected")
 
-    # ✅ FIRST STOP EVERYTHING
-    
-    # 🔥 NOW SAFE TO DELETE
+    # ✅ STEP 1: STOP FLAG
+    acc.is_running = False
+    db.commit()
+
+    # ✅ STEP 2: DISCONNECT CLIENT (CRITICAL)
+    client = active_sessions.get(user_id)
+
+    if client and client != "starting":
+        try:
+            await client.disconnect()
+            print("✅ Client disconnected")
+        except Exception as e:
+            print("❌ Error disconnecting client:", e)
+
+    # ✅ STEP 3: REMOVE FROM MEMORY
+    if user_id in active_sessions:
+        del active_sessions[user_id]
+
+    # ⏳ IMPORTANT: give time for file release
+    import asyncio
+    await asyncio.sleep(1)
+
+    # ✅ STEP 4: DELETE FILE
     try:
         if os.path.exists(acc.session_name + ".session"):
             os.remove(acc.session_name + ".session")
@@ -184,9 +219,9 @@ async def disconnect(
     except Exception as e:
         print("Error deleting session:", e)
 
+    # ✅ STEP 5: UPDATE DB
     acc.is_connected = False
     acc.is_running = False
-
     db.commit()
 
     return {"message": "disconnected"}

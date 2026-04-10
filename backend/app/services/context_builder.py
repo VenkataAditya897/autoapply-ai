@@ -46,7 +46,7 @@ def build_context(user_data, job_text: str):
 
         score = sum(
             1 for word in job_words
-            if len(word) > 3 and word in exp.description.lower()
+            if len(word) > 3 and word in project.description.lower()
         )
         scored_projects.append((score, project))
 
@@ -64,7 +64,7 @@ def build_context(user_data, job_text: str):
 
         score = sum(
             1 for word in job_words
-            if len(word) > 3 and word in project.description.lower()
+            if len(word) > 3 and word in exp.description.lower()
         )
         scored_experience.append((score, exp))
 

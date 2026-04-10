@@ -72,10 +72,64 @@ def dashboard(
         .filter(Job.status == "pending")\
         .count()
 
+    # ---------------- EMAILS ----------------
+    email_sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "email")\
+        .filter(Job.status == "sent")\
+        .count()
+
+    email_pending = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "email")\
+        .filter(Job.status == "pending")\
+        .count()
+
+    # ---------------- LINKS ----------------
+    links_pending = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "link")\
+        .count()
+
+    # ---------------- GOOGLE FORMS ----------------
+    forms_pending = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "form")\
+        .count()
+
+    # ---------------- PHONE ----------------
+    phones_pending = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "phone")\
+        .count()
+
+    # ---------------- TOTAL ----------------
+    total_jobs = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .count()
+
     return {
-        "total": total,
-        "sent": sent,
-        "pending": pending
+        "total_jobs": total_jobs,
+
+        "emails": {
+            "sent": email_sent,
+            "pending": email_pending
+        },
+
+        "links": {
+            "sent": 0,  # not implemented yet
+            "pending": links_pending
+        },
+
+        "forms": {
+            "sent": 0,
+            "pending": forms_pending
+        },
+
+        "phones": {
+            "sent": 0,
+            "pending": phones_pending
+        }
     }
 @router.get("/emails")
 def get_emails(

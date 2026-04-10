@@ -13,9 +13,7 @@ client = Groq(api_key=GROQ_API_KEY)
 
 def generate_email(context, job_text):
     prompt = f"""
-You are a professional job application email writer.
-
-Generate a HIGH-QUALITY, NATURAL job application email.
+Write a professional job application email.
 
 Return STRICT JSON:
 {{
@@ -23,106 +21,74 @@ Return STRICT JSON:
   "body": "..."
 }}
 
--------------------------
-TONE ADAPTATION (VERY IMPORTANT)
+RULES:
+- Natural human tone
+- 110–140 words
+- 3–4 short paragraphs using \\n\\n
+- No location (city/country)
+- No "I am excited to apply"
+- No fake metrics or exaggeration
+- Clear, simple English
 
-Adjust tone BASED ON EXPERIENCE:
-
-- If experience is LOW / Fresher:
-  → Simple, learning-focused, slightly humble
-
-- If experience is MID (1–3 years):
-  → Practical, confident, shows contribution
-
-- If experience is HIGH (3+ years):
-  → Professional, impact-focused, no beginner tone
-
-DO NOT use the same tone for all.
-
--------------------------
-WRITING STYLE (STRICT)
-
-- Natural human tone (not AI-like)
-- Clear and simple English
-- No buzzwords (avoid: "leveraged", "synergy", "cutting-edge")
-- No overconfidence
-- No exaggeration
-- No unnecessary lines
-
--------------------------
-STRICT RULES
-
-- DO NOT use:
-  "I am excited to apply"
-  "I am confident that I am a strong fit"
-
-- DO NOT write robotic lines like:
-  "My resume has been sent"
-
-- Keep it 100–150 words
-- 3–4 short paragraphs
-- Use \\n\\n for spacing
-
--------------------------
-EMAIL STRUCTURE
-
-1. Greeting
-
-2. Intro:
-- Role + who you are
-
-3. Experience:
-- Relevant work (based on level)
-
-4. Interest:
-- Why this role
-
-5. Closing:
-Thank you for your time and consideration.
-
-Regards,
-{context['name']}
--------------------------
-PERSONALIZATION (IMPORTANT)
-
-- If recruiter name is present → use it
-- Otherwise → Dear Hiring Manager
-
--------------------------
-CONTENT
-
+CONTENT:
 Name: {context['name']}
-Email: {context['email']}
 Skills: {context['skills']}
-Projects: {context['projects']}
 Experience: {context['experience']}
 Total Experience: {context['total_experience']}
 
 JOB:
 {job_text}
 
--------------------------
+JOB MATCHING:
+- Compare job role with candidate experience
+
+IF related:
+  → Use specific tools + real work (e.g., FastAPI, LangChain, APIs)
+
+IF NOT related:
+  → Do NOT fake experience
+  → Do NOT mention irrelevant tools
+  → Focus on transferable skills, learning, and problem-solving
+
+REQUIREMENTS:
+- Mention tools ONLY if relevant to the job
+- Include at least 1 real task (APIs, pipelines, automation, etc.)
+- Keep it concise, no long explanations
+
+SUBJECT:
+- "Application for [Role]" (add location only if explicitly required)
+
+FORMAT:
+
+Dear Hiring Manager,\\n\\n
+I’m Venkata Aditya Gopalapuram, currently working as an AI Innovation Associate Intern with hands-on experience in Python and Generative AI systems.\\n\\n
+During my internships at Tekisho Infotech and Smart Ecom Tech, I’ve worked on RAG pipelines using LangChain and built scalable backend APIs with FastAPI, Node.js, and Laravel. I’ve also developed automation pipelines and AI-driven systems using OpenAI and Gemini for real-world applications.\\n\\n
+I’m interested in this role as it focuses on practical AI development, which aligns closely with the work I’ve been doing and want to continue growing in.\\n\\n
+Thank you for your time and consideration.\\n\\n
+Regards,\\n
+{context['name']}
+
 OUTPUT:
 Only JSON. No explanation.
 """
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[
             {"role": "system", "content": "You generate professional job emails in JSON only."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.3
+        temperature=0.4,   # 🔥 more natural
+        top_p=0.9
     )
 
     content = response.choices[0].message.content
-    if os.getenv("DEBUG"):
-        print(f"""Name: {context['name']}
-        Email: {context['email']}
-        Skills: {context['skills']}
-        Projects: {context['projects']}
-        Total Experience: {context['total_experience']}
-        Experience: {context['experience']}""")
+    
+    # print(f"""Name: {context['name']}
+    #     Skills: {context['skills']}
+    #     Projects: {context['projects']}
+    #     Total Experience: {context['total_experience']}
+    #     Experience: {context['experience']}""")
 
     try:
         return json.loads(content)

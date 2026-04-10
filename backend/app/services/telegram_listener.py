@@ -10,21 +10,21 @@ from app.queue import push_job
 from app.models.telegram_account import TelegramAccount
 
 import asyncio
+def is_running(user_id):
+    db = SessionLocal()
+    try:
+        acc = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+        return acc and acc.is_running
+    finally:
+        db.close()
 async def start_user_listener(user_id, session_name, channels, client_store):
     while True:  # 🔥 NEVER STOP LOOP
         try:
             print(f"🟢 Listener ACTIVE for user {user_id}")
-            db_check = SessionLocal()
-
-            acc = db_check.query(TelegramAccount).filter_by(user_id=user_id).first()
-
-            if not acc or not acc.is_running:
+            if not is_running(user_id):
                 print(f"🛑 Stopping listener for {user_id}")
-                db_check.close()
-                return  # 🔥 EXIT LOOP COMPLETELY
+                return
 
-            db_check.close()
-            # ✅ END OF FIX
 
             client = TelegramClient(session_name, TELEGRAM_API_ID, TELEGRAM_API_HASH)
             await client.start()
@@ -73,7 +73,10 @@ async def start_user_listener(user_id, session_name, channels, client_store):
                 finally:
                     db.close()
 
-            await client.run_until_disconnected()
+            try:
+                await client.run_until_disconnected()
+            finally:
+                await client.disconnect()
 
         except Exception as e:
             print(f"🔥 Listener crashed for user {user_id}:", e)

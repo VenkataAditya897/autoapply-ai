@@ -13,6 +13,8 @@ from app.schemas.experience import ExperienceCreate
 from app.schemas.project import ProjectCreate
 from app.schemas.education import EducationCreate
 from app.models.certification import Certification
+from app.schemas.certification import CertificationCreate
+
 from app.services.context_builder import calculate_total_experience
 from app.models.profile import Profile
 router = APIRouter()
@@ -62,14 +64,19 @@ def add_education(edu: EducationCreate, db: Session = Depends(get_db), user_id: 
     db.commit()
     return {"message": "Education added"}
 
-
 @router.post("/certifications")
-def add_cert(cert, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
+def add_certification(
+    cert: CertificationCreate,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
     db_cert = Certification(
         user_id=user_id,
         name=cert.name,
         year=cert.year
     )
+
     db.add(db_cert)
     db.commit()
+
     return {"message": "Certification added"}

@@ -12,6 +12,12 @@ export default function Onboarding() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const years = Array.from({ length: 50 }, (_, i) => 1980 + i);
+  const [resume, setResume] = useState<File | null>(null);
+  const [certifications, setCertifications] = useState([
+    { name: "", year: "" },
+  ]);
 
   const [basic, setBasic] = useState({
     first_name: "",
@@ -48,6 +54,7 @@ export default function Onboarding() {
     },
   ]);
   const [gmail, setGmail] = useState<any>(null);
+
   useEffect(() => {
     if (!token) {
       router.push("/login");
@@ -60,6 +67,7 @@ export default function Onboarding() {
       })
       .catch(() => router.push("/login"));
   }, [token]);
+
   useEffect(() => {
     fetchGmailStatus();
   }, []);
@@ -72,6 +80,7 @@ export default function Onboarding() {
       console.log(e);
     }
   };
+
   const addSkill = (val: string) => {
     const vals = val
       .split(",")
@@ -86,20 +95,48 @@ export default function Onboarding() {
     setSkillInput("");
   };
 
+  // ── VALIDATION ──
+  const validateStep = (currentStep: number): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (currentStep === 1) {
+      if (!basic.first_name.trim())
+        newErrors.first_name = "First name is required";
+      if (!basic.last_name.trim())
+        newErrors.last_name = "Last name is required";
+      if (!basic.phone.trim()) newErrors.phone = "Phone number is required";
+      if (!basic.location.trim()) newErrors.location = "Location is required";
+    }
+
+    if (currentStep === 2) {
+      if (skills.length === 0) newErrors.skills = "Add at least one skill";
+    }
+
+    if (currentStep === 3) {
+    }
+
+    if (currentStep === 4) {
+      const validEdu = education.filter(
+        (e) => e.college.trim() && e.degree.trim(),
+      );
+
+      if (validEdu.length === 0)
+        newErrors.education =
+          "Add at least one education entry with college and degree";
+
+      if (!resume) newErrors.resume = "Resume is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) setStep((s) => s + 1);
+  };
+
   const handleSubmit = async () => {
-    if (!gmail?.connected) {
-      alert("Please connect Gmail before finishing onboarding");
-      return;
-    }
-    if (skills.length === 0) {
-      alert("Add at least one skill");
-      return;
-    }
-    const validEdu = education.filter((e) => e.college && e.degree);
-    if (validEdu.length === 0) {
-      alert("Add at least one education entry");
-      return;
-    }
+    if (!validateStep(4)) return;
     if (loading) return;
     setLoading(true);
     try {
@@ -114,10 +151,12 @@ export default function Onboarding() {
         if (!cleanExp.company || !cleanExp.role) continue;
         await api.post("/profile/experience", cleanExp);
       }
+      // Only submit projects that have a name
       for (const p of projects) {
-        if (!p.name) continue;
+        if (!p.name.trim()) continue;
         await api.post("/profile/projects", p);
       }
+      const validEdu = education.filter((e) => e.college && e.degree);
       for (const e of validEdu)
         await api.post("/profile/education", {
           college: e.college,
@@ -126,6 +165,26 @@ export default function Onboarding() {
           start_year: e.start_year,
           end_year: e.end_year,
         });
+      // ✅ certifications
+      for (const c of certifications) {
+        if (!c.name.trim()) continue;
+
+        await api.post("/profile/certifications", {
+          name: c.name,
+          year: c.year || null,
+        });
+      }
+      // ✅ Upload resume
+      if (resume) {
+        const formData = new FormData();
+        formData.append("file", resume);
+
+        await api.post("/profile/upload-resume", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
       router.push("/dashboard");
     } catch {
       alert("Error saving data");
@@ -134,52 +193,116 @@ export default function Onboarding() {
     }
   };
 
-  const inputStyle = {
+  // ── STYLES (matching profile page dark theme) ──
+  const inputStyle: React.CSSProperties = {
     width: "100%",
-    padding: "11px 16px",
-    border: "1.5px solid #E5E7EB",
-    borderRadius: "12px",
+    padding: "10px 14px",
+    border: "1px solid #2a2a2a",
+    borderRadius: "10px",
     fontSize: "0.875rem",
-    color: "#111827",
-    background: "white",
+    color: "#ffffff",
+    background: "#141414",
     outline: "none",
     transition: "all 0.2s",
     fontFamily: "var(--font-body)",
+    boxSizing: "border-box",
   };
+
+  const inputErrorStyle: React.CSSProperties = {
+    ...inputStyle,
+    border: "1px solid #ef4444",
+  };
+
   const focusIn = (e: any) => {
     e.currentTarget.style.borderColor = "#2563EB";
-    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)";
+    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)";
   };
   const focusOut = (e: any) => {
-    e.currentTarget.style.borderColor = "#E5E7EB";
+    e.currentTarget.style.borderColor = "#2a2a2a";
     e.currentTarget.style.boxShadow = "none";
   };
-  const labelStyle: React.CSSProperties = {
-    display: "block",
-    fontSize: "0.78rem",
-    fontWeight: 600,
-    color: "#374151",
-    marginBottom: "6px",
-  };
-  const connectGoogle = async () => {
-    try {
-      const res = await api.get("/auth/google/login"); // ✅ uses token automatically
-      window.location.href = res.data.url;
-    } catch (e) {
-      console.log(e);
-      alert("Login failed. Please login again.");
+  const focusOutError = (fieldName: string) => (e: any) => {
+    if (errors[fieldName]) {
+      e.currentTarget.style.borderColor = "#ef4444";
+      e.currentTarget.style.boxShadow = "none";
+    } else {
+      e.currentTarget.style.borderColor = "#2a2a2a";
+      e.currentTarget.style.boxShadow = "none";
     }
   };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    color: "#555",
+    marginBottom: "6px",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+  };
+
+  const optionalBadge = (
+    <span
+      style={{
+        fontSize: "0.65rem",
+        fontWeight: 600,
+        color: "#444",
+        background: "#1e1e1e",
+        border: "1px solid #2a2a2a",
+        borderRadius: "100px",
+        padding: "2px 7px",
+        marginLeft: "8px",
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+        verticalAlign: "middle",
+      }}
+    >
+      Optional
+    </span>
+  );
+
+  const cardStyle: React.CSSProperties = {
+    background: "#1a1a1a",
+    border: "1px solid #2a2a2a",
+    borderRadius: "14px",
+    padding: "24px",
+    marginBottom: "20px",
+  };
+
+  const sectionIconStyle = (bg: string): React.CSSProperties => ({
+    width: "28px",
+    height: "28px",
+    background: bg,
+    borderRadius: "8px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  });
+
+  const errorText = (msg: string) => (
+    <p
+      style={{
+        fontSize: "0.75rem",
+        color: "#ef4444",
+        marginTop: "6px",
+        fontWeight: 500,
+      }}
+    >
+      ⚠ {msg}
+    </p>
+  );
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#F9FAFB",
+        background: "#111111",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         padding: "40px 20px",
+        fontFamily: "var(--font-body)",
       }}
     >
       {/* Logo */}
@@ -193,16 +316,16 @@ export default function Onboarding() {
       >
         <div
           style={{
-            width: "36px",
-            height: "36px",
+            width: "32px",
+            height: "32px",
             background: "linear-gradient(135deg, #2563EB, #7C3AED)",
-            borderRadius: "10px",
+            borderRadius: "9px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
           </svg>
         </div>
@@ -210,11 +333,11 @@ export default function Onboarding() {
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 700,
-            fontSize: "1.1rem",
-            color: "#111827",
+            fontSize: "0.95rem",
+            color: "#ffffff",
           }}
         >
-          AutoApply<span style={{ color: "#2563EB" }}>.ai</span>
+          AutoApply<span style={{ color: "#60a5fa" }}>.ai</span>
         </span>
       </div>
 
@@ -228,31 +351,32 @@ export default function Onboarding() {
             marginBottom: "12px",
           }}
         >
-          <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#6B7280" }}>
+          <p style={{ fontSize: "0.8rem", fontWeight: 600, color: "#555" }}>
             Step {step} of {TOTAL_STEPS}
           </p>
-          <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#2563EB" }}>
+          <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#60a5fa" }}>
             {Math.round((step / TOTAL_STEPS) * 100)}% complete
           </p>
         </div>
         <div
           style={{
-            height: "6px",
-            background: "#E5E7EB",
+            height: "4px",
+            background: "#222",
             borderRadius: "100px",
             overflow: "hidden",
           }}
         >
           <div
-            className="progress-fill"
             style={{
               height: "100%",
               width: `${(step / TOTAL_STEPS) * 100}%`,
               borderRadius: "100px",
+              background: "linear-gradient(90deg, #2563EB, #7C3AED)",
+              transition: "width 0.3s ease",
             }}
           />
         </div>
-        {/* Steps indicator */}
+        {/* Step indicators */}
         <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
           {["Basic Info", "Skills", "Experience", "Education"].map((s, i) => (
             <div
@@ -264,11 +388,11 @@ export default function Onboarding() {
                 borderRadius: "10px",
                 background:
                   step === i + 1
-                    ? "#EFF6FF"
+                    ? "#1a1a2e"
                     : step > i + 1
-                      ? "#F0FDF4"
-                      : "white",
-                border: `1.5px solid ${step === i + 1 ? "#BFDBFE" : step > i + 1 ? "#BBF7D0" : "#E5E7EB"}`,
+                      ? "#0d1f14"
+                      : "#1a1a1a",
+                border: `1px solid ${step === i + 1 ? "#2563EB44" : step > i + 1 ? "#16a34a44" : "#2a2a2a"}`,
                 transition: "all 0.3s",
               }}
             >
@@ -278,10 +402,10 @@ export default function Onboarding() {
                   fontWeight: 700,
                   color:
                     step === i + 1
-                      ? "#2563EB"
+                      ? "#60a5fa"
                       : step > i + 1
-                        ? "#16A34A"
-                        : "#9CA3AF",
+                        ? "#34d399"
+                        : "#444",
                 }}
               >
                 {step > i + 1 ? "✓ " : ""}
@@ -297,37 +421,31 @@ export default function Onboarding() {
         style={{
           width: "100%",
           maxWidth: "680px",
-          background: "rgba(255,255,255,0.85)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.6)",
-          borderRadius: "24px",
-          padding: "40px",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.07)",
+          background: "#1a1a1a",
+          border: "1px solid #2a2a2a",
+          borderRadius: "20px",
+          padding: "36px",
         }}
       >
         {/* ── STEP 1: Basic Info ── */}
         {step === 1 && (
           <div>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 800,
-                fontSize: "1.5rem",
-                color: "#111827",
-                marginBottom: "6px",
-              }}
-            >
-              Let's start with the basics
-            </h2>
-            <p
-              style={{
-                color: "#6B7280",
-                fontSize: "0.875rem",
-                marginBottom: "28px",
-              }}
-            >
-              This information will be used to personalize your applications.
-            </p>
+            <div style={{ marginBottom: "28px" }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  color: "#ffffff",
+                  marginBottom: "6px",
+                }}
+              >
+                Let's start with the basics
+              </h2>
+              <p style={{ color: "#555", fontSize: "0.875rem" }}>
+                This information will be used to personalize your applications.
+              </p>
+            </div>
 
             <div
               style={{
@@ -340,28 +458,32 @@ export default function Onboarding() {
               <div>
                 <label style={labelStyle}>First Name</label>
                 <input
-                  style={inputStyle}
+                  style={errors.first_name ? inputErrorStyle : inputStyle}
                   placeholder="Venkata"
                   value={basic.first_name}
-                  onChange={(e) =>
-                    setBasic({ ...basic, first_name: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setBasic({ ...basic, first_name: e.target.value });
+                    setErrors({ ...errors, first_name: "" });
+                  }}
                   onFocus={focusIn}
                   onBlur={focusOut}
                 />
+                {errors.first_name && errorText(errors.first_name)}
               </div>
               <div>
                 <label style={labelStyle}>Last Name</label>
                 <input
-                  style={inputStyle}
+                  style={errors.last_name ? inputErrorStyle : inputStyle}
                   placeholder="Aditya"
                   value={basic.last_name}
-                  onChange={(e) =>
-                    setBasic({ ...basic, last_name: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setBasic({ ...basic, last_name: e.target.value });
+                    setErrors({ ...errors, last_name: "" });
+                  }}
                   onFocus={focusIn}
                   onBlur={focusOut}
                 />
+                {errors.last_name && errorText(errors.last_name)}
               </div>
             </div>
 
@@ -372,14 +494,14 @@ export default function Onboarding() {
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
                   style={{
-                    padding: "11px 12px",
-                    border: "1.5px solid #E5E7EB",
-                    borderRadius: "12px",
-                    background: "white",
+                    padding: "10px 12px",
+                    border: "1px solid #2a2a2a",
+                    borderRadius: "10px",
+                    background: "#141414",
                     fontSize: "0.875rem",
                     outline: "none",
                     cursor: "pointer",
-                    color: "#111827",
+                    color: "#ffffff",
                   }}
                 >
                   <option value="+91">🇮🇳 +91</option>
@@ -388,31 +510,41 @@ export default function Onboarding() {
                   <option value="+61">🇦🇺 +61</option>
                   <option value="+971">🇦🇪 +971</option>
                 </select>
-                <input
-                  style={{ ...inputStyle, flex: 1 }}
-                  placeholder="9876543210"
-                  value={basic.phone}
-                  onChange={(e) =>
-                    setBasic({ ...basic, phone: e.target.value })
-                  }
-                  onFocus={focusIn}
-                  onBlur={focusOut}
-                />
+                <div style={{ flex: 1 }}>
+                  <input
+                    style={
+                      errors.phone
+                        ? { ...inputErrorStyle, width: "100%" }
+                        : { ...inputStyle, width: "100%" }
+                    }
+                    placeholder="9876543210"
+                    value={basic.phone}
+                    onChange={(e) => {
+                      setBasic({ ...basic, phone: e.target.value });
+                      setErrors({ ...errors, phone: "" });
+                    }}
+                    onFocus={focusIn}
+                    onBlur={focusOut}
+                  />
+                  {errors.phone && errorText(errors.phone)}
+                </div>
               </div>
             </div>
 
             <div style={{ marginBottom: "16px" }}>
               <label style={labelStyle}>Location</label>
               <input
-                style={inputStyle}
+                style={errors.location ? inputErrorStyle : inputStyle}
                 placeholder="Hyderabad, India"
                 value={basic.location}
-                onChange={(e) =>
-                  setBasic({ ...basic, location: e.target.value })
-                }
+                onChange={(e) => {
+                  setBasic({ ...basic, location: e.target.value });
+                  setErrors({ ...errors, location: "" });
+                }}
                 onFocus={focusIn}
                 onBlur={focusOut}
               />
+              {errors.location && errorText(errors.location)}
             </div>
 
             <div
@@ -423,7 +555,7 @@ export default function Onboarding() {
               }}
             >
               <div>
-                <label style={labelStyle}>LinkedIn (optional)</label>
+                <label style={labelStyle}>LinkedIn {optionalBadge}</label>
                 <input
                   style={inputStyle}
                   placeholder="linkedin.com/in/you"
@@ -436,7 +568,7 @@ export default function Onboarding() {
                 />
               </div>
               <div>
-                <label style={labelStyle}>GitHub (optional)</label>
+                <label style={labelStyle}>GitHub {optionalBadge}</label>
                 <input
                   style={inputStyle}
                   placeholder="github.com/you"
@@ -455,40 +587,37 @@ export default function Onboarding() {
         {/* ── STEP 2: Skills ── */}
         {step === 2 && (
           <div>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 800,
-                fontSize: "1.5rem",
-                color: "#111827",
-                marginBottom: "6px",
-              }}
-            >
-              What are your skills?
-            </h2>
-            <p
-              style={{
-                color: "#6B7280",
-                fontSize: "0.875rem",
-                marginBottom: "28px",
-              }}
-            >
-              Type a skill and press Enter or comma. These power your AI
-              applications.
-            </p>
+            <div style={{ marginBottom: "28px" }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  color: "#ffffff",
+                  marginBottom: "6px",
+                }}
+              >
+                What are your skills?
+              </h2>
+              <p style={{ color: "#555", fontSize: "0.875rem" }}>
+                Type a skill and press Enter or comma. These power your AI
+                applications.
+              </p>
+            </div>
 
             <div
               style={{
                 minHeight: "120px",
                 padding: "14px",
-                border: "1.5px solid #E5E7EB",
-                borderRadius: "16px",
-                background: "white",
+                border: `1px solid ${errors.skills ? "#ef4444" : "#2a2a2a"}`,
+                borderRadius: "12px",
+                background: "#141414",
                 display: "flex",
                 flexWrap: "wrap",
                 gap: "8px",
                 alignContent: "flex-start",
                 cursor: "text",
+                transition: "border-color 0.2s",
               }}
               onClick={() => document.getElementById("skill-input")?.focus()}
             >
@@ -496,8 +625,8 @@ export default function Onboarding() {
                 <div
                   key={i}
                   style={{
-                    background: "#EFF6FF",
-                    border: "1px solid #BFDBFE",
+                    background: "rgba(37,99,235,0.12)",
+                    border: "1px solid rgba(96,165,250,0.25)",
                     borderRadius: "100px",
                     padding: "5px 12px",
                     display: "flex",
@@ -505,7 +634,7 @@ export default function Onboarding() {
                     gap: "6px",
                     fontSize: "0.8rem",
                     fontWeight: 600,
-                    color: "#2563EB",
+                    color: "#60a5fa",
                   }}
                 >
                   {s}
@@ -517,7 +646,7 @@ export default function Onboarding() {
                       background: "none",
                       border: "none",
                       cursor: "pointer",
-                      color: "#93C5FD",
+                      color: "#3b82f6",
                       padding: 0,
                       fontSize: "1rem",
                       lineHeight: 1,
@@ -536,7 +665,10 @@ export default function Onboarding() {
                     ? "e.g. Python, React, FastAPI..."
                     : "Add more..."
                 }
-                onChange={(e) => setSkillInput(e.target.value)}
+                onChange={(e) => {
+                  setSkillInput(e.target.value);
+                  setErrors({ ...errors, skills: "" });
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === ",") {
                     e.preventDefault();
@@ -554,19 +686,20 @@ export default function Onboarding() {
                   border: "none",
                   outline: "none",
                   fontSize: "0.875rem",
-                  color: "#111827",
+                  color: "#ffffff",
                   minWidth: "160px",
                   flex: 1,
                   background: "transparent",
                 }}
               />
             </div>
+            {errors.skills && errorText(errors.skills)}
 
             {skills.length > 0 && (
               <p
                 style={{
                   fontSize: "0.78rem",
-                  color: "#10B981",
+                  color: "#34d399",
                   marginTop: "8px",
                   fontWeight: 600,
                 }}
@@ -575,17 +708,18 @@ export default function Onboarding() {
               </p>
             )}
 
-            {/* Suggestions */}
             <div style={{ marginTop: "20px" }}>
               <p
                 style={{
-                  fontSize: "0.78rem",
-                  fontWeight: 600,
-                  color: "#9CA3AF",
+                  fontSize: "0.7rem",
+                  fontWeight: 700,
+                  color: "#444",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
                   marginBottom: "10px",
                 }}
               >
-                POPULAR SKILLS — click to add
+                Popular Skills — click to add
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {[
@@ -604,27 +738,32 @@ export default function Onboarding() {
                   .map((s) => (
                     <button
                       key={s}
-                      onClick={() => setSkills([...skills, s])}
+                      onClick={() => {
+                        setSkills([...skills, s]);
+                        setErrors({ ...errors, skills: "" });
+                      }}
                       style={{
-                        background: "#F9FAFB",
-                        border: "1.5px solid #E5E7EB",
+                        background: "#141414",
+                        border: "1px solid #2a2a2a",
                         borderRadius: "100px",
                         padding: "5px 12px",
                         fontSize: "0.8rem",
                         fontWeight: 500,
-                        color: "#6B7280",
+                        color: "#555",
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#EFF6FF";
-                        e.currentTarget.style.borderColor = "#BFDBFE";
-                        e.currentTarget.style.color = "#2563EB";
+                        e.currentTarget.style.background =
+                          "rgba(37,99,235,0.12)";
+                        e.currentTarget.style.borderColor =
+                          "rgba(96,165,250,0.25)";
+                        e.currentTarget.style.color = "#60a5fa";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#F9FAFB";
-                        e.currentTarget.style.borderColor = "#E5E7EB";
-                        e.currentTarget.style.color = "#6B7280";
+                        e.currentTarget.style.background = "#141414";
+                        e.currentTarget.style.borderColor = "#2a2a2a";
+                        e.currentTarget.style.color = "#555";
                       }}
                     >
                       + {s}
@@ -638,35 +777,45 @@ export default function Onboarding() {
         {/* ── STEP 3: Experience ── */}
         {step === 3 && (
           <div>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 800,
-                fontSize: "1.5rem",
-                color: "#111827",
-                marginBottom: "6px",
-              }}
-            >
-              Your work experience
-            </h2>
-            <p
-              style={{
-                color: "#6B7280",
-                fontSize: "0.875rem",
-                marginBottom: "28px",
-              }}
-            >
-              Add your relevant work history. This helps AI write better
-              applications.
-            </p>
+            <div style={{ marginBottom: "28px" }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  color: "#ffffff",
+                  marginBottom: "6px",
+                }}
+              >
+                Your work experience
+              </h2>
+              <p style={{ color: "#555", fontSize: "0.875rem" }}>
+                Add your work experience (optional for freshers) with company
+                and role is required.
+              </p>
+            </div>
+
+            {errors.experience && (
+              <div
+                style={{
+                  background: "rgba(239,68,68,0.08)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  borderRadius: "10px",
+                  padding: "12px 16px",
+                  marginBottom: "16px",
+                }}
+              >
+                {errorText(errors.experience)}
+              </div>
+            )}
 
             {experience.map((exp, i) => (
               <div
                 key={i}
                 style={{
-                  background: "#F9FAFB",
-                  border: "1.5px solid #E5E7EB",
-                  borderRadius: "16px",
+                  background: "#141414",
+                  border: "1px solid #2a2a2a",
+                  borderRadius: "14px",
                   padding: "20px",
                   marginBottom: "16px",
                   position: "relative",
@@ -683,9 +832,9 @@ export default function Onboarding() {
                   <h4
                     style={{
                       fontFamily: "var(--font-display)",
-                      fontWeight: 700,
-                      fontSize: "0.9rem",
-                      color: "#374151",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      color: "#888",
                     }}
                   >
                     Experience {i + 1}
@@ -696,13 +845,13 @@ export default function Onboarding() {
                         setExperience(experience.filter((_, idx) => idx !== i))
                       }
                       style={{
-                        background: "#FEF2F2",
-                        border: "1px solid #FCA5A5",
+                        background: "rgba(239,68,68,0.1)",
+                        border: "1px solid rgba(239,68,68,0.25)",
                         borderRadius: "8px",
                         padding: "4px 10px",
                         fontSize: "0.75rem",
                         fontWeight: 600,
-                        color: "#DC2626",
+                        color: "#ef4444",
                         cursor: "pointer",
                       }}
                     >
@@ -728,6 +877,7 @@ export default function Onboarding() {
                         const u = [...experience];
                         u[i].company = e.target.value;
                         setExperience(u);
+                        setErrors({ ...errors, experience: "" });
                       }}
                       onFocus={focusIn}
                       onBlur={focusOut}
@@ -743,6 +893,7 @@ export default function Onboarding() {
                         const u = [...experience];
                         u[i].role = e.target.value;
                         setExperience(u);
+                        setErrors({ ...errors, experience: "" });
                       }}
                       onFocus={focusIn}
                       onBlur={focusOut}
@@ -758,37 +909,34 @@ export default function Onboarding() {
                   }}
                 >
                   <div>
-                    <label style={labelStyle}>Start Date</label>
+                    <label style={labelStyle}>Start Date </label>
                     <input
+                      type="month"
                       style={inputStyle}
-                      placeholder="2022-01"
                       value={exp.start_date}
                       onChange={(e) => {
                         const u = [...experience];
                         u[i].start_date = e.target.value;
                         setExperience(u);
                       }}
-                      onFocus={focusIn}
-                      onBlur={focusOut}
                     />
                   </div>
                   <div>
-                    <label style={labelStyle}>End Date</label>
+                    <label style={labelStyle}>End Date </label>
                     <input
+                      type="month"
                       style={{
                         ...inputStyle,
-                        background: exp.current ? "#F3F4F6" : "white",
+                        background: exp.current ? "#111" : "#141414",
+                        color: exp.current ? "#555" : "#ffffff",
                       }}
-                      placeholder="2023-06"
-                      value={exp.current ? "Present" : exp.end_date}
+                      value={exp.current ? "" : exp.end_date}
                       disabled={exp.current}
                       onChange={(e) => {
                         const u = [...experience];
                         u[i].end_date = e.target.value;
                         setExperience(u);
                       }}
-                      onFocus={focusIn}
-                      onBlur={focusOut}
                     />
                   </div>
                 </div>
@@ -811,8 +959,8 @@ export default function Onboarding() {
                       width: "18px",
                       height: "18px",
                       borderRadius: "5px",
-                      border: exp.current ? "none" : "1.5px solid #D1D5DB",
-                      background: exp.current ? "#2563EB" : "white",
+                      border: exp.current ? "none" : "1.5px solid #333",
+                      background: exp.current ? "#2563EB" : "#141414",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -836,7 +984,7 @@ export default function Onboarding() {
                   <label
                     style={{
                       fontSize: "0.82rem",
-                      color: "#6B7280",
+                      color: "#555",
                       cursor: "pointer",
                     }}
                     onClick={() => {
@@ -889,11 +1037,11 @@ export default function Onboarding() {
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
-                background: "#EFF6FF",
-                border: "1.5px dashed #BFDBFE",
+                background: "transparent",
+                border: "1px dashed #2a2a2a",
                 borderRadius: "12px",
                 padding: "10px 20px",
-                color: "#2563EB",
+                color: "#60a5fa",
                 fontSize: "0.875rem",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -901,12 +1049,14 @@ export default function Onboarding() {
                 justifyContent: "center",
                 transition: "all 0.2s",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "#DBEAFE")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "#EFF6FF")
-              }
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(37,99,235,0.08)";
+                e.currentTarget.style.borderColor = "#2563EB44";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.borderColor = "#2a2a2a";
+              }}
             >
               + Add Another Experience
             </button>
@@ -916,64 +1066,75 @@ export default function Onboarding() {
         {/* ── STEP 4: Projects + Education ── */}
         {step === 4 && (
           <div>
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontWeight: 800,
-                fontSize: "1.5rem",
-                color: "#111827",
-                marginBottom: "6px",
-              }}
-            >
-              Projects & Education
-            </h2>
-            <p
-              style={{
-                color: "#6B7280",
-                fontSize: "0.875rem",
-                marginBottom: "28px",
-              }}
-            >
-              Almost done! Add your projects and education details.
-            </p>
+            <div style={{ marginBottom: "28px" }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  color: "#ffffff",
+                  marginBottom: "6px",
+                }}
+              >
+                Projects & Education
+              </h2>
+              <p style={{ color: "#555", fontSize: "0.875rem" }}>
+                Almost done! Education is required. Projects and Gmail
+                connection are required too.
+              </p>
+            </div>
 
             {/* Education */}
             <div style={{ marginBottom: "28px" }}>
               <h3
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                  color: "#111827",
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  color: "#ffffff",
                   marginBottom: "14px",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
+                  gap: "10px",
                 }}
               >
-                <span
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    background: "#EFF6FF",
-                    borderRadius: "8px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  🎓
+                <span style={sectionIconStyle("#1e1e3a")}>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#60a5fa"
+                    strokeWidth="2"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
                 </span>
                 Education
               </h3>
+
+              {errors.education && (
+                <div
+                  style={{
+                    background: "rgba(239,68,68,0.08)",
+                    border: "1px solid rgba(239,68,68,0.25)",
+                    borderRadius: "10px",
+                    padding: "12px 16px",
+                    marginBottom: "14px",
+                  }}
+                >
+                  {errorText(errors.education)}
+                </div>
+              )}
+
               {education.map((edu, i) => (
                 <div
                   key={i}
                   style={{
-                    background: "#F9FAFB",
-                    border: "1.5px solid #E5E7EB",
-                    borderRadius: "16px",
+                    background: "#141414",
+                    border: "1px solid #2a2a2a",
+                    borderRadius: "14px",
                     padding: "20px",
                     marginBottom: "14px",
                   }}
@@ -987,9 +1148,9 @@ export default function Onboarding() {
                   >
                     <span
                       style={{
-                        fontSize: "0.82rem",
-                        fontWeight: 700,
-                        color: "#6B7280",
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        color: "#555",
                       }}
                     >
                       Education {i + 1}
@@ -1003,7 +1164,7 @@ export default function Onboarding() {
                           background: "none",
                           border: "none",
                           cursor: "pointer",
-                          color: "#EF4444",
+                          color: "#ef4444",
                           fontSize: "0.78rem",
                           fontWeight: 600,
                         }}
@@ -1030,6 +1191,7 @@ export default function Onboarding() {
                           const u = [...education];
                           u[i].college = e.target.value;
                           setEducation(u);
+                          setErrors({ ...errors, education: "" });
                         }}
                         onFocus={focusIn}
                         onBlur={focusOut}
@@ -1045,13 +1207,16 @@ export default function Onboarding() {
                           const u = [...education];
                           u[i].degree = e.target.value;
                           setEducation(u);
+                          setErrors({ ...errors, education: "" });
                         }}
                         onFocus={focusIn}
                         onBlur={focusOut}
                       />
                     </div>
                     <div>
-                      <label style={labelStyle}>GPA / Percentage</label>
+                      <label style={labelStyle}>
+                        GPA / Percentage {optionalBadge}
+                      </label>
                       <input
                         style={inputStyle}
                         placeholder="8.5"
@@ -1066,34 +1231,44 @@ export default function Onboarding() {
                       />
                     </div>
                     <div>
-                      <label style={labelStyle}>Start Year</label>
-                      <input
+                      <label style={labelStyle}>
+                        Start Year {optionalBadge}
+                      </label>
+                      <select
                         style={inputStyle}
-                        placeholder="2021"
                         value={edu.start_year}
                         onChange={(e) => {
                           const u = [...education];
                           u[i].start_year = e.target.value;
                           setEducation(u);
                         }}
-                        onFocus={focusIn}
-                        onBlur={focusOut}
-                      />
+                      >
+                        <option value="">Select Year</option>
+                        {years.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
-                      <label style={labelStyle}>End Year</label>
-                      <input
+                      <label style={labelStyle}>End Year {optionalBadge}</label>
+                      <select
                         style={inputStyle}
-                        placeholder="2025"
                         value={edu.end_year}
                         onChange={(e) => {
                           const u = [...education];
                           u[i].end_year = e.target.value;
                           setEducation(u);
                         }}
-                        onFocus={focusIn}
-                        onBlur={focusOut}
-                      />
+                      >
+                        <option value="">Select Year</option>
+                        {years.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1116,11 +1291,11 @@ export default function Onboarding() {
                   display: "flex",
                   alignItems: "center",
                   gap: "6px",
-                  background: "#EFF6FF",
-                  border: "1.5px dashed #BFDBFE",
+                  background: "transparent",
+                  border: "1px dashed #2a2a2a",
                   borderRadius: "12px",
                   padding: "10px 20px",
-                  color: "#2563EB",
+                  color: "#60a5fa",
                   fontSize: "0.875rem",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -1128,64 +1303,54 @@ export default function Onboarding() {
                   justifyContent: "center",
                   transition: "all 0.2s",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "#DBEAFE")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "#EFF6FF")
-                }
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(37,99,235,0.08)";
+                  e.currentTarget.style.borderColor = "#2563EB44";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "#2a2a2a";
+                }}
               >
                 + Add Education
               </button>
             </div>
 
             {/* Projects */}
-            <div>
+            <div style={{ marginBottom: "28px" }}>
               <h3
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                  color: "#111827",
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  color: "#ffffff",
                   marginBottom: "14px",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
+                  gap: "10px",
                 }}
               >
-                <span
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    background: "#F0FDF4",
-                    borderRadius: "8px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  🚀
+                <span style={sectionIconStyle("#0d1f14")}>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#34d399"
+                    strokeWidth="2"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
                 </span>
-                Projects{" "}
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    fontWeight: 600,
-                    color: "#9CA3AF",
-                    marginLeft: "4px",
-                  }}
-                >
-                  Optional
-                </span>
+                Projects {optionalBadge}
               </h3>
               {projects.map((proj, i) => (
                 <div
                   key={i}
                   style={{
-                    background: "#F9FAFB",
-                    border: "1.5px solid #E5E7EB",
-                    borderRadius: "16px",
+                    background: "#141414",
+                    border: "1px solid #2a2a2a",
+                    borderRadius: "14px",
                     padding: "20px",
                     marginBottom: "14px",
                   }}
@@ -1199,9 +1364,9 @@ export default function Onboarding() {
                   >
                     <span
                       style={{
-                        fontSize: "0.82rem",
-                        fontWeight: 700,
-                        color: "#6B7280",
+                        fontSize: "0.78rem",
+                        fontWeight: 600,
+                        color: "#555",
                       }}
                     >
                       Project {i + 1}
@@ -1215,7 +1380,7 @@ export default function Onboarding() {
                           background: "none",
                           border: "none",
                           cursor: "pointer",
-                          color: "#EF4444",
+                          color: "#ef4444",
                           fontSize: "0.78rem",
                           fontWeight: 600,
                         }}
@@ -1286,11 +1451,11 @@ export default function Onboarding() {
                   display: "flex",
                   alignItems: "center",
                   gap: "6px",
-                  background: "#F0FDF4",
-                  border: "1.5px dashed #BBF7D0",
+                  background: "transparent",
+                  border: "1px dashed #2a2a2a",
                   borderRadius: "12px",
                   padding: "10px 20px",
-                  color: "#16A34A",
+                  color: "#34d399",
                   fontSize: "0.875rem",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -1298,44 +1463,81 @@ export default function Onboarding() {
                   justifyContent: "center",
                   transition: "all 0.2s",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "#DCFCE7")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "#F0FDF4")
-                }
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(52,211,153,0.06)";
+                  e.currentTarget.style.borderColor = "#34d39944";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "#2a2a2a";
+                }}
               >
                 + Add Project
               </button>
             </div>
-            {/* 🔥 GMAIL CONNECTION */}
-            <div style={{ marginBottom: "28px" }}>
-              <h3
+            {/* Certifications */}
+            <div style={{ marginTop: "20px" }}>
+              <label style={labelStyle}>Certifications {optionalBadge}</label>
+
+              {certifications.map((c, i) => (
+                <div
+                  key={i}
+                  style={{ display: "flex", gap: "10px", marginBottom: "10px" }}
+                >
+                  <input
+                    placeholder="AWS Certified Developer"
+                    value={c.name}
+                    onChange={(e) => {
+                      const updated = [...certifications];
+                      updated[i].name = e.target.value;
+                      setCertifications(updated);
+                    }}
+                    style={inputStyle}
+                  />
+
+                  <input
+                    placeholder="2023"
+                    value={c.year}
+                    onChange={(e) => {
+                      const updated = [...certifications];
+                      updated[i].year = e.target.value;
+                      setCertifications(updated);
+                    }}
+                    style={{ ...inputStyle, width: "120px" }}
+                  />
+                </div>
+              ))}
+
+              <button
+                onClick={() =>
+                  setCertifications([...certifications, { name: "", year: "" }])
+                }
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                  marginBottom: "10px",
+                  background: "transparent",
+                  border: "1px dashed #2a2a2a",
+                  borderRadius: "10px",
+                  padding: "8px 16px",
+                  color: "#60a5fa",
+                  cursor: "pointer",
                 }}
               >
-                📧 Connect Gmail (Required)
-              </h3>
+                + Add Certification
+              </button>
+            </div>
+            {/* Resume Upload */}
+            <div style={{ marginTop: "20px" }}>
+              <label style={labelStyle}>
+                Resume <span style={{ color: "#ef4444" }}>*</span>
+              </label>
 
-              {gmail?.connected ? (
-                <p style={{ color: "green", fontWeight: 600 }}>
-                  ✅ Connected: {gmail.email}
-                </p>
-              ) : (
-                <button onClick={connectGoogle}>Connect Gmail</button>
-              )}
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setResume(e.target.files?.[0] || null)}
+                style={{ ...inputStyle, padding: "8px" }}
+              />
 
-              {!gmail?.connected && (
-                <p
-                  style={{ color: "red", marginTop: "8px", fontSize: "0.8rem" }}
-                >
-                  ⚠️ You must connect Gmail before finishing
-                </p>
-              )}
+              {!resume && errors.resume && errorText(errors.resume)}
             </div>
           </div>
         )}
@@ -1345,20 +1547,20 @@ export default function Onboarding() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "36px",
+            marginTop: "32px",
             paddingTop: "24px",
-            borderTop: "1px solid #F3F4F6",
+            borderTop: "1px solid #222",
           }}
         >
           <button
             onClick={() => setStep((s) => s - 1)}
             disabled={step === 1}
             style={{
-              padding: "11px 24px",
-              borderRadius: "12px",
-              border: "1.5px solid #E5E7EB",
-              background: step === 1 ? "#F9FAFB" : "white",
-              color: step === 1 ? "#D1D5DB" : "#374151",
+              padding: "10px 24px",
+              borderRadius: "10px",
+              border: "1px solid #2a2a2a",
+              background: "transparent",
+              color: step === 1 ? "#333" : "#888",
               fontSize: "0.875rem",
               fontWeight: 600,
               cursor: step === 1 ? "not-allowed" : "pointer",
@@ -1366,6 +1568,16 @@ export default function Onboarding() {
               alignItems: "center",
               gap: "6px",
               transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              if (step !== 1) {
+                e.currentTarget.style.background = "#1a1a1a";
+                e.currentTarget.style.color = "#ffffff";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = step === 1 ? "#333" : "#888";
             }}
           >
             <svg
@@ -1383,10 +1595,10 @@ export default function Onboarding() {
 
           {step < TOTAL_STEPS ? (
             <button
-              onClick={() => setStep((s) => s + 1)}
+              onClick={handleNext}
               style={{
-                padding: "11px 28px",
-                borderRadius: "12px",
+                padding: "10px 28px",
+                borderRadius: "10px",
                 background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                 border: "none",
                 color: "white",
@@ -1396,19 +1608,10 @@ export default function Onboarding() {
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
-                boxShadow: "0 4px 14px rgba(37,99,235,0.4)",
                 transition: "all 0.2s",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-1px)";
-                e.currentTarget.style.boxShadow =
-                  "0 6px 20px rgba(37,99,235,0.5)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 14px rgba(37,99,235,0.4)";
-              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
             >
               Continue
               <svg
@@ -1427,24 +1630,23 @@ export default function Onboarding() {
               onClick={handleSubmit}
               disabled={loading}
               style={{
-                padding: "11px 28px",
-                borderRadius: "12px",
+                padding: "10px 28px",
+                borderRadius: "10px",
                 background: loading
-                  ? "#93C5FD"
+                  ? "#1e3a2e"
                   : "linear-gradient(135deg, #10B981, #059669)",
                 border: "none",
-                color: "white",
+                color: loading ? "#34d39966" : "white",
                 fontSize: "0.875rem",
                 fontWeight: 700,
                 cursor: loading ? "not-allowed" : "pointer",
                 display: "flex",
                 alignItems: "center",
                 gap: "6px",
-                boxShadow: loading ? "none" : "0 4px 14px rgba(16,185,129,0.4)",
                 transition: "all 0.2s",
               }}
             >
-              {loading ? "Saving..." : "Finish Setup 🎉"}
+              {loading ? "Saving..." : "Finish Setup ✓"}
             </button>
           )}
         </div>

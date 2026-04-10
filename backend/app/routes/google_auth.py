@@ -6,6 +6,8 @@ from app.core.deps import get_current_user
 from app.models.google_account import GoogleAccount
 import requests
 import os
+from app.models.telegram_account import TelegramAccount
+from worker_telegram import active_sessions
 router = APIRouter()
 
 CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
@@ -81,3 +83,39 @@ def gmail_status(
         "connected": acc is not None,
         "email": acc.email if acc else None
     }
+@router.post("/google/disconnect")
+async def disconnect_google(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    acc = db.query(GoogleAccount).filter_by(user_id=user_id).first()
+
+    if not acc:
+        return {"message": "Already disconnected"}
+
+    # ✅ STEP 1: DELETE GOOGLE
+    db.delete(acc)
+
+    # ✅ STEP 2: STOP TELEGRAM LISTENER
+    tg = db.query(TelegramAccount).filter_by(user_id=user_id).first()
+
+    if tg:
+        tg.is_running = False
+
+    db.commit()
+
+    # ✅ STEP 3: FORCE DISCONNECT TELEGRAM CLIENT
+    client = active_sessions.get(user_id)
+
+    if client and client != "starting":
+        try:
+            await client.disconnect()
+            print("🛑 Telegram stopped due to Google disconnect")
+        except Exception as e:
+            print("❌ Error stopping telegram:", e)
+
+    # ✅ STEP 4: REMOVE FROM MEMORY
+    if user_id in active_sessions:
+        del active_sessions[user_id]
+
+    return {"message": "disconnected"}
