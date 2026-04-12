@@ -7,11 +7,31 @@ export default function Others() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [page, setPage] = useState(0);
   const perPage = 8;
+  const [typeFilter, setTypeFilter] = useState("all");
+  const typeCounts = {
+    all: data.length,
+    phone: data.filter((d) => d.type === "phone").length,
+    link: data.filter((d) => d.type === "link").length,
+    form: data.filter((d) => d.type === "google_form").length,
+    linkedin: data.filter((d) => d.type === "linkedin").length, // ✅ ADD
+
+    unknown: data.filter((d) => !d.type || d.type === "unknown").length,
+  };
+  const markCompleted = async (id: number) => {
+    try {
+      await API.post(`/analytics/complete/${id}`);
+
+      // remove instantly from UI (no wait for refresh)
+      setData((prev) => prev.filter((item) => item.id !== id));
+    } catch (e) {
+      console.error("Failed to mark complete");
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await API.get("/analytics/emails");
+        const res = await API.get("/analytics/others");
         setData(res.data);
       } catch {}
     };
@@ -19,8 +39,18 @@ export default function Others() {
     const i = setInterval(load, 3000);
     return () => clearInterval(i);
   }, []);
+  const [filter, setFilter] = useState("pending"); // all | pending | completed
 
-  const others = data.filter((d) => d.status !== "sent");
+  const others = data.filter((d) => {
+    // status filter
+    if (filter === "pending" && d.status !== "pending") return false;
+    if (filter === "completed" && d.status !== "sent") return false;
+
+    // type filter
+    if (typeFilter !== "all" && d.type !== typeFilter) return false;
+
+    return true;
+  });
   const paged = others.slice(page * perPage, (page + 1) * perPage);
   const totalPages = Math.ceil(others.length / perPage);
 
@@ -59,6 +89,55 @@ export default function Others() {
         <p style={{ color: "#555", fontSize: "0.85rem" }}>
           Non-email job messages — phone numbers, forms, and links.
         </p>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "16px",
+          alignItems: "center",
+        }}
+      >
+        {["all", "pending", "completed"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "8px",
+              border: "1px solid #2a2a2a",
+              background: filter === f ? "#ffffff" : "#1a1a1a",
+              color: filter === f ? "#000" : "#888",
+              fontSize: "0.75rem",
+              cursor: "pointer",
+            }}
+          >
+            {f.toUpperCase()}
+          </button>
+        ))}
+
+        {/* ✅ TYPE DROPDOWN */}
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          style={{
+            padding: "6px 10px",
+            borderRadius: "8px",
+            background: "#1a1a1a",
+            border: "1px solid #2a2a2a",
+            color: "#888",
+            fontSize: "0.75rem",
+            cursor: "pointer",
+          }}
+        >
+          <option value="all">ALL ({typeCounts.all})</option>
+          <option value="phone">PHONE ({typeCounts.phone})</option>
+          <option value="link">LINK ({typeCounts.link})</option>
+          <option value="google_form">FORM ({typeCounts.form})</option>
+          <option value="linkedin">LINKEDIN ({typeCounts.linkedin})</option>
+
+          <option value="unknown">UNKNOWN ({typeCounts.unknown})</option>
+        </select>
       </div>
 
       <div
@@ -356,6 +435,26 @@ export default function Others() {
                                     ✉️ {d.emails.join(", ")}
                                   </p>
                                 )}
+                              </div>
+                              <div style={{ marginTop: "16px" }}>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // ✅ IMPORTANT
+                                    markCompleted(d.id);
+                                  }}
+                                  style={{
+                                    padding: "8px 14px",
+                                    borderRadius: "8px",
+                                    background: "#22c55e",
+                                    color: "#000",
+                                    border: "none",
+                                    fontSize: "0.75rem",
+                                    fontWeight: 600,
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  Mark as Completed
+                                </button>
                               </div>
                             </div>
                           </div>

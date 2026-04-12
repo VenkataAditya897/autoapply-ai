@@ -9,7 +9,7 @@ class Job(Base):
     id = Column(Integer, primary_key=True)
 
     user_id = Column(Integer, nullable=True)
-    message_id = Column(Integer)
+    message_id = Column(Integer, unique=True)
 
     type = Column(String)
 

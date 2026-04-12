@@ -18,9 +18,8 @@ SESSION_DIR = "sessions"
 os.makedirs(SESSION_DIR, exist_ok=True)
 
 router = APIRouter()
-r = redis.Redis(host="localhost", port=6379, db=0)
-
-
+r = redis.Redis.from_url(os.getenv("REDIS_URL"))
+print("REDIS URL:", os.getenv("REDIS_URL"))
 # ---------------- SEND OTP ----------------
 @router.post("/send-otp")
 async def send_otp(phone: str,user_id: int = Depends(get_current_user)):

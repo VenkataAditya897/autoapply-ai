@@ -12,5 +12,6 @@ class TelegramMessage(Base):
     message_text = Column(Text)
     source = Column(String)
     raw_data = Column(JSON)  # ✅ IMPORTANT CHANGE
+    telegram_id = Column(Integer, unique=True, index=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)

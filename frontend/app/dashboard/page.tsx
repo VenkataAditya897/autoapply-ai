@@ -88,8 +88,8 @@ export default function Dashboard() {
       ),
     },
     {
-      label: "Emails Sent",
-      value: data.emails?.sent ?? 0,
+      label: "Emails",
+      value: `${data.emails?.sent ?? 0} / ${data.emails?.total ?? 0}`,
       icon: (
         <svg
           width="16"
@@ -104,26 +104,10 @@ export default function Dashboard() {
         </svg>
       ),
     },
+
     {
-      label: "Emails Pending",
-      value: data.emails?.pending ?? 0,
-      icon: (
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#555"
-          strokeWidth="2"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-      ),
-    },
-    {
-      label: "Links Pending",
-      value: data.links?.pending ?? 0,
+      label: "Links",
+      value: `${data.links?.sent ?? 0} / ${data.links?.total ?? 0}`,
       icon: (
         <svg
           width="16"
@@ -139,8 +123,8 @@ export default function Dashboard() {
       ),
     },
     {
-      label: "Forms Pending",
-      value: data.forms?.pending ?? 0,
+      label: "Forms",
+      value: `${data.forms?.sent ?? 0} / ${data.forms?.total ?? 0}`,
       icon: (
         <svg
           width="16"
@@ -158,8 +142,8 @@ export default function Dashboard() {
       ),
     },
     {
-      label: "Phones Pending",
-      value: data.phones?.pending ?? 0,
+      label: "Phones",
+      value: `${data.phones?.sent ?? 0} / ${data.phones?.total ?? 0}`,
       icon: (
         <svg
           width="16"
@@ -170,6 +154,24 @@ export default function Dashboard() {
           strokeWidth="2"
         >
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.37 1.78.72 2.6a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.48-1.48a2 2 0 0 1 2.11-.45c.82.35 1.7.6 2.6.72A2 2 0 0 1 22 16.92z" />
+        </svg>
+      ),
+    },
+    {
+      label: "LinkedIn",
+      value: `${data.linkedin?.sent ?? 0} / ${data.linkedin?.total ?? 0}`,
+      icon: (
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#555"
+          strokeWidth="2"
+        >
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
+          <rect x="2" y="9" width="4" height="12" />
+          <circle cx="4" cy="4" r="2" />
         </svg>
       ),
     },

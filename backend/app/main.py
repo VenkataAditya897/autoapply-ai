@@ -17,6 +17,8 @@ from app.routes import telegram
 from app.routes import analytics
 from app.models import google_account
 from app.routes import google_auth
+from fastapi.staticfiles import StaticFiles
+from app.routes import linkedin
 
 app = FastAPI()
 app.add_middleware(
@@ -26,6 +28,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # 👇 CREATE ALL TABLES HERE
 Base.metadata.create_all(bind=engine)
 
@@ -35,6 +38,8 @@ app.include_router(profile_details.router, prefix="/profile")
 app.include_router(telegram.router, prefix="/telegram")
 app.include_router(analytics.router, prefix="/analytics")
 app.include_router(google_auth.router, prefix="/auth")
+app.include_router(linkedin.router, prefix="/linkedin", tags=["LinkedIn"])
+
 
 @app.get("/health")
 def health_check():

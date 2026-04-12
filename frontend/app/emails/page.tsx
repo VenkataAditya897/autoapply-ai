@@ -64,40 +64,25 @@ export default function Emails() {
             AI-generated job applications sent on your behalf.
           </p>
         </div>
-        <div
-          style={{
-            display: "flex",
-            gap: "4px",
-            background: "#1a1a1a",
-            border: "1px solid #2a2a2a",
-            borderRadius: "10px",
-            padding: "3px",
-          }}
-        >
-          {["all", "sent", "pending"].map((f) => (
-            <button
-              key={f}
-              onClick={() => {
-                setFilter(f);
-                setPage(0);
-              }}
-              style={{
-                padding: "6px 14px",
-                borderRadius: "8px",
-                border: "none",
-                cursor: "pointer",
-                background: filter === f ? "#2a2a2a" : "transparent",
-                color: filter === f ? "#ffffff" : "#555",
-                fontSize: "0.8rem",
-                fontWeight: filter === f ? 600 : 500,
-                transition: "all 0.15s",
-                textTransform: "capitalize",
-              }}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+      </div>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        {["all", "pending", "completed"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "8px",
+              border: "1px solid #2a2a2a",
+              background: filter === f ? "#ffffff" : "#1a1a1a",
+              color: filter === f ? "#000" : "#888",
+              fontSize: "0.75rem",
+              cursor: "pointer",
+            }}
+          >
+            {f.toUpperCase()}
+          </button>
+        ))}
       </div>
 
       {/* Table */}
@@ -254,11 +239,25 @@ export default function Emails() {
                       {/* Attachment */}
                       <td style={{ padding: "14px 16px" }}>
                         {e.attachment_path ? (
-                          <div
+                          <a
+                            href={`http://localhost:8000/${e.attachment_path}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(ev) => ev.stopPropagation()}
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "5px",
+                              gap: "6px",
+                              textDecoration: "none",
+                              cursor: "pointer",
+                            }}
+                            onMouseEnter={(ev) => {
+                              (ev.currentTarget as HTMLElement).style.opacity =
+                                "0.8";
+                            }}
+                            onMouseLeave={(ev) => {
+                              (ev.currentTarget as HTMLElement).style.opacity =
+                                "1";
                             }}
                           >
                             <svg
@@ -266,17 +265,26 @@ export default function Emails() {
                               height="13"
                               viewBox="0 0 24 24"
                               fill="none"
-                              stroke="#888"
+                              stroke="#60a5fa" // 🔥 nicer highlight color
                               strokeWidth="2"
                             >
                               <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                             </svg>
+
                             <span
-                              style={{ fontSize: "0.75rem", color: "#888" }}
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#60a5fa", // 🔥 clickable color
+                                fontWeight: 500,
+                                maxWidth: "140px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
                             >
                               {e.attachment_path.split("/").pop()}
                             </span>
-                          </div>
+                          </a>
                         ) : (
                           <span style={{ color: "#333", fontSize: "0.75rem" }}>
                             —

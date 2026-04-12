@@ -1,7 +1,7 @@
 import redis
 import json
 
-r = redis.Redis(host="localhost", port=6379, db=0)
-
+import os
+r = redis.Redis.from_url(os.getenv("REDIS_URL"))
 def push_job(job_id):
     r.lpush("email_queue", json.dumps({"job_id": job_id}))

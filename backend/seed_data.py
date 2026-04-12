@@ -14,7 +14,7 @@ try:
     # ---------------- USER ----------------
     user = User(
         email="venkataaditya897@gmail.com",
-        password=hash_password("123456")
+        password=hash_password("aditya01")  # ✅ UPDATED
     )
     db.add(user)
     db.commit()
@@ -28,29 +28,19 @@ try:
         phone="8978057144",
         location="Hyderabad",
         linkedin="https://www.linkedin.com/in/venkata-aditya-gopalapuram-05442626a/",
-        github="https://github.com/VenkataAditya897"
+        github="https://github.com/VenkataAditya897",
+        total_experience="0 years 6 months"  # ✅ IMPORTANT
     )
     db.add(profile)
 
     # ---------------- SKILLS ----------------
     skills = [
-        # Languages
         "Python", "Java", "C++", "JavaScript", "SQL", "HTML", "CSS",
-
-        # Frameworks
         "FastAPI", "Flask", "React", "Node.js", "Express.js", "Laravel",
-
-        # Databases
         "MySQL", "PostgreSQL", "MongoDB",
-
-        # DevOps
         "Docker", "Linux", "Git", "GitHub",
-
-        # AI/ML
         "RAG", "LangChain", "CrewAI", "Prompt Engineering",
         "Vector Databases", "Pandas", "TensorFlow", "OpenCV",
-
-        # Concepts
         "REST APIs", "Microservices", "Automation",
         "API Design", "OOP", "DSA"
     ]
@@ -63,7 +53,7 @@ try:
         user_id=user.id,
         college="Sreenidhi Institute of Science & Technology",
         degree="B.Tech",
-        gpa="8.10/10",
+        gpa="8.10 / 10.0",
         start_year="2021",
         end_year="2025"
     )
@@ -74,12 +64,13 @@ try:
         user_id=user.id,
         company="Tekisho Infotech Pvt Ltd",
         role="AI Innovation Associate Intern",
-        start_date="2021-12",
-        end_date="2025-08",
+        start_date="2026-03",
+        end_date="Present",
         description="""
 Worked on Generative AI and Agentic AI systems using CrewAI and LangChain.
+Built and tested multi-agent workflows and RAG pipelines.
 Developed backend APIs and integrations for real-world AI applications.
-Contributed to RAG pipelines, prompt engineering, and vector database solutions.
+Contributed to prompt engineering and vector database solutions.
 """
     )
     db.add(exp1)
@@ -90,75 +81,73 @@ Contributed to RAG pipelines, prompt engineering, and vector database solutions.
         company="Smart Ecom Tech",
         role="Software Developer AI Intern",
         start_date="2025-09",
-        end_date="Present",
+        end_date="2026-01",
         description="""
-Built AI backend systems using Python, OpenAI, and Gemini.
-Developed scalable APIs, automation pipelines, and Shopline apps.
-Worked on scraping, data processing, and Linux deployments.
-Optimized AI pipelines using prompt engineering and batching.
+Built AI-powered backend systems using OpenAI and Gemini for image generation and automation.
+Developed scalable APIs and automation pipelines using Python, Node.js, and Laravel.
+Improved performance through batch processing, prompt optimization, and pipeline efficiency.
 """
     )
     db.add(exp2)
 
-    # ---------------- PROJECT 1 ----------------
-    proj1 = Project(
-        user_id=user.id,
-        name="Secure Attendance System (QR + Face Recognition)",
-        description="""
-Flask-based system using QR and face recognition.
-Used OpenCV and face_recognition for authentication.
-Dashboard to track attendance and prevent proxy.
-""",
-        tech="Flask, OpenCV, Python"
-    )
-    db.add(proj1)
+    # ---------------- PROJECTS ----------------
+    # ---------------- PROJECTS ----------------
+    projects = [
+        Project(
+            user_id=user.id,
+            name="AutoApply AI – Telegram Job Outreach Agent",
+            description="""
+    Built an AI-powered system that monitors Telegram channels and generates personalized cold emails using LLMs.
+    Implemented an asynchronous pipeline with Telethon for real-time message ingestion and automated outreach.
+    Designed modular services for classification, parsing, and email automation.
+    """,
+            tech="Python, FastAPI, Telethon, Redis, LLMs"
+        ),
+        Project(
+            user_id=user.id,
+            name="Multi-Agent CRM Intake Automation System",
+            description="""
+    Developed a multi-agent system to process emails, PDFs, and structured data for CRM workflows.
+    Used LangChain and LLMs for intelligent classification and agent orchestration.
+    Implemented memory tracking and modular architecture for scalable automation.
+    """,
+            tech="LangChain, Flask, AI Agents"
+        ),
+        Project(
+            user_id=user.id,
+            name="AI-Powered E-commerce Automation Pipeline",
+            description="""
+    Built an automated backend pipeline to generate product content, images, and mockups using AI APIs.
+    Designed a multi-service architecture orchestrating generation, mockup rendering, and publishing.
+    Implemented scheduling and pipeline orchestration for end-to-end automation at scale.
+    """,
+            tech="Python, Node.js, PHP, Shopify API, AI APIs"
+        )
+    ]
 
-    # ---------------- PROJECT 2 ----------------
-    proj2 = Project(
-        user_id=user.id,
-        name="Multi-Agent CRM Intake Automation",
-        description="""
-Multi-agent system using Flask and LangChain.
-Processes emails, PDFs, and JSON automatically.
-Implements routing, memory tracking, and logging.
-""",
-        tech="LangChain, Flask, AI Agents"
-    )
-    db.add(proj2)
-
-    # ---------------- PROJECT 3 ----------------
-    proj3 = Project(
-        user_id=user.id,
-        name="MedCare AI Healthcare Platform",
-        description="""
-AI health platform with Google Fit integration.
-OCR + NLP for medical reports.
-Multi-agent AI for insights.
-Microservices using Flask and Node.js.
-""",
-        tech="Flask, Node.js, OCR, NLP"
-    )
-    db.add(proj3)
+    for p in projects:
+        db.add(p)
 
     # ---------------- CERTIFICATIONS ----------------
-    cert1 = Certification(
-        user_id=user.id,
-        name="AWS Academy – Cloud Virtual Internship (EduSkills / AICTE)",
-        year="2023"
-    )
+    certs = [
+        Certification(
+            user_id=user.id,
+            name="AWS Academy – Cloud Virtual Internship (EduSkills / AICTE)",
+            year="2023"
+        ),
+        Certification(
+            user_id=user.id,
+            name="Bharat Intern – Machine Learning Virtual Internship",
+            year="2023"
+        )
+    ]
 
-    cert2 = Certification(
-        user_id=user.id,
-        name="Bharat Intern – Machine Learning Virtual Internship",
-        year="2023"
-    )
-
-    db.add(cert1)
-    db.add(cert2)
+    for c in certs:
+        db.add(c)
 
     db.commit()
 
-    print("✅ FULL RESUME DATA SEEDED SUCCESSFULLY")
+    print("✅ FULL RESUME SEEDED SUCCESSFULLY")
 
 finally:
     db.close()

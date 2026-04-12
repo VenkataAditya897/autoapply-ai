@@ -1,0 +1,2345 @@
+=== TELEGRAM DEBUG LOG ===
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-12 04:44:40+00:00
+TEXT:
+Hiring: Product Intern (Bangalore) 
+
+
+We’re building AI workflows across chat and voice to replace manual human work. If you’re curious, data-driven, and love shipping fast, this might be for you.
+
+What you’ll do: 🛠️ Dive into data, uncover insights, and turn them into features
+⚡ Experiment fast and double down on what works
+
+Location: Manyata Tech Park (in-office)
+Duration: 6 months
+
+No prior PM experience needed—ownership > credentials
+Apply here: https://docs.google.com/forms/d/e/1FAIpQLSegH9ni9J9lmDfKtJO7FiH22GAFs5RVIKf_S3UUuuZ4lEmGqg/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-12 04:32:22+00:00
+TEXT:
+Software / AI Engineer Intern – Healthcare Startup (Bangalore)
+Hiring Software/AI Engineer Interns to work directly on applied AI at one of India’s leading healthcare startups.
+What you’ll do:
+• Build voice AI agents that call thousands of leads in Hindi and reactivate them
+• Ship AI-native apps from scratch (document verification, patient communication, smart routing)
+• Design LLM pipelines to classify 10,000+ support tickets and uncover hidden insights
+• Work on real-world AI systems in production
+What they’re looking for:
+• Hands-on experience with AI APIs (OpenAI, Claude, etc.)
+• Strong Python / JavaScript / TypeScript skills
+• Proof of work (GitHub, deployed apps, demos)
+• Open to CS students, MBA students who code, and self-taught builders
+Duration: 3–6 months
+Location: Hybrid (Bangalore)
+Apply here: https://docs.google.com/forms/d/e/1FAIpQLSft3BZ8fwYAYlSKcBRXAdyC7eqpwDUvMXgcg46QoSSrp7YbyA/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-12 04:08:59+00:00
+TEXT:
+
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-12 04:05:50+00:00
+TEXT:
+We're hiring a Frontend Engineer at Diagna (India-based, Founding Team). 
+
+At Diagna, we're building AI that automates the administrative chaos in the US specialty clinics. 
+
+This role sits at the intersection of frontend, AI pipelines, and orchestration of AI agents for automation. You'll be building interfaces and workflows that directly touch clinic operations. 
+
+We're looking for someone with a atleast 3+ years of experience. While strong frontend is the baseline, really looking for someone who can go full stack when needed. If you've built something from 0 to 1 at a startup, that's a big plus.
+
+React / TypeScript is the baseline. Beyond that, we care more about how you think than what's on your resume.
+
+- Early stage, high ownership, real problems. 
+- Opportunity to build the tech-stack from scratch.
+- Perks include: ESOPs, competitive salary, and front row seat to build AI solutions doing real work.
+
+If this sounds interesting - send your CV and a real note about why this role fits for you to my cofounder Sansiddh Jain - sansiddh@diagna.ai
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 17:27:56+00:00
+TEXT:
+Company - PayU
+Role - Associate Product Manager - User Experience
+Batch - 2021/2022/2023/2024/2025
+CTC - 20 - 35 LPA
+Location - Mumbai / Noida
+
+Job Details:
+• Lead User Experience initiatives. Optimize funnels to drive conversions and build products customers love.
+
+Skills / Qualification:
+• Bachelor's or Master's degree in STEM-related fields
+• 1+ years of product management experience in financial services, fintech, or growth-focused products
+• Proven problem-solver with ownership mindset
+• Attention to detail
+
+How to Apply:
+📩 To apply, send the below to vishakha.sonde@payufin.com
+1. Your CV
+2. A one-pager describing an instance where you solved a problem demonstrating ownership and attention to detail
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 17:26:54+00:00
+TEXT:
+Company - Xcelore
+Role - JAVA Trainee
+Batch - 2025/2026
+CTC - 3-5 LPA (PPO)
+Location - Remote
+
+Eligibility Criteria:
+• Batch: 2025 – 2026 pass-outs only
+• Candidates who have not previously applied at Xcelore for these roles
+
+How to Apply:
+https://docs.google.com/forms/d/e/1FAIpQLScEjMsYCEPWGnvgA7Xp64f88x8EpthhZg-C0-esg7ZibImwIw/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 17:26:46+00:00
+TEXT:
+Company - Resillion
+Role - Operations Intern
+Batch - 2025/2026
+Stipend - 20,000 - 30,000/month
+Location - Bengaluru
+
+Job Details:
+• Looking for enthusiastic and driven Operations Interns to join our team for a 2-month internship.
+
+Eligibility:
+• B.Com / BBA graduates (Pass out: 2025/2026)
+• If you’re eager to gain hands-on experience in operations and kickstart your career, we’d love to hear from you!
+
+How to Apply:
+📩 Send your details to: ajith.chowdhary@resillion.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 17:14:26+00:00
+TEXT:
+Final Call: React Native Interns (Immediate Joiners | On-Site, HSR)
+
+We’re opening a few final slots for interns who can join immediately (within 7–10 days) and are ready to build in a fast-paced startup environment.
+
+This is not a beginner role.
+You should have already built something using React Native, even a small project works.
+
+At Aforro™, you won’t just learn, you’ll ship.
+Real product. Real users. Real responsibility.
+
+If you’re serious about building,
+Send your resume + “Why should we choose you?” to: rachit@aforro.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 14:15:37+00:00
+TEXT:
+Promanage is Hiring | Walk-in Drive for Fresher Full Stack Developer 🚀
+
+Promanage is looking for enthusiastic and talented freshers to join our team as Full Stack Developers. If you're passionate about web development and eager to kickstart your career, this is your opportunity!
+
+Eligibility Criteria:
+B.E / B.Tech in Computer Science* 
+Strong understanding of core web technologies
+
+Required Skill Set:
+HTML, CSS, JavaScript
+Angular or React JS
+Node.js
+MySQL
+
+Walk-in Details:
+Date: 13th April 2026 and 15th April 2026
+Time: 10:00 AM to 12:30 PM
+
+Venue:
+ 1A, No. 143, RMZ Millenia Business Park,
+ 2nd Floor, Campus, Dr. MGR Main Road,
+ Kandhanchavadi, Perungudi,
+ Chennai, Tamil Nadu – 600096
+
+Note:
+ Bring your updated resume.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 11:56:37+00:00
+TEXT:
+EXL is hiring freshers!
+
+Job Description — GenAI & Python Developer
+Experience : 0-6 Months
+Locations: Noida, Bangalore (India)
+Work Mode: Office
+
+How to Apply: Please share your updated profile with me at Niteesh.Pant@exlservice.com (Please mention your current location in the subject line)
+
+About the Role
+We are seeking a passionate GenAI and Python Developers with 0 to 6 months of experience. The ideal candidate should have strong fundamentals in Python, AI/ML concepts, and practical exposure to Generative AI tools, models, or frameworks. You will work in an Agile environment, collaborating closely with cross-functional teams to build and deploy AI-driven solutions.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 11:56:03+00:00
+TEXT:
+We’re Hiring – currently building our core team for an exciting venture and are looking for passionate individuals to join us at an early stage.
+
+Open Roles:
+• Application Developer (Android & ios)
+• Full-Stack Developer
+• DevOps & Cloud Engineer
+• Support Roles
+
+*We’re looking for people who:*
+• Enjoy building products from scratch
+• Have strong problem-solving skills
+• Are eager to learn and grow in a fast-paced startup environment
+
+This is an opportunity to work closely on real-world systems, contribute to product decisions, and be part of a high-impact team from day one.
+
+*Compensation Structure:*
+• For freshers/students: Performance-based internship with potential full-time conversion
+• For experienced candidates: Compensation (CTC) will be aligned based on performance and impact during the initial evaluation period
+
+📩 If you're interested, please fill form below : https://docs.google.com/forms/d/e/1FAIpQLSdMLOcjadzUpgo-fvEEVdYoUYKuxde6OAxUKZsXMdWhZxGARg/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 10:22:11+00:00
+TEXT:
+𝐡𝐢𝐫𝐢𝐧𝐠: 𝐀𝐈 𝐄𝐧𝐠𝐢𝐧𝐞𝐞𝐫𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐧 (𝐅𝐮𝐥𝐥 𝐒𝐭𝐚𝐜𝐤 + 𝐀𝐈)
+
+Most students are still:
+ • Watching tutorials
+ • Collecting certificates
+ • Building the same 3 projects
+
+Meanwhile, a small group is:
+ • Using AI tools daily
+ • Shipping real products
+ • Getting 10x faster
+We’re hiring from that second group.
+
+We’re building AI-powered products and modern engineering systems and we want interns who want to build, not just learn.
+
+If you:
+• Use ChatGPT / Copilot / Cursor while coding
+• Like working across frontend, backend, and AI
+ This is for you.
+
+𝐖𝐡𝐚𝐭 𝐲𝐨𝐮’𝐥𝐥 𝐝𝐨:
+• Build end-to-end features
+• Integrate LLMs, APIs, AI workflows
+• Work on cloud + scalable systems
+• Use AI tools to move faster than traditional devs
+• Contribute to real product decisions
+
+𝐖𝐞 𝐜𝐚𝐫𝐞 𝐚𝐛𝐨𝐮𝐭:
+• Strong basics in JavaScript / Python
+• Familiarity with React, APIs, backend logic
+• Understanding of LLMs / embeddings
+• Ability to use AI tools effectively while building
+
+𝐁𝐨𝐧𝐮𝐬:
+• You’ve built and shipped projects
+• Experience with Next.js / Cloud / AI APIs
+• Exposure to RAG / LangChain / OpenAI / Gemini
+
+𝐖𝐡𝐚𝐭 𝐲𝐨𝐮 𝐠𝐞𝐭:
+• Real experience building AI products
+• Exposure to startup execution
+• Fast learning + mentorship
+• Potential full-time role
+
+𝐇𝐨𝐰 𝐭𝐨 𝐚𝐩𝐩𝐥𝐲:
+Email: deepesh.naini2k11@gmail.com
+Subject: AI Engineering Intern
+Include:
+• Resume
+• GitHub / portfolio
+• 1–2 project links
+• A short note:
+How have you used AI tools in your development workflow?
+
+We don’t care about certificates.
+We care about what you’ve built.
+If you’ve used AI to create something real,
+𝐰𝐞 𝐰𝐚𝐧𝐭 𝐭𝐨 𝐬𝐞𝐞 𝐢𝐭.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 09:42:21+00:00
+TEXT:
+🚀 Deqode is Hiring | Java Developer
+
+ 📍 Location: Indore
+🏢 Work Mode: 5 Days Office
+💼 Experience: 2+ Years
+
+We are looking for a passionate Java Developer with strong hands-on experience in backend development and modern architectures.
+
+🔧 Key Requirements:
+• Strong experience in hashtag#Java, hashtag#Spring_Boot
+• Hands-on experience with hashtag#Microservices architecture
+• Good understanding of REST APIs and backend development best practices
+• Exposure to hashtag#AI technologies is a plus
+• Strong problem-solving and coding skills
+
+📩 Interested candidates can share their CV at najain@deqode.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 09:15:21+00:00
+TEXT:
+GeeksforGeeks is looking for freelance mentors to conduct weekend offline classes in the following domains:
+
+Technologies:
+ • MERN
+ • Data Structures
+ • Data Science / Data Analytics
+ • Java Backend
+ • DevOps
+
+Requirement:
+ Minimum 2+ years of relevant industry experience
+ Strong subject knowledge with the ability to explain concepts clearly
+
+Locations (Offline): Bangalore, Hyderabad, Kolkata, Pune
+
+If you are passionate about teaching and mentoring learners, feel free to apply - https://docs.google.com/forms/d/e/1FAIpQLSdo6xDiqWxu4nMaB41xtw5qZZKqDETOwSjqeishiDuemk7e1A/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 07:59:01+00:00
+TEXT:
+🏢 Company: Neo Cerebrum Solutions
+
+👤 Role: Software Intern
+📍 Location: Noida
+🎓 Batch: 2024 / 2025 / 2026
+💰 Stipend: ₹20,000 – ₹30,000/month
+
+⚙️ Skills:
+• Java, Spring
+• SQL (Oracle/Postgres)
+• React / Node (Plus)
+
+📩 Send your resume: kanika.goel@cerebrumsolutions.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 07:58:50+00:00
+TEXT:
+🏢 Company: DigiPlus IT
+
+👤 Role: Software Engineer Intern
+📍 Location: Mumbai
+🎓 Batch: 2026 / 2027
+💰 Stipend: ₹20,000 – ₹30,000/month
+
+⚙️ Skills:
+• React, Node.js
+• MongoDB, APIs
+• Debugging & Deployment Basics
+
+📩 Send your resume: careers@digiplusit.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 07:58:41+00:00
+TEXT:
+? Company: QueueBuster POS
+
+👤 Role: AI Intern (PPO)
+📍 Location: Noida (Onsite)
+🎓 Batch: 2025 / 2026 / 2027
+💰 Stipend: ₹20,000 – ₹30,000/month
+
+⚙️ Key Skills:
+• Python, ML/NLP, APIs
+• LLMs, LangChain, AutoGPT, CrewAI
+
+📈 Why Apply:
+• Work on AI agents & real automation systems
+• Strong hands-on LLM + enterprise exposure
+• PPO opportunity
+
+⏳ Duration: 2 Months
+
+📩 Send your resume: jobs@queuebuster.co
+(Subject: AI-Agent Development Intern – Your Name)
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 07:57:08+00:00
+TEXT:
+We’re Hiring: UI/UX Intern
+
+Looking to kickstart your design career? Join our team and turn ideas into seamless digital experiences.
+Location: Noida, Sector 142
+Role: UI/UX Intern
+If you’re passionate about design, user research, and creating intuitive interfaces, we’d love to hear from you.
+Apply now or tag someone who’d be a great fit.
+
+Send your CV  Surabhi.shah@deliverit.net.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 07:57:05+00:00
+TEXT:
+Hackerearth is hiring Technical Content Engineer Intern 
+Batch: 2025, 2026 
+Location: India 
+Apply Link : https://hackerearth.applytojob.com/apply/vlAPfJndMr/Technical-Content-Engineer-Intern?source=LILI
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:18:04+00:00
+TEXT:
+Hiring Backend Engineers (SDE 2) at Cult (Cure.fit)
+
+📍 Location: Bengaluru | 🏢 On-site
+
+ 💼 Experience: 2+ Years
+
+We’re looking for passionate Backend Engineers (SDE 2) who love building scalable systems and solving real-world problems at scale.
+
+🔧 What you’ll work on:
+ • Building highly scalable, robust backend services
+ • Designing efficient REST APIs with strong fundamentals
+ • Working on performance tuning, reliability, and system design
+ • Collaborating across teams to deliver seamless user experiences
+
+🧠 What we’re looking for:
+ • 2+ years of backend experience in a product-based company
+ • Strong proficiency in Node.js / TypeScript or Java / Spring Boot
+ • Solid understanding of SQL + NoSQL (Redis/MongoDB)
+ • Ability to think through latency, failures & system trade-offs
+ • Ownership mindset – from design to post-launch
+
+✨ Bonus: Interest in leveraging AI tools to accelerate development
+If you’re someone who enjoys solving complex problems and building at scale, we’d love to connect!
+
+📩 Apply now- https://docs.google.com/forms/d/e/1FAIpQLSfUmTkllHsd1anUOwYfQqfrof8MpC5HnRDxemNU0wDPDFk9Kg/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:17:23+00:00
+TEXT:
+Join Rupeek as a Tech Intern – for Technocrat Internship program
+
+Rupeek is excited to offer a fantastic opportunity for Tech Interns to be part of our renowned Technocrat Internship Program 2026.
+
+🔹 Eligibility:
+MCA Graduates (2025/ 2026 batch)
+Strong object-oriented design and coding skills (C/C++ and/or Java)
+Stipend - 25,000 Per month
+
+🔹 Apply Now: https://docs.google.com/forms/d/e/1FAIpQLScxSVVbG3RIsP5_0e274KuccGWDFOY5kFKuGGntVEmjW5lk3g/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:16:50+00:00
+TEXT:
+We’re Hiring a Business Analyst!
+
+📍 Ahmedabad | 🏢 On-site
+🏢 Universal Software
+
+At Universal Software, we don’t just build software — we build solutions that matter. We’re looking for a Business Analyst who can think strategically, communicate clearly, and drive real business value.
+
+💡 What You’ll Do:
+• Transform business needs into clear technical requirements
+• Act as a bridge between clients and the development team
+• Analyze processes and suggest improvements
+• Be part of projects that create real impact
+
+🎯 What We’re Looking For:
+• Experience in IT as a Business Analyst
+• Strong problem-solving and communication skills
+• Understanding of Agile & SDLC
+• A proactive and ownership-driven mindset
+
+🌱 Why You’ll Love Working With Us:
+• Growth-focused culture
+• Hands-on learning environment
+• Opportunity to work on diverse projects
+
+📩 Interested? Let’s connect!
+Send your resume to: nidhid@universal-software.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:16:29+00:00
+TEXT:
+𝗨𝗿𝗴𝗲𝗻𝘁 𝗛𝗶𝗿𝗶𝗻𝗴 | Data Analyst | Data Scientist | 𝗝𝗼𝗶𝗻 𝘁𝗵𝗲 BestPeers 𝗧𝗲𝗮𝗺 | 🚨
+
+At BestPeers, we are expanding our talented team and looking for passionate professionals who are ready to take the next step in their careers. If you have the required experience and are excited to work in a fast-growing tech environment, we would love to hear from you!
+
+💼 𝗢𝗽𝗲𝗻 𝗣𝗼𝘀𝗶𝘁𝗶𝗼𝗻𝘀
+
+🔹 Data Analyst
+• Experience: 2+ Years
+• Location: Indore
+
+🔹 Data Scientist
+• Experience: 2+ Years
+• Location: Indore
+
+📍 𝗪𝗼𝗿𝗸 𝗠𝗼𝗱𝗲: Work From Office (WFO)
+
+✨ 𝗪𝗵𝘆 𝗝𝗼𝗶𝗻 𝗕𝗲𝘀𝘁𝗣𝗲𝗲𝗿𝘀?
+• Work with a dynamic and innovative team
+• Opportunity to work on impactful projects
+• A collaborative environment that encourages growth and learning
+
+📩 𝗛𝗼𝘄 𝘁𝗼 𝗔𝗽𝗽𝗹𝘆
+Interested candidates can share their updated resume at:
+Myadav@bestpeers.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:16:11+00:00
+TEXT:
+Hiring!!!
+
+Role- AI Engineer(Immediate joiners preferred)
+Exp- 1-3 years 
+Qualification- Btech only 
+Location: Sector 142, Noida (Work from Office only)
+
+If you're passionate about building scalable backend systems and ready to kickstart your tech journey - we’d love to hear from you!
+
+Pls fill this form- https://docs.google.com/forms/d/e/1FAIpQLSezAaMPw_b-hG7YDwS8Mxd8SU5DH6WUYgO7INQ_UflOaoKIwA/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:15:36+00:00
+TEXT:
+Hiring! | ReactJs Developer - 3 to 5 yrs |
+ 
+🔹 Experience: 3–5 years
+🔹 Notice Period: Immediate to 15 Days
+🔹 Location: Baner, Pune
+
+Mandate Skills:
+1. Strong experience in React JS
+2. Hands-on experience with MERN Stack (MongoDB, Express.js, React, Node.js)
+3. Experience with Redux / Context API
+4. Knowledge of cloud platforms (AWS/Azure)
+5. Familiarity with Docker or CI/CD pipelines
+6. Basic understanding of testing frameworks
+
+Interested ones, please share your updated resume on latika.shinde@pratititech.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:15:25+00:00
+TEXT:
+Walk-in Drive | Freshers Hiring | DevOps & Python (FastAPI) Developers
+
+📢 Start Your Career in Tech with an Exciting Opportunity!
+We are hiring freshers who are passionate about DevOps and Python (FastAPI) development. Join us for a walk-in drive and take your first step into the IT industry 🚀
+
+💼 Open Roles:
+🔹  DevOps Engineer (Fresher)
+ 🔹 Python Developer – FastAPI (Fresher)
+
+📍 Location: Lower Parel, Mumbai
+📅 Walk-in Dates: 13 April 2026 – 17 April 2026
+ ⏰ Time: 11:00 AM to 2:00 PM
+
+📌 Address:
+ 41, 4th Floor, A-Wing,Todi Industrial Estate, Sun Mills Compound Rd,
+ Lower Parel, Mumbai – 400013
+ 
+Role: DevOps Engineer
+Key Responsibilities:
+Implement CI/CD pipelines
+Manage system upgrades and deployments
+Monitor and maintain infrastructure
+Support development and automation tools
+Ensure smooth collaboration with development teams
+Maintain highly available production systems
+Required Skills:
+Hands-on with Docker, Jenkins & monitoring tools
+Good knowledge of Linux commands
+Understanding of SDLC
+Experience with cloud-based Linux servers
+Basic networking knowledge
+Good to Have:
+AWS / Azure knowledge
+SonarQube / Azure DevOps exposure
+
+ Role: Python Developer (FastAPI)
+Key Responsibilities:
+Develop RESTful APIs using FastAPI
+Work with ORM (SQLAlchemy/Django ORM)
+Implement data validation using Pydantic
+Integrate third-party APIs
+Write clean and scalable code
+Collaborate with frontend & DevOps teams
+Required Skills:
+Strong Python fundamentals
+Experience with FastAPI
+Knowledge of SQLAlchemy (preferred)
+Hands-on with Pydantic
+Understanding of REST APIs, JSON & HTTP
+Familiarity with Git
+
+🎯 Eligibility:
+✔️ Freshers passouts: 2021 to 2025 Btach Only 
+ ✔️ B.E / B.Tech / BSc  / MCA / MSC or relevant field
+ ✔️ Strong analytical and problem-solving skills
+
+🎁 Why Join Us?
+✨ Real-time project exposure
+ ✨ Industry mentorship
+ ✨ Career growth opportunities
+ ✨ Hands-on learning environment
+
+📄 Documents to Carry:
+Updated Resume
+Laptop
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:15:09+00:00
+TEXT:
+🚀 We’re Hiring: MIS Executive (Remote)
+
+We are looking for a detail-oriented MIS Executive to manage reporting and data operations at EarnPati.
+
+📊 Role Includes:
+Preparing daily/weekly/monthly reports
+Data collection, cleaning & validation
+Managing MIS dashboards
+Generating insights from data
+Coordinating with internal teams
+
+🛠 Skills Required:
+Strong Excel (VLOOKUP, Pivot, formulas)
+Google Sheets knowledge
+Good analytical & problem-solving ability
+High attention to detail
+
+➕ Good to Have:
+Automation (Apps Script / Macros)
+Power BI or similar tools
+
+👨‍💻 Experience: 0–1 years (Freshers with strong Excel skills can apply)
+ 📍 Location: Remote
+
+If you’re interested or know someone who fits, feel free to apply or refer.
+📩 Share your resume at connect@earnpati.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:14:28+00:00
+TEXT:
+We’re Hiring: Data Scientist – Machine Learning | Digitap.ai
+📍 Bangalore | 💼 1+ Years Experience
+At Digitap.ai, we build AI/ML solutions for credit risk, fraud detection, and customer onboarding for leading digital businesses.
+
+🔹 What You’ll Do:
+• Assist in building ML models for credit scoring, fraud detection & risk prediction
+• Work on data cleaning, preprocessing & feature engineering
+• Support model evaluation, experimentation & optimization
+• Contribute to ML pipelines & model monitoring
+
+🔹 Core Skills:
+Python, Machine Learning, NumPy, Pandas, Scikit-learn, SQL
+
+🔹 Good to Have:
+Fintech / Risk Analytics exposure, MLOps basics, Git
+💡 Great opportunity to learn, grow, and work on real-world ML problems!
+If you’re passionate about solving real-world problems with data and want high ownership in a fast-paced startup, let’s connect- sneh.sharma@digitap.ai
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:14:05+00:00
+TEXT:
+We have two openings for UI developers at Securonix. Please apply if you're interested. (Pune or Bangalore - 3 days/week hybrid)
+
+As part of this role, you will be working on challenging problems which range from performance improvements to AI integrations and experiments. The application is a mix of React and other technologies for the UI.
+
+If you take ownership and want to make an impact, please apply!
+
+Senior React developer: https://lnkd.in/g6kBvE84
+React developer: https://lnkd.in/gU7i-_rw
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:13:05+00:00
+TEXT:
+Walk in Interview Acquaint Softtech Private Limited !!!
+
+Date for Interview: 11- 04-26.
+Timing for the interview: 11:00 a.m. to 4:00 p.m.
+
+Location: Ahmedabad
+Experience : 3+ years
+
+1.) Mern Developer
+2.) Laravel Developer
+3.) Devops Engineer
+4.) BDE- Upwork Bidder.
+
+Reference are highly appreciated.
+Excellent salary package for skilled person.
+
+Interested one share resume at madhuri@acquaintsoft.com or can reach at 9978455050 for more details.
+
+Acquaint softtech PVT LTD
+203/204, Shapath-II, Near Silver Leaf Hotel, Opp. Rajpath Club, SG Highway, Ahmedabad-380054, Gujarat
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-11 06:08:09+00:00
+TEXT:
+Sattvam Soft is looking for a Full Stack Developer 👩‍💻
+
+🎓 Internship + Job
+
+ 💡 Skills: Node.js, React.js, MongoDB, SQL, Sequelize.
+ ⚡ Immediate Joiners
+👩 Female candidates preferred
+
+📲 Send your resume NOW: +91 90230 35988
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 17:14:03+00:00
+TEXT:
+🚀 We're Hiring for Multiple Positions!
+(Immediate Joiners Needed!)
+ 
+ 1️⃣ DotNet 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫:- Experience : 2-3 Years (Work-from-Office)
+ 2️⃣ iOS Developer:- Experience : 1 – 1.5 Years (Work-from-Office)
+ 3️⃣ BDE :- Experience : 0 - 2 Years (Online Bidder) (WFH or WFO)
+ 
+ 📍 Location: Mohali (Phase-8A)
+ 💼 Experience: hashtag#Freshers to 2+ Years
+ ⏰ Shift: (Day Shift)
+ 
+ 📩 How to Apply?
+Share your cv at sanjot@brucode.com or 7009008101.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 17:00:55+00:00
+TEXT:
+Company - Qualcomm
+Role - SWE Intern
+Batch - 2025/2026
+Stipend - 80,000/month
+Location - PAN India
+
+JD:
+https://careers.qualcomm.com/careers/job/446714421802?domain=qualcomm.com&hl=en
+
+📧 Interested? Send your resume to rohitbashetwar@gmail.com
+(Please mention the Job ID in the subject)
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 14:19:27+00:00
+TEXT:
+We’re hiring engineers at Even (Backend, App)
+
+If building things that people depend on every day sounds exciting to you, this might be for you.
+
+We’re looking for hands-on engineers (3–8 years) who take pride in their code, enjoy solving non-trivial problems, and take end-to-end ownership. Whether it's giving feedback to a coworker or an AI agent, attention to detail and clear thinking are key.
+
+What you’ll work on:
+Building the core systems behind healthcare delivery. This includes EHRs, real-time decision tools for doctors, and user experiences that do not make patients want to give up halfway through.
+
+Our ideal background:
+💻 Backend → Strong experience in Go / C++
+📱 App → Experience building production apps (Flutter / Android / iOS / React Native)
+
+📍 Indiranagar, Bangalore (in-office) - https://lnkd.in/gbcF_AQr
+💰 Compensation: https://lnkd.in/gm5CP2vV
+
+If this sounds like something you’d enjoy:
+🔗 Backend: https://docs.google.com/forms/d/e/1FAIpQLSdVQbw17JBaWzcJXvRVpY0ubWi1_FPErlhkuyoM25saJ_dqug/viewform
+🔗 App: https://docs.google.com/forms/d/e/1FAIpQLScU5Mu2OHIFsC0Z4VO4px4ecgdgzk5DXPZD0o8VJAZxR0Y6zA/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 14:15:16+00:00
+TEXT:
+Hiring: Data Science Intern (Applied GenAI) @ United Airlines
+
+Are you a student or recent grad who wants to do more than just “learn” in your internship? If you’re ready to ship real code and make an impact at scale—this is your boarding call. ✈️
+
+What You’ll Do: You won’t be tweaking models on toy datasets. You’ll help us build production-grade AI systems that impact millions of travelers worldwide. Think beyond “just another RAG wrapper”—you’ll architect Agent-to-Agent (A2A) ecosystems, implement Model Context Protocol (MCP), and push the limits of SOTA models from Anthropic, Google, and OpenAI.
+
+Why It Matters: Our work is making waves:
+🔗 BusinessTraveller: How United Uses AI to Keep Passengers Informed During Weather Delays (https://lnkd.in/gNTGGtgP)
+🔗 TechCrunch: How United Airlines Uses AI to Make Flying Easier (https://lnkd.in/gQAJqfkS)
+🔗 Forbes: United Airlines Turns to Generative AI for Flight Delays (https://lnkd.in/gsasH3VF)
+
+Who We’re Looking For:
+- Strong Python fundamentals (non-negotiable)
+- Hands-on experience with GenAI tools (LangChain, LangGraph, CrewAI, AutoGen, etc.)
+- A builder mindset (show us your GitHub!)
+- Available for 6 months full-time (Gurugram-based)
+
+📩 Ready to take off? Apply here: https://docs.google.com/forms/d/e/1FAIpQLSfDzaswpcP3qGel-dLzAPIhn1TcorlfWwanRvZJSKHsvwuwpQ/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 14:10:39+00:00
+TEXT:
+hiring Software/AI Engineer interns to work directly with me on applied AI at one of India's leading healthcare startups.
+
+Examples of what you will do: 
+•⁠ ⁠Build voice AI agents that call thousands of leads in Hindi and reactivate them. Ship AI-native apps from scratch to production, with intelligent document verification, automated patient communication, and smart routing. 
+•⁠ ⁠⁠Design LLM pipelines that classify 10,000+ support tickets semantically and surface problems the company didn't know it had.
+•⁠ ⁠⁠This is software engineering where AI is the core tool, both in what you build and how you build it.
+
+What I'm looking for:
+
+•⁠ ⁠You've built something with AI APIs (Claude, OpenAI, etc.), not just chatted with them
+•⁠ ⁠Python and/or JavaScript/TypeScript
+•⁠ ⁠You ship. Show me a GitHub, a deployed app, a demo
+•⁠ ⁠⁠Engineering/ CS students, MBA students who code, self-taught builders, all welcome
+
+3-6 months, hybrid in Bangalore.
+
+Link- https://docs.google.com/forms/d/e/1FAIpQLSft3BZ8fwYAYlSKcBRXAdyC7eqpwDUvMXgcg46QoSSrp7YbyA/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 13:49:04+00:00
+TEXT:
+Beetexting Hiring Alert: Walk-In Interviews for Quality Assurance Trainees (0–1 Years Experience) 🚀
+Start your QA career with a product company!
+
+Looking to kickstart your career in the IT industry?
+
+Beetexting is excited to announce a walk-in drive for freshers and early-career candidates (0–1 years' experience) who are eager to build their career in Quality Assurance. Join a fast-growing, VC-backed product-based SaaS company headquartered in the USA, with a cutting-edge development center in Hyderabad, India.
+
+🔍 Role Details:
+Position: Quality Assurance Trainee (Manual & Automation – Exposure Preferred)
+Experience: 0–1 Years
+Education: B.Tech in CSE (minimum 75% aggregate)
+Eligible Batch: 2025 & 2026 graduates preferred
+⚡ Immediate joiners preferred
+
+💻 Required Skills:
+✅ Knowledge in Quality Assurance (mandatory)
+✅ Good communication skills
+➕ Basic understanding of automation tools (e.g., Selenium) is a plus
+
+📚 Program Structure:
+🔹 6-month trainee period
+🔹 Full-time conversion based on performance
+🔹 Mentorship from experienced engineers
+🔹 Exposure to real-time product development & modern Quality Assurance practices
+
+📝 Selection Process:
+✍️ Written Test (English, Aptitude & Core CSE Concepts)
+ 📊 Candidates will be shortlisted based on test scores
+ 💬 Shortlisted candidates will proceed to the Interview round
+
+📅 Walk-In Interview Details:
+Date: April 18 & 19, 2026 (Saturday & Sunday)
+Time: 10:00 AM – 05:00 PM (IST)
+Location: Beetexting Software Pvt Ltd, Felix by BIGWORKS, 1st Floor, Plot No.14, Vittal Rao Nagar, Madhapur, Hyderabad, Telangana – 500081
+Location Link: https://lnkd.in/gex6Yuhx
+
+🧳 What to Bring:
+✅ Updated resume
+
+🎯 How to Apply:
+In-Person: Attend the walk-in interview on 18th or 19th April, 2026
+Email: Send your resume to sri.sidda@beetexting.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:49:27+00:00
+TEXT:
+Hiring: Data Analytics Intern | Fibe.India (Formerly EarlySalary) | Pune
+Fibe.India (Formerly EarlySalary) is looking for a passionate Data Analytics Intern to join our growing team!
+What we’re looking for:
+ 🔹 Strong proficiency in SQL
+ 🔹 Good analytical and problem-solving skills
+ 🔹 Knowledge with data visualization tools like Power BI or Tableau
+ 🔹 Basic knowledge of Python (added advantage)
+ 🔹 Eagerness to learn, explore, and work with real-world data
+
+If you’re someone who loves uncovering insights from data and wants to kickstart your career in analytics, we would love to hear from you!
+
+📩 Interested candidates can fill this form for further process: https://forms.office.com/pages/responsepage.aspx?id=lnKnt25FjUO8UbWjEtfdbQXkD23moZ5DqdU_aMaHVPJUN1FTMlpIVFdaU01IUzM5OEM2N1dGM1ExRi4u&origin=QRCode&route=shorturl
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:49:17+00:00
+TEXT:
+Hiring | Associate System Engineer | Freshers
+
+Are you a recent engineering graduate eager to kickstart your career in technology? Build your future in tech with us.
+
+🎓 Batch: 2025 and 2026.
+
+🔷 Responsibilities:
+Assist in the design, development, and maintenance of IT systems and solutions
+Work with senior engineers to resolve technical issues and provide support
+Contribute to system upgrades, configurations, and documentation
+Continuously learn and apply new tools, technologies, and best practices
+
+🔷 What We Offer:
+Exposure to real-time projects and cutting-edge technologies
+Mentorship and career development opportunities
+Supportive work environment with learning culture
+
+🧩 Role Highlights:
+Work on real-time system development and support
+Collaborate with cross-functional tech teams
+Learn, innovate, and grow in a dynamic environment
+
+📍Location: Indore (On- Site)
+ 💼 Employment Type: Full-Time
+Shift: Night | 🚗 Cab Facility Available for Female Employees
+
+If you’re ready to launch your tech career with us, apply now or share your resume at shivam.dubey@americanchase.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:33:50+00:00
+TEXT:
+🚀 QPact Solutions: Software Engineering Intern
+Hyderabad | Onsite (5 days WFO)
+Get hands-on with SaaS + AI at QPact. We’re looking for hungry developers to build live products on a modern stack.
+
+
+The Details:
+
+1.)Stipend: ₹25,000 – ₹30,000 / month
+
+2.)Duration: 3–6 Months
+
+3.)Eligibility: 2025/26/27 Batches (Undergrads)
+
+4.)Tech: Python, React, TypeScript, PostgreSQL, AI Integrations
+
+
+Requirements:
+
+Foundational Python & Java
+React experience is a major plus
+
+
+Apply Now:
+
+Send your resume to:
+📧 amritha@qpactsolutions.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:33:42+00:00
+TEXT:
+Company - FeelIQ Technologies
+Role - AI Automation Intern
+Batch - 2025/2026/2027
+Stipend - 10,000/month
+Location - Bengaluru
+
+How to Apply:
+📩 Apply Now: careers@feeliq.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:18:35+00:00
+TEXT:
+EXL is hiring freshers!
+
+Job Description — GenAI & Python Developer
+Experience : 0-6 Months
+Locations: Noida, Bangalore (India)
+Work Mode: Office
+
+How to Apply: Please share your updated profile with me at Niteesh.Pant@exlservice.com (Please mention your current location in the subject line)
+
+About the Role
+We are seeking a passionate GenAI and Python Developers with 0 to 6 months of experience. The ideal candidate should have strong fundamentals in Python, AI/ML concepts, and practical exposure to Generative AI tools, models, or frameworks. You will work in an Agile environment, collaborating closely with cross-functional teams to build and deploy AI-driven solutions.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:12:38+00:00
+TEXT:
+We’re Hiring | 𝐅𝐮𝐥𝐥 𝐒𝐭𝐚𝐜𝐤 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫
+
+🔹 Role: Full Stack Developer
+🔹 Experience: 3–5 Years
+🔹 Budget: 10-12 LPA
+🛠 Key Skills: 𝐍𝐨𝐝𝐞.𝐣𝐬, 𝐑𝐞𝐚𝐜𝐭.𝐣𝐬, 𝐀𝐖𝐒
+
+📍 Location: Ahmedabad (Gujarat-based candidates only)
+
+📩 𝐀𝐩𝐩𝐥𝐲 𝐍𝐨𝐰 / 𝐑𝐞𝐟𝐞𝐫 𝐒𝐨𝐦𝐞𝐨𝐧𝐞
+📧 careers.allies22@gmail.com
+📲 +91 91736 76101
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:09:09+00:00
+TEXT:
+We’re Hiring | Project Coordinator Trainee (Fresher)
+
+Clarigo Infotech Private Limited is looking for enthusiastic and driven individuals to join our team as a Project Coordinator Trainee. This is a great opportunity for freshers to begin their careers in project management and gain hands-on industry experience.
+
+📍 Location: Indore (On-site)
+
+🔹 Eligibility:
+Freshers with a strong interest in project coordination and management
+Candidates who have completed internships in project coordination, management, or related fields will be preferred
+
+🔹 Key Skills:
+Strong communication and interpersonal abilities
+Basic understanding of project workflows, SDLC, or IT services
+Good organizational and multitasking skills
+Positive attitude and willingness to learn
+
+💼 What We Offer:
+Hands-on experience with real-time projects
+Exposure to client communication and project handling
+Continuous learning and growth opportunities
+A supportive and dynamic work environment
+
+📩 Apply Now: ayushi@clarigoinfotech.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 07:07:57+00:00
+TEXT:
+We are hiring freshers for the Data Research Analyst position. Candidates with 6 months internship/full time experience in Data Research roles will be an added advantage.
+
+📍 Location: Vikhroli, Mumbai (5 Days WFO, 9 hrs shift)
+📝 Interview Rounds: 3 (All In-Person)
+Note: Its a fresher & Non-IT role. We need immediate joiners only.
+
+Key Responsibilities:
+🔹 Use tools like ZoomInfo to identify and extract prospect data
+🔹 Work with Lusha, Apollo, Google, LinkedIn to enrich lead data
+🔹 Maintain accurate data (company, contact, designation, geography, role, industry, technology usage information etc.)
+🔹 Systematically distribute extracted data within the inside sales team, ensuring correct tagging and ownership.
+🔹 Maintain and regularly update the lead database to avoid duplication, outdated contacts, or incorrect information.
+🔹 Work closely with sales managers to align data extraction with campaign requirements (industries, territories, buyer personas).
+🔹 Track and report weekly data extraction volumes and quality.
+
+Interested ones can share resume at bharti.pawar@simplelogic.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 05:33:41+00:00
+TEXT:
+Prescient Technologies currently hiring through referrals for the position of Associate Trainee Software Engineer and also looking for Interns. This is a great opportunity for recent graduates to gain hands-on experience and build a strong foundation in software development. Please find the details below.
+Eligibility:
+ • BE / B.Tech / MSc (any stream, IT/CS preferred)
+ • Only pass-outs are eligible; pursuing candidates will not be considered
+ • 80%–90% aggregate
+Skills Required:
+ • Knowledge of at least one: Java, Python, C++, DevOps, or Cloud
+ • Knowledge of Teamcenter is an added advantage
+
+You can mail resume to harshvardhanwadavane@gmail.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-10 04:02:53+00:00
+TEXT:
+Zomato | Greening India Tech is Hiring — Builders Only. 🌱
+
+We’re not just writing code.
+We’re building systems that plant trees, empower farmers, and drive real climate impact in India.
+If you want your work to matter beyond dashboards and metrics, this is your place. 💚
+
+👩‍💻 Open Roles (1–3 Years Experience)
+Backend Engineers (Golang preferred)
+Frontend Engineers (React)
+Full Stack Engineers
+
+⚡ What We’re Looking For
+Immediate joiners or max 1 month notice period
+Experience in product/startup environments (must-have)
+Strong problem-solving + ownership mindset
+People who can build from scratch, not just follow tickets
+
+Important (Read Before Applying)
+This is a high-signal hiring process.
+✔️ Shortlisted candidates will receive a take-home assignment
+✔️ Expected completion time: 3–4 hours
+✔️ Submission deadline: within 72 hours of receiving it
+👉 Please apply only if you can commit to this
+
+If you’ve ever wanted to say:
+“I built something that made India greener.” 🌏
+
+👉 Apply here: https://docs.google.com/forms/d/e/1FAIpQLSfp93G9tOBc3nffBoMPzT13kK4f3QonYvBl0jygDoeqRTR5LQ/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 17:46:36+00:00
+TEXT:
+At Tech Erudite, we’re not just hiring — we’re looking for people who can think, build, and grow with us 🚀
+
+So if you’re confident in your skills and ready to take on real challenges, this is your sign 👇
+✨ React Native Developer
+ ✨ MERN Stack Developer
+ ✨ Business Analyst
+
+Don’t just scroll… apply and let’s see if you can impress beyond the smile 😉
+
+📩 Send your CV: techerudite.career@gmail.com or 7383590522
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 15:17:55+00:00
+TEXT:
+We’re Hiring: Data Analyst (0–2 Years Experience)
+
+Join the Revenue Management team at PBPartners (Policybazaar.com group)
+📍 Location: Gurgaon, Haryana (Sector 44)
+🏢 Work Mode: 5 Days Work from Office
+
+We are looking for a detail-oriented and analytical Data Analyst to support our Revenue Management team. This role involves working closely with business stakeholders to derive insights, optimize revenue processes, and support data-driven decision-making.
+
+Requirements:-
+● 0–2 years of experience in Data Analytics / Business Analytics 
+● Advanced proficiency in Excel, SQL, and Tableau 
+● Working knowledge of Python (Intermediate level) 
+● Strong analytical and problem-solving skills 
+● Good understanding of financial/revenue data 
+● Prior experience in a finance-related domain is a plus
+
+Interested candidates can apply using the Google Form: https://docs.google.com/forms/d/e/1FAIpQLSeBgKqXUy3Hgq7Pxm-FgBANj7_lXTyD27_MSmNyXhb8tt04qg/viewform?usp=header
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 15:15:01+00:00
+TEXT:
+Company - rumik.ai
+Role - FullStack Intern
+Batch - 2025/2026/2027
+Stipend - 50,000/month (20 LPA PPO)
+Location - Bangalore
+
+Job Details:
+• make 10 models work together in under 2s latency.
+
+Benefits:
+• housing: we pay your rent. relocating? airbnb till you find a place.
+• health: insurance for you + your family. full coverage.
+• food: chef makes lunch and dinner.
+• 2 by 2 rule: after 2 years, take 2 months for whatever. come back? your equity doubles.
+• off-sites: quarterly. small team = everyone goes. goa, bali, wherever makes sense.
+• remote: possible but you lose above benefits. needs mutual agreement.
+
+How to Apply:
+📩 want to apply for a role? | email at hiring@rumik.ai
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 15:14:48+00:00
+TEXT:
+Company - Unique Identification Authority of India (UIDAI)
+Role - Full Stack Intern
+Batch - 2025/2026/2027
+Stipend - 30,000 - 50,000/month
+Location - Bengaluru
+
+Job Details:
+• JD: https://uidai.gov.in/images/intern_Application_2026.pdf
+
+How to Apply:
+https://docs.google.com/forms/d/e/1FAIpQLSfgq4X7i6SbEBihqWPYCWh_SqfwOJsDtR6H3nVrAMlb7td3Yg/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 15:14:38+00:00
+TEXT:
+Company - CodersBrain
+Role - Frontend Developer (React.js)
+Batch - 2022/2023/2024/2025/2026
+Salary - 30,000 - 80,000/month
+Location - Remote
+
+Job Details:
+• Candidates should have hands-on experience or working knowledge of AI-assisted development tools such as GitHub Copilot, Codex, Cursor, or similar.
+• Strong emphasis on leveraging AI effectively in development workflows.
+• Good communication skills are mandatory as the role involves working closely with UK stakeholders.
+• Ability to work in a client-facing, agile environment.
+• Work Timings: 1:30 PM – 10:30 PM IST.
+• Joining Timeline: We are looking for candidates across different availability brackets: Immediate joiners (within 1–2 weeks), 30-day notice period, 45–60 days (selectively considered).
+
+How to Apply:
+📩 If anyone is interested please share your resume at prachi.goyal@codersbrain.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 14:35:52+00:00
+TEXT:
+🚀 Rapidise Inc. is Hiring: Fresher – Embedded Hardware & Layout Engineer
+
+Are you a passionate fresher looking to kickstart your career in embedded systems? This is a great opportunity to learn, grow, and work on exciting hardware projects!
+🔧 Role: Embedded Hardware Layout Engineer (Fresher)
+ 📍 Location: Chandkheda, Ahmedabad
+ 🎓 Eligibility: Recent graduates in Electronics / ECE / EEE 
+
+💡 Skills Required:
+Basic knowledge of embedded systems & electronics
+Understanding of microcontrollers and circuit design
+Knowledge of PCB layout and schematic design
+Good learning attitude and attention to detail
+
+✨ Why Join Us?
+Hands-on experience in hardware design & PCB layout
+Opportunity to work on live projects
+Learning-driven and supportive environment
+Strong career growth path
+
+📩 Interested candidates can share their CV at: sanjana.kashyap@rapidise.co
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 14:28:02+00:00
+TEXT:
+Hey! We are hiring.
+
+Fullstack Developer (Frontend-Heavy) - Remote (open to relocate to Goa/Bangalore in future)
+
+Building ERPeasy - a construction OS replacing 10+ tools with one AI-native platform. Founded by a real estate industry veteran.
+
+Looking for: JS, Python with LLMs/AI agents.
+
+2-5 years exp. Competitive salary + performance bonuses. Flat team, zero corporate nonsense.
+
+Interested? Send resume + 2-3 project links to core@techfnatic.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 12:10:23+00:00
+TEXT:
+We are hiring a Product Analyst at Flexprice.
+
+This is not a dashboards-and-slides role. 
+We are a team building billing infrastructure for AI companies, which means the data problems are genuinely interesting. Usage patterns that vary by orders of magnitude between customers, pricing models that change frequently and a product that sits at the intersection of engineering and finance.
+
+What we are looking for is someone who is comfortable in Excel, SQL, and Python, writes clearly and actually enjoys figuring out why a number looks wrong. Analytical thinking matters more to us than years of experience.
+
+- We need someone who can start immediately. 
+- This is an in-person role in Gurgaon, India.
+
+If this sounds like you, fill the form- https://binary.so/GEZhuoc
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 12:05:24+00:00
+TEXT:
+We’re Hiring: Front End Developer (2–3 Years Experience)
+Are you passionate about building seamless, responsive web and mobile applications? We’re looking for a talented Front End Developer to join our team and bring user-centric designs to life!
+💼 Experience Required: 2–3 Years
+💰 Salary Budget: Up to 6 LPA
+Location-Okhla Phase 2, Delhi
+Timings-11:30am-8:30pm
+Work Mode: Onsite
+Someone who is a Vibecoder
+🔧 Key Responsibilities:
+Design, develop, test, and debug responsive UI for web and mobile applications
+Build reusable code and libraries for future use
+Translate user and business requirements into high-quality frontend solutions
+🎯 Qualifications:
+Bachelor’s degree in Computer Science or equivalent
+2+ years of experience in frontend development
+Proficiency in JavaScript, HTML5, CSS3, React.js, and Next.js
+Familiarity with Scrum/Agile methodologies
+Experience building object-oriented web applications
+📩 How to Apply:
+Send your resume to hr.himanshi@starclinch.com
+📱 Or WhatsApp: 9971941251
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 10:04:10+00:00
+TEXT:
+Hiring: QA Automation Engineer (0–1 Years Experience) | hashtag#Freshers
+Send resume at: tsivaji@defteam.co
+Location: Hyderabad (WFO)
+Are you passionate about ensuring software quality and eager to kickstart your career in test automation? We’re looking for a QA Automation Engineer to join our growing team!
+
+Qualification: Master’s Degree (MCA / M.Tech / MSc in Computer Science or related field)
+Experience: 0–1 Years (Freshers with strong fundamentals are welcome!)
+
+Skills We’re Looking For:
+• Basic knowledge of Automation Testing tools (Selenium, Cypress, Playwright, etc.)
+• Understanding of Programming Languages (Java / Python / JavaScript)
+• Familiarity with Manual Testing concepts & SDLC/STLC
+• Knowledge of API testing tools like Postman is a plus
+• Basic understanding of version control tools (Git)
+• Strong analytical and problem-solving skills
+
+Nice to Have:
+• Internship/project experience in QA or automation
+• Exposure to CI/CD tools (Jenkins, GitHub Actions)
+• Knowledge of Agile/Scrum methodologies
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 10:04:05+00:00
+TEXT:
+We’re Hiring: Data Analyst | AI‑Driven BFSI Startup 📊
+Do you love turning raw data into powerful insights that drive real business decisions?
+Join us and be part of a fast‑growing AI‑led BFSI startup, where data directly shapes products, growth, and strategy.
+ 
+🔍 Role: Data Analyst
+ 
+What you’ll do:
+✅ Collect, clean, and analyze data from multiple sources
+✅ Build impactful dashboards & reports using Excel, Power BI, Tableau, or Looker
+✅ Deliver clear insights and recommendations to product, growth, operations, finance & leadership teams
+✅ Translate data into compelling business narratives
+ 
+What we’re looking for:
+🔹 1–5 years of experience in Data Analysis / Business Intelligence
+🔹 Strong SQL and Advanced Excel skills
+🔹 Hands‑on experience with at least one BI / visualization tool
+🔹 Excellent communication and stakeholder management skills
+ 
+Nice to have:
+✨ Exposure to Fintech / BFSI data
+✨ Python or R for deeper analysis
+✨ Experience working in a self‑service analytics culture
+ 
+📍 Why join us?
+You’ll work on meaningful problems, collaborate with smart teams, and see your insights create real impact in the BFSI ecosystem.
+ 
+📩 Interested?
+Send your resume to geetanjali.joshi@sarvatra.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 09:34:55+00:00
+TEXT:
+Hiring: AI-Native Engineer (1–4 Years Experience)
+📍 Location: Hinjewadi Phase 1, Pune (Hybrid)
+⏱️ Joining: Immediate / Within 15 Days
+
+At Onelab Ventures, we’re building cutting-edge AI-first products using Generative AI, LLMs, and intelligent automation—and we’re looking for passionate engineers to join us on this journey.
+
+What You’ll Do:
+Build and deploy AI-native applications powered by LLMs
+Develop chatbots, copilots, and AI assistants
+Work on RAG pipelines, embeddings, and vector databases
+Design scalable backend systems (Python/Node.js)
+Build AI agents and automate complex workflows
+Optimize model performance, latency, and cost
+
+What We’re Looking For:
+1–4 years of experience in AI/Backend development
+Strong Python skills (must-have)
+Hands-on experience with LLMs, prompt engineering, and RAG
+Familiarity with LangChain / LlamaIndex and vector DBs
+Understanding of APIs, system design, and cloud (AWS/GCP/Azure)
+Fast learner with a strong ownership mindset
+
+Why Join Us?
+Work on real-world AI-first products
+High ownership and impact-driven role
+Fast-paced startup environment
+Continuous learning and growth
+
+📩 Interested or know someone who fits?
+Share your resume at Talent@onelabventures.com
+
+Please mention the following details in your email:
+Current CTC | Expected CTC | Notice Period | Current Location
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 09:33:50+00:00
+TEXT:
+We're Hiring: React.js Developer | Join Cloud Zappy!
+
+Are you passionate about building modern, high-performance web applications? Do you enjoy creating seamless user experiences with cutting-edge frontend technologies? If yes, Cloud Zappy wants to hear from you!
+
+💼 Position: React.js Developer
+Company: Cloud Zappy / Innovative Stack Technologies Pvt Ltd
+Experience: 2 – 3 Years
+Location: Indore (Only candidates based in Indore should apply)
+Qualification: UG / PG Completed
+
+🌟 What You'll Do
+Develop responsive, scalable, and user-friendly web applications.
+Build and maintain modern frontend interfaces using React.js and Next.js.
+Optimize application performance for speed and scalability.
+Collaborate with designers and backend developers to deliver seamless digital experiences.
+Maintain clean, reusable, and efficient code.
+Troubleshoot, debug, and enhance existing applications.
+
+🛠️ Skills We're Looking For
+Strong practical knowledge of React.js and Next.js.
+Hands-on experience with:
+HTML
+CSS
+JavaScript
+Bootstrap
+Redux
+Material UI
+
+Ability to develop, optimize, and maintain modern web applications.
+Strong problem-solving mindset with attention to detail.
+Passion for learning and building exceptional products.
+
+🎯 Why Join Cloud Zappy?
+Work on exciting real-world projects.
+Be part of a collaborative and innovative tech team.
+Growth opportunities in a fast-paced environment.
+Competitive salary based on industry standards.
+
+📩 How to Apply
+Send your updated resume to:
+📧 hr@cloudzappy.com
+📧 hiral@cloudzappy.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 09:06:33+00:00
+TEXT:
+Design Intern
+🏢 FirstClub, Vaishnavi Tech Park, Bangalore
+🗓 5 days in office + Saturdays WFH
+
+What you’ll work on:
+ • Standees, flyers, and print materials
+ • Marketing creatives for campaigns
+ • In-store and offline branding
+ • Day-to-day design support
+
+Design Intern - A strong portfolio, keen eye for taste and curiosity driven.
+
+At FirstClub, we are changing how retail feels. We are raising the bar for catalogue, packaging and brand storytelling in quick commerce. If this excites you, let’s talk.
+
+Apply here: 
+https://docs.google.com/forms/d/e/1FAIpQLSdyXbzbDL0D0Sxidj8q2MSgVkjrykmpb7aUZsy55NnHRypb7g/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 06:56:34+00:00
+TEXT:
+We’re hashtag#Hiring – hashtag#Freshers in Project Management.
+hashtag#Kickstart your career with hashtag#VKAPS IT Solutions and step into the world of real-time projects, teamwork, and growth opportunities!
+🔹 Position: Project Management (Fresher)
+
+🔹 Who can hashtag#apply?
+• Recent graduates with strong communication skills
+• Passion for planning, coordination & execution
+• Eagerness to learn and grow in a dynamic IT environment
+
+🔹 What you’ll hashtag#gain:
+✔ Hands-on experience on live projects
+✔ Mentorship from experienced professionals
+✔ Career growth & learning opportunities
+
+📩 Apply Now: careers@vkaps.com
+📞 Contact: 8817321023
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 06:56:28+00:00
+TEXT:
+GoComet Internships: Code, Create, Conquer. Make Your Mark from Day One!
+
+hashtag#1Year Internships hashtag#Location:J P Nagar,Bengaluru
+
+hashtag#FullStack – JavaScript/TypeScript (React, Node.js), Python, Java
+hashtag#Backend – Java, Python, Node.js + APIs & DBs
+hashtag#Frontend – HTML, CSS, JavaScript/TypeScript (React/Angular)
+hashtag#QA – Java/Python + Selenium/Playwright 
+ 
+Real work. Real bugs. Real growth. No fluff.
+
+Applynow-https://docs.google.com/forms/d/e/1FAIpQLSewBpR6EikpSUZKg0r32NXW73AQ9VyWTxLmODqsxMbLWySc4Q/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 06:19:00+00:00
+TEXT:
+hiring a founding engineer ~
+we @ DraaviOfficial are looking for a 0-1 engineer to build our core intelligence layer. we work on discovering cool hashtag#startups and help them raise capital, and this tool will help us 'spot and rank' them faster. 
+the tool combines AI systems, marketplace data, social media engagement and signal interpretation.
+we'd appreciate experience building LLM-powered applications and ability to work with unstructured real-world datasets.
+If you find this intriguing and would love to chat, drop a hello to amalsivaji@draavi.com. thank you for listening!
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 06:17:42+00:00
+TEXT:
+🚀 mthree Graduate Recruitment 2026 – Tech Roles
+
+Great opportunity for fresh graduates looking to kickstart their career in tech!
+
+💰 Starting Salary: ₹9.15 LPA
+📈 Includes structured salary increases every 12 months
+
+🎓 Eligibility:
+
+Degree in Computer Science, IT, or related STEM fields
+Minimum 60% aggregate with no active backlogs
+Strong programming skills (Java, Python, C, C++, etc.)
+Competitive coding experience is a plus
+
+🛠 Selection Process:
+
+Aptitude & Coding Assessment
+Communication Screening
+Technical Interview
+Final Interview
+6–12 weeks Training
+Final Assessment → Placement
+
+If you meet the criteria, this is definitely worth applying.
+
+👉 Apply here: https://job-boards.greenhouse.io/mthreerecruitingportal/jobs/4660233006
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 05:21:14+00:00
+TEXT:
+We’re Hiring: Data Scientist (1–3 Years) | Noida
+
+About the Role
+We are looking for a highly motivated Data Scientist who enjoys solving real-world problems using data and modern AI techniques. You will work closely with cross-functional teams to build intelligent systems leveraging Machine Learning, Deep Learning, and Large Language Models (LLMs).
+This role is ideal for someone who is not just a coder, but a thinker—someone who questions assumptions, understands the “why,” and builds scalable solutions.
+
+Key Responsibilities
+Design, develop, and deploy Machine Learning and AI solutions 
+Build and optimize LLM-based applications and RAG (Retrieval-Augmented Generation) pipelines 
+Develop and integrate APIs using Python frameworks (FastAPI / Flask) 
+Work on end-to-end pipelines: research → prototype → production 
+Write clean, efficient, and maintainable Python code 
+Analyze real-world datasets and derive actionable insights 
+Collaborate with engineering and product teams to deliver scalable solutions 
+
+Must-Have Skills
+Strong proficiency in Python (clean coding, logic building, debugging) 
+Experience with API development & integration (FastAPI / Flask is a plus) 
+Solid understanding of Machine Learning & Deep Learning concepts 
+Hands-on experience with LLMs and RAG pipelines 
+Strong foundation in statistics and problem-solving 
+Curious mindset with high intellectual honesty and ownership 
+
+Good to Have (Not Mandatory)
+Experience with LangChain or similar frameworks 
+Familiarity with vector databases (e.g., Pinecone, FAISS, Weaviate) 
+Experience working with real-world datasets (beyond tutorials) 
+Ability to explain why a solution works, not just how to implement it 
+
+What You’ll Work On
+Real-world AI applications involving LLMs, RAG, and data-driven systems 
+Production-grade Python and API pipelines 
+Solving ambiguous problems in a startup-style environment 
+Building scalable systems from idea to deployment 
+
+What We’re Looking For
+Strong problem-solving ability and analytical thinking 
+Ability to work in a fast-paced, ownership-driven environment 
+Clear communication skills and structured thinking 
+Passion for learning and building impactful AI solutions 
+
+Bonus Points
+Prior experience deploying ML models to production 
+Contributions to open-source or personal AI projects 
+Experience working in startup environments
+
+👉 Apply here: https://docs.google.com/forms/d/e/1FAIpQLScV_ESXbpugcBJSgxkYi-a6xcBGoe5QjWxJDWmGmchuobJ64w/viewform
+⏱ Takes ~2–3 minutes
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 05:19:36+00:00
+TEXT:
+Hiring Update | Gurugram (WFO) 🚀
+We are actively hiring for multiple roles. Freshers and experienced candidates are welcome to apply!
+💼 Open Positions:
+🔹 Python Developers – 2 positions (Freshers can apply)
+🔹 Business Analyst – 2 positions (1–3 years experience)
+🔹 Frontend Developers – 3 positions (1–3 years experience)
+🔹 QA Engineers – 2 positions (6 months – 3 years experience)
+🔹 System Analyst – 1 position (0–1 year experience)
+📍 Location: Gurugram (Work from Office)
+📌 Preference: Immediate joiners
+📌 Candidates from Delhi NCR or nearby only
+📩 How to Apply:
+👉 Share your resume at palak.jain@thoughts2binary.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 05:13:28+00:00
+TEXT:
+CGI is hiring multiple roles, use
+
+sachinkumar.koppad@cgi.com as referral
+
+(Note: Sending resumes to email won't be considered
+
+Multiple immediate openings across Development, Testing, Cloud, Data, SAP and Support roles.
+
+Immediate joiners/serving notice period will be preferred
+
+*Locations:
+
+Bangalore |
+
+Hyderabad |
+
+Mumbai |
+
+Pune
+
+✓ How to Apply:
+
+1 Search for the suitable position on CGI career portal:
+
+https://cgi.njoyn.com/
+
+2 Submit your application directly
+
+3 Select "Yes" for the referral question
+
+4 Enter sachinkumar.koppad@cgi.com as the referral contact
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 04:43:55+00:00
+TEXT:
+We’re Hiring Interns!
+Logikview Analytics Private Limited is looking for enthusiastic and driven individuals to join our team in Indore!
+🔍 Open Positions:
+• HR Intern
+• Data Analyst Intern
+💼 What we’re looking for:
+✔️ Eagerness to learn and grow
+✔️ Strong communication & analytical skills
+✔️ Passion for HR/Data Analytics
+📍 Location: Indore
+📩 Interested candidates can share their resumes at:
+twinkle@logikview.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-09 04:14:58+00:00
+TEXT:
+My team at Delta Air Lines is hiring for a Junior Data Analyst (2–5 years of experience). Looking for someone with advanced SQL skills and experience building dashboards/reports. If this sounds like you (or someone you know), please send your resume to anish.bhateja@delta.com.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 17:04:57+00:00
+TEXT:
+We’re hashtag#hiring a Python Developer (0-3 years experience) at Bombay Shaving Company.
+
+If you enjoy working with Python, SQL, ETL pipelines and backend data tasks, this could be a great fit. You’ll get to build and maintain data pipelines, work with Apache Airflow, and handle data from APIs, databases, and other sources.
+
+What you’ll do:
+
+1. Build and maintain ETL/data pipelines using Python
+2. Work with Apache Airflow for scheduling and automation
+3. Write SQL queries for data extraction and transformation
+4. Work with data from different sources (APIs, databases, etc.)
+
+What we’re looking for:
+
+1. Good knowledge of Python
+2. Good understanding of SQL (joins, basic optimization)
+3. Some experience with data handling or ETL workflows
+4. Willingness to learn and explore new tools
+
+Bonus if you’ve explored web scraping or APIs, but that’s absolutely not mandatory. If you have the basics strong and the willingness to learn, we’d love to hear from you.
+
+This is a great opportunity for someone who wants to strengthen their foundation and grow into a larger data engineering role.
+
+Apply here: https://docs.google.com/forms/d/e/1FAIpQLSfXQ9PsasQSg70L9o2iq4s9mS5FO-P29kEtW6uWDNPXG9xErA/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 17:03:42+00:00
+TEXT:
+
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 17:03:39+00:00
+TEXT:
+
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 17:03:23+00:00
+TEXT:
+We’re hiring a QA Intern at Appbrew (Remote | 6 months)
+
+You’ll work on real mobile apps, test features, and collaborate closely with product & engineering teams.
+
+Looking for someone who:
+- Is detail-oriented & curious
+- Thinks through edge cases
+- Enjoys breaking things (and figuring out why 😄)
+
+Apply here: 
+https://docs.google.com/forms/d/e/1FAIpQLSez-Ptfs01uUJxMTt3hia_dg9Bfguzg2vxR2Wulgr4BGpbkIQ/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 14:43:24+00:00
+TEXT:
+WE’RE HIRING! 🚀
+AI Developer
+We are looking for a passionate AI Developer who is eager to learn and grow in a real-world AI/ML and Generative AI environment.
+Requirements:
+ • Bachelor’s degree in IT, Computer Science, or a related technical field
+ • 0–1 year of experience in AI/ML or IT (Training / Academic Projects considered)
+ • Open for Freshers and candidates with up to 1 year of experience
+ • Good communication and problem-solving skills
+ • Basic knowledge of LLMs, Generative AI, RAG, LangChain, LangGraph, FastAPI, Streamlit, Docker, and REST APIs
+📍 Preference: Candidates based in Delhi NCR
+ 📩 Interested candidates can send resume: jobs@excellencetechnologies.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 13:25:19+00:00
+TEXT:
+🚀 We’re Hiring: Junior Software Developer (React.js / Next.js)
+📍 Noida (Hybrid) | 🕒 Full-Time | 💼 1–3 Years Experience
+We’re looking for a passionate frontend developer to build high-performance, user-friendly web applications using React.js & Next.js. If you love creating seamless user experiences, this role is for you!
+🔹 Requirements:
+• 1–3 years of experience in frontend development
+• Strong in React.js, Next.js, JavaScript, HTML, CSS
+• Knowledge of SSR, SSG & REST APIs
+• Familiarity with Git & modern development workflows
+⭐ Good to Have:
+• Node.js
+• PostgreSQL / MongoDB
+💡 Why Join Us?
+✨ Hybrid work environment
+🚀 Modern tech stack
+📈 Growth-focused team
+📩 Apply Now: hr@evoluxar.com
+📞 Contact: 8971736291
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 13:21:22+00:00
+TEXT:
+📌Company: Lexsi Labs
+
+Role: Vibe Coding Engineer
+Location:  Mumbai - Remote 
+
+*Apply:*  https://app.screenloop.com/careers/aryaxai/job_posts/8314?tab=overview
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 12:31:45+00:00
+TEXT:
+Frontend Developer (Remote) – Founding Team (Equity-Based)
+
+About Us: 
+We are an early-stage, bootstrapped cybersecurity startup building innovative AI-powered security solutions. This is an opportunity to join as a founding team member and play a critical role in shaping both the product and the company.
+
+Role Overview: 
+We are looking for a passionate and highly driven Frontend Developer who is ready to take ownership, build scalable user interfaces, and contribute to a fast-growing product from the ground up.
+
+Key Responsibilities:
+- Design and develop high-performance, scalable web applications 
+- Build modern, responsive dashboards with clean UI/UX 
+- Integrate and efficiently handle APIs 
+- Optimize applications for maximum speed and scalability 
+- Collaborate closely with the core team on product decisions and improvements 
+- Continuously improve user experience and interface performance 
+
+Required Skills:
+- Strong proficiency in TypeScript and React.js (mandatory) 
+- Experience in building dashboards and data-driven interfaces 
+- Solid understanding of API integration and state management 
+- Ability to create smooth, fast, and visually appealing web designs 
+- Knowledge of performance optimization and best frontend practices 
+
+Preferred (Good to Have):
+- Experience with Next.js, Tailwind CSS, or similar frameworks 
+- Understanding of web security best practices 
+- Familiarity with version control (Git) and agile workflows 
+
+What We’re Looking For:
+- Someone who is ready to take on challenges and adapt quickly 
+- A self-driven individual eager to learn and grow 
+- A builder mindset with strong ownership and accountability 
+
+Compensation:
+- This is a bootstrapped startup, so there is no salary at this stage 
+- We offer equity (ownership) in the company for your contribution 
+
+How to Apply: 
+If you’re excited about building something impactful from scratch and are comfortable with an equity-based role, send your CV to: 
+📩 securitechabhi@gmail.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 12:03:09+00:00
+TEXT:
+Company - vybe cabs
+Role - Backend Engineer
+Batch - 2023/2024/2025/2026
+CTC - 6-15 LPA
+Location - Bengaluru
+
+Job Details:
+• (Node.js / NestJS) – Full-Time
+• Join us to build scalable, real-world products in a fast-growing environment.
+
+How to Apply:
+📩 email hr@vybecabs.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 12:02:58+00:00
+TEXT:
+Company - IG Transformation Partners
+Role - Research Associate Intern
+Batch - 2025/2026/2027
+Stipend - 20,000/month
+Location - Remote
+
+Job Details:
+• Kickstart your career in market research & analytics! We’re looking for a Research Associate Intern with up to 6 months of experience to join our team.
+• Remote (Work From Home)
+• Hands-on research & real-time projects
+• Growth-focused environment
+• Stipend provided
+
+How to Apply:
+📩 Apply Now: support@igtps.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 12:02:50+00:00
+TEXT:
+Company - OPM Corporation
+Role - Software Development Engineer (iOS + Full-stack) Intern
+Batch - 2025/2026/2027
+Stipend - 25,000 - 30,000/month
+Location - Mumbai
+
+Job Details:
+• Develop and deploy iOS applications
+• Build backend systems using MERN/Python
+• Work on scalable architecture and DevOps
+• Apply now and be part of our journey in building innovative and scalable digital experiences.
+
+How to Apply:
+📩 Interested candidates may share their resume at careers@opmcorporation.com with the subject line mentioning the position name.
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:58:47+00:00
+TEXT:
+Freshers Opportunity at Xcelore – 𝐉𝐚𝐯𝐚 & 𝐃𝐞𝐯𝐎𝐩𝐬 𝐓𝐫𝐚𝐢𝐧𝐞𝐞 | 6 Months Training + PPO 
+
+Xcelore is inviting applications for the following trainee positions:
+• Java Trainee
+•DevOps Trainee
+
+Eligibility Criteria:
+ ✅ Batch: 2025 – 2026 pass-outs only
+ ✅ Candidates who have not previously applied at Xcelore for these roles
+
+If you meet the above criteria and are eager to start your professional journey, we encourage you to apply.
+
+This program includes 6 Months (Training 15k Stipened) + PPO (3.5to4.5lpa)  based on performance.
+
+Please fill this form- https://docs.google.com/forms/d/e/1FAIpQLScEjMsYCEPWGnvgA7Xp64f88x8EpthhZg-C0-esg7ZibImwIw/viewform
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:57:27+00:00
+TEXT:
+Hiring Freshers | Technical & Customer Support Roles
+We are looking for fresh graduates to join our team in Technical Support (Non-Voice) and Customer Support (Voice) roles.
+📍 Locations: Hyderabad | Bangalore | Pune
+🏢 Work Mode: Work from Office
+🕒 Shifts: 24/7 (Night shifts required)
+🎓 Training: 2 Months in Mysore (Mandatory)
+💰 Salary:
+Hyderabad (Non-Voice): Up to ₹2.2 LPA
+Bangalore (Voice): ₹2.7 LPA
+Pune (Voice): ₹2.5 LPA
+🔹 Roles:
+• Technical Support (Non-Voice – Hyderabad)
+• Customer Support (Voice – Bangalore & Pune)
+🎓 Eligibility:
+• Tech Role: B.Tech / BE / BCA (2022–2026)
+• Voice Role: Any Non tech Graduate
+❌ No Post Graduation
+❌ No Experience Candidates
+💬 Requirements:
+• Good English communication
+• Basic computer knowledge
+• Willingness to work night shifts
+📄 PAN Card & Degree Mandatory & Semester wise Marks sheets &Consolidated marks memo
+📩 Immediate Joiners Only
+📞 Contact: Prasanth K
+📱 +91 8297021110
+📧 prasanth.k@liveconnections.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:56:29+00:00
+TEXT:
+Hiring: Frontend Developer 🚀
+
+We are looking for a skilled Frontend Developer (React.js / React Native) to join a high-growth Fintech team in Bangalore!
+
+The Essentials:
+Experience: 1–4 years
+Skills: React.js or React Native, Redux, and JavaScript.
+Background: Must have experience in B2C or Fintech companies.
+Education: B.Tech from Tier-1 or Tier-2 colleges.
+Location: Bellandur, Bangalore (Work from Office).
+Notice Period: Immediate, serving notice, or max 30 days.
+
+Ready to apply?
+📧 Send your CV to khushnuma.ansari@huntingcube.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:56:25+00:00
+TEXT:
+We’re Hiring: Spring Boot Developer
+Are you passionate about building scalable backend systems and high-performance APIs? Join our growing team and help us build innovative digital solutions.
+💻 Role: Spring Boot Developer
+Key Responsibilities:
+Design and develop scalable backend applications using Spring Boot
+Build and maintain RESTful APIs for web and mobile applications
+Work with databases such as MySQL / PostgreSQL
+Collaborate with frontend and DevOps teams to deliver high-quality products
+Optimize application performance and ensure security best practices
+Participate in code reviews and maintain clean, reusable code
+Required Skills:
+Strong experience with Java and Spring Boot
+Good understanding of REST APIs and Microservices architecture
+Experience with SQL databases
+Familiarity with Git and Agile development
+Knowledge of Docker / Cloud deployment is a plus
+📍 Location: Remote / Hybrid (Hyderabad - India)
+💼 Experience: 2–5 Years
+📬 Apply Now: hr@evtaar.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:50:28+00:00
+TEXT:
+We're Hiring at Vasundhara Infotech! 💼
+
+Join our growing team of passionate innovators and take your career to the next level.
+
+👩‍💻 𝐎𝐩𝐞𝐧 𝐏𝐨𝐬𝐢𝐭𝐢𝐨𝐧𝐬:
+
+(𝟏) 𝐑𝐞𝐚𝐜𝐭 𝐉𝐒 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫 
+𝐄𝐱𝐩𝐞𝐫𝐢𝐞𝐧𝐜𝐞 : 𝟏 𝐭𝐨 𝟐 𝐘𝐞𝐚𝐫𝐬 
+
+(𝟐) 𝐏𝐲𝐭𝐡𝐨𝐧 𝐃𝐣𝐚𝐧𝐠𝐨 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫 
+𝐄𝐱𝐩𝐞𝐫𝐢𝐞𝐧𝐜𝐞 : 𝟏 𝐭𝐨 𝟐 𝐘𝐞𝐚𝐫𝐬
+
+📍 Location: Katargam, Surat
+
+ 🕒 Joining: Immediate joiners preferred
+
+🎉 𝐏𝐞𝐫𝐤𝐬 𝐚𝐧𝐝 𝐁𝐞𝐧𝐞𝐟𝐢𝐭𝐬 : 🎉
+📆5 days of working 
+🕰Flexible Job timing 
+🖥Paid Leave Benefit
+💰Bonus benefit
+💸Leave Encashment
+🏋‍♂️Gym Facility
+🎮Game zone
+💆‍♂️Relax Room
+📔Library 
+
+✨ 𝐖𝐡𝐲 𝐕𝐚𝐬𝐮𝐧𝐝𝐡𝐚𝐫𝐚 𝐈𝐧𝐟𝐨𝐭𝐞𝐜𝐡?
+Collaborative work culture
+Exposure to diverse and challenging projects
+Continuous learning & professional growth
+Supportive and innovative environment
+
+📩 𝐇𝐨𝐰 𝐭𝐨 𝐀𝐩𝐩𝐥𝐲:
+Send your resume to hr.solution@vasundhara.io or Share CV on 88667 54886.
+
+📝 𝐍𝐨𝐭𝐞:
+ ✅ Interview will be Face-to-Face Only
+ ✅ We are hiring for Surat-based Candidates Only
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:49:22+00:00
+TEXT:
+Shriffle Technologies Pvt. Ltd. is Hiring! Join Our Team in Indore (MP)
+We are looking for passionate and talented professionals to join our growing team.
+📍 Location: Indore, Madhya Pradesh
+Open Positions:
+🔹 Business Development Executive (BDE)
+Experience: 0–3 Years
+Type: Full-time
+🔹 Freshers – Ruby on Rails / React.js Developers
+Experience: Freshers
+Type: Full-time (Paid Opportunity)
+🔹 Angular Developer
+Experience: 2-3 Years
+Type: Full-time
+📩 Apply Now: Send your resume to nidhip@shriffle.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 11:48:42+00:00
+TEXT:
+We’re looking for Entry-Level Full Stack Developer to join our team!
+Remote opportunity 
+
+Skills Required:
+Strong fundamentals in Python
+Experience with JavaScript (Node.js)
+Hands-on experience with React or Angular
+Understanding of frontend technologies (HTML, CSS)
+Basic knowledge of databases (SQL/NoSQL)
+Familiarity with REST APIs and version control (Git)
+Experience -Must have completed a minimum 6-month internship in a relevant role
+Good communication and teamwork skills
+
+📩 Interested candidates, please share your resume on rupalig@scalextechnologies.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 09:47:25+00:00
+TEXT:
+𝗪𝗲 𝗔𝗿𝗲 𝗛𝗶𝗿𝗶𝗻𝗴 | 𝗝𝗮𝘃𝗮 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿 (𝗙𝗿𝗲𝘀𝗵𝗲𝗿)
+
+OMFYS Group is looking for enthusiastic and talented freshers who are eager to start their career in software development and grow in a dynamic work environment.
+
+📍 𝗟𝗼𝗰𝗮𝘁𝗶𝗼𝗻: Pune (onsite)
+
+💼 𝗥𝗲𝗾𝘂𝗶𝗿𝗲𝗺𝗲𝗻𝘁𝘀:
+
+•Excellent communication skills 
+•Core & Advanced Java
+• REST API & Web Services
+• SQL / PL-SQL / PostgreSQL
+• Spring Boot, Hibernate, OOPS, Bootstrap
+• Good Communication Skills
+
+🎓 𝗘𝗱𝘂𝗰𝗮𝘁𝗶𝗼𝗻𝗮𝗹 𝗤𝘂𝗮𝗹𝗶𝗳𝗶𝗰𝗮𝘁𝗶𝗼𝗻:
+𝗕.𝗧𝗲𝗰𝗵 | 𝗠𝗖𝗔 | 𝗕𝗘-𝗜𝗧 | 𝗠𝗦𝗰
+
+📩 𝗔𝗽𝗽𝗹𝘆 𝗡𝗼𝘄: 
+hiring1@omfysgroup.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 09:44:43+00:00
+TEXT:
+VIRTUENIX is HIRING!
+
+Job Description – Salesforce Intern (0–1 Year Experience)
+
+We are looking for a motivated Salesforce Intern with 0–1 year of experience who is eager to learn and build a career in Salesforce. The candidate will assist in Salesforce configuration, development, and support activities while working closely with the Salesforce team.
+
+Key Responsibilities:
+Assist in Salesforce configurations such as custom objects, fields, page layouts, and validation rules.
+Support automation using Flow, Process Builder, and Approval Processes.
+Help in writing SOQL queries and basic Apex classes and Triggers.
+Assist in creating reports and dashboards.
+Support data import/export using Data Loader.
+Help maintain data quality and security (profiles, roles, permission sets).
+Assist in testing and deployment activities.
+Provide support for bug fixing and enhancements.
+
+Required Skills:
+Basic understanding of Salesforce platform.
+Knowledge of Objects, Fields, Relationships.
+Basic knowledge of Flow, Reports, Dashboards.
+Basic knowledge of Apex and SOQL.
+Understanding of Salesforce Security Model.
+Good communication and problem-solving skills.
+Willingness to learn new Salesforce features.
+
+Preferred Qualifications:
+Salesforce Admin Certification (Preferred but not mandatory).
+Internship or project experience in Salesforce.
+Basic knowledge of Lightning Web Components (LWC) is a plus.
+
+Education:
+Bachelor’s degree in computer science, IT, or related field.
+
+Experience:
+0–1 year of experience (Internship / Fresher can apply).
+
+Interested can send your profiles to hr@virtuenix.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 09:43:59+00:00
+TEXT:
+Hiring: Junior AI Engineer | Welix AI
+
+At Welix AI, we’re building scalable AI systems with real‑world impact. As we grow our engineering team, we’re looking for a Junior AI Engineer to help develop, experiment, and scale our core AI platform.
+
+This role is ideal for early‑career engineers who want hands‑on exposure to production AI systems, modern ML frameworks, and generative AI technologies.
+
+What you’ll work on
+
+• Developing and improving AI/ML models
+• Collaborating on data pipelines and model integration
+• Experimenting with LLMs and applied AI use cases
+• Supporting the scale‑up of real AI products
+
+What we’re looking for
+
+• Strong fundamentals in Python and machine learning
+• Passion for AI and problem‑solving
+• Willingness to learn, experiment, and ship
+
+Location: Hyderabad (Hybrid)
+Experience: 0–2 years
+
+Apply here: https://forms.office.com/pages/responsepage.aspx?id=ppYPwkAGY0S3_KR3Ex0pvN7EYPBEs1FOgGxFl-9L6FpUNUI1VEgzQzVGWEFYMjg5OEdUVUtYSEJGUy4u&route=shorturl
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 07:05:05+00:00
+TEXT:
+We’re opening internships in Product and Engineering at 
+@talbygrapevine
+  
+Stipend: Rs 1 lakh/month 
+Period: 6 months 
+Location: On-site Bangalore 
+
+Drop a note on internships@grapevine.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 06:01:58+00:00
+TEXT:
+We’re Hiring: Junior Software Developer (React.js / Next.js) 
+
+📍 Noida (Hybrid) | 🕒 Full-Time | 💼 1–3 Years 
+
+We’re looking for a passionate frontend developer to build high-performance, user-friendly web applications using React.js & Next.js. 
+
+🔹 Requirements: 
+• 1–3 years experience in frontend development 
+• Strong in React.js, Next.js, JavaScript, HTML, CSS 
+• Knowledge of SSR, SSG & REST APIs 
+• Familiar with Git & modern workflows 
+
+⭐ Good to Have: Node.js, PostgreSQL/MongoDB 
+
+💡 Why Join Us? 
+Hybrid work | Modern tech stack | Growth-focused team 
+
+📩 Share your profile at: hr@evoluxar.com
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 05:47:47+00:00
+TEXT:
+We are hiring a Software Development Engineer (0-1) at Cognitii! 🚀 
+
+Not going to sugarcoat this. This is not a comfortable job.
+
+If you want structure, hand-holding, and clearly defined tickets, this role isn’t for you. 
+
+If you’re someone who:
+- Builds things end-to-end
+- Can move across frontend ↔ backend without panic
+- Cares about quality, not just “it works”, ("chalta hai" attitude nahin chalta yahan)
+• Doesn’t wait to be told what to do
+
+Falguni, Souvik, and I want to work with you! 🤝🏼 
+
+What you’ll work on:
+- A high-performance mobile app used by children with autism, ADHD, dyslexia
+(accessibility is non-negotiable)
+- Interactive learning experiences (not dead screens)
+- Teacher + admin dashboards that don’t feel boring
+- Systems that track real behavioral data (touch, timing, patterns)
+
+Stack:
+React Native, React.js, Node.js, Python, Firebase, AWS, AI APIs
+
+We’re not building for vanity metrics. We’re building for children who actually need this. We’re customer-obsessed, evidence-driven, and take regulation seriously. We play the long-term game with long-term people. 
+
+We are deploying pan-India and are supported by Startup India, Department of Science & Technology, Government of India, and NCPEDP, with backing from venture philanthropy funds such as Emergent Ventures and DO GOOD Foundation (The Bicester Collection). Recognized by organisations including Deloitte, Kotak Mahindra Bank, and Seedstars. 💰 
+
+You won’t be an “employee” here. You’ll be a co-builder. Also, this is not just about salary. If you stay and build, you earn equity.
+
+If Cognitii grows, you grow. This is a wealth-building journey, not just a paycheck.
+
+We’re a lean, relentless, agile, and a slightly chaotic team.
+
+If you’re mediocre, this will feel uncomfortable. If you’re good, you’ll grow very fast. That's a promise.
+
+Bonus: We’ll give preference to Hyderabad-based candidates. We work hybrid. We meet. We build. Also, we take our culture seriously. Which means… biryani scenes every week! (If you love biryani, you already have an unfair advantage ⚡)
+
+To apply, send us your resume, GitHub/portfolio, and links to 2 best projects, and a short note: why this role, why you at hello@cognitii.com, cc: souvik@cognitii.com! 💻
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 04:25:45+00:00
+TEXT:
+We are hiring for Q2.
+
+Position: Node.js Developer (1.5–2 years of experience) (Punjabi candidates preferred)
+
+If you are interested, please share your CV with us.
+
+📩 hr@frescowebservices.com
+📞 9056403875
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 04:25:42+00:00
+TEXT:
+We're hiring a Product Intern at KNOT!
+📍 Location: Bangalore
+
+I'm looking for someone who's curious, and genuinely excited about building great product experiences, and comfortable working with AI.
+You'll work directly on the product — making data backed UI changes, setting up automations, and owning execution end-to-end. This isn't just a learning internship, you'll own real work from day one.
+Apply if you're in your final year of college or have up to one year of experience in building/improving a product and can join within 2 weeks.
+
+Application Form: https://docs.google.com/forms/d/e/1FAIpQLSf3Bf-goplUm7UIAHXnnZUDIm1jC8bP1zPa2X6jR3UacNqBjQ/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-08 04:17:26+00:00
+TEXT:
+Tortoise is hiring and here’s why you will be shortlisted ...or not 
+
+1. Backend Engineer – DevOps & Cloud (1–3 years)
+ • This is a 70% Backend + 30% DevOps role — your experience should reflect both
+ • Product company experience is a must (startups preferred)
+ • Python is non-negotiable
+
+2. Full Stack Developer (0–1 year)
+ • You’ve built end-to-end CRUD applications
+ • Product startup internships are what we look for 
+ • B.Tech only
+ • Strong CP profile gets priority
+ • Tech: Python + Flutter / React.js / Next.js
+
+Both are work from office roles based in Gurgaon
+
+Apply here : https://docs.google.com/forms/d/e/1FAIpQLScRGvAiVxKidIrJC0wNwqMbZjJcmWRiqVFTdtnKLxOJGFLO0g/viewform?usp=send_form
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-07 17:10:34+00:00
+TEXT:
+We’re Hiring: Technical Trainee – Support Role(Splunk)
+
+Location: Chennai, Tamil Nadu
+Experience: Freshers (2021–2025 Passed Outs)
+
+Are you passionate about technology and looking to build a career in 
+enterprise security, monitoring, and IT operations?
+
+We are seeking motivated, tech-savvy, and curious individuals who are eager to learn and solve real-world problems. This role offers a strong foundation and career path into consulting and engineering within enterprise security and monitoring domains.
+
+Role Overview:
+As a Technical Trainee, you will collaborate with domain consultants and technology specialists to support mission-critical insights, solution design, and research initiatives. You will be trained and mentored to grow into a Consultant or Engineer.
+
+Key Focus Areas:
+Enterprise-grade log management and SIEM engineering
+Enterprise security administration
+Observability and IT monitoring
+Monitoring and automation systems
+Exposure to Platforms
+Splunk, Microsoft Sentinel, IBM QRadar, New Relic, CrowdStrike, Datadog, SolarWinds, Palo Alto, and similar technologies
+
+Eligibility Criteria:
+B.Tech / M.Tech / B.Sc / MCA / MS IT
+2021–2025 graduates
+Strong interest in Cybersecurity and IT Operations
+
+Required Skills:
+Quick learner with a proactive mindset
+Strong analytical and problem-solving abilities
+Effective written and verbal communication skills
+Ability to manage multiple tasks and deadlines
+
+Technical Requirements:
+Installation, configuration, and troubleshooting in UNIX/Linux environments
+Understanding of networking concepts (OSI model, TCP/IP, servers, clients, OS fundamentals)
+
+Preferred Skills:
+Public Cloud: AWS, Azure, GCP
+Virtualization: VMware, VirtualBox
+Monitoring Tools: Splunk, SolarWinds, Datadog
+Automation Tools: Puppet, Chef
+Cybersecurity concepts: SIEM, network security, endpoint security
+Relevant certifications (AWS/Azure/GCP Associate, DBA, etc.)
+
+Employment Details:
+Rotational shifts
+Training Period: 6 months
+Stipend will be provided during training
+Opportunity for full-time absorption based on performance
+
+This role provides structured training, hands-on exposure to enterprise technologies, and a clear growth path in security, engineering, and consulting.
+
+Interested candidates can share your resume through info@epiqindia.com or 9600830946
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-07 17:08:54+00:00
+TEXT:
+We’re Hiring: Data Analyst – Reporting Automation | Gurugram
+We are looking for a skilled Data Analyst with experience in Looker, BigQuery, and Python automation to join our team at Highspring.
+If you have strong expertise in:
+ ✔️ SQL & data analysis
+ ✔️ Reporting automation & data pipelines
+ ✔️ Dashboard development (Looker/Tableau)
+ ✔️ Python scripting for automation
+…and enjoy turning data into actionable insights, we’d love to connect!
+📍 Location: Gurugram (HR)
+ 💼 Experience: 2–5 years
+📩 Share your CV at: renu2@highspring.in
+--------------------------------------------------
+
+CHANNEL: TechUprise Premium Insider Club
+TIME: 2026-04-07 16:26:53+00:00
+TEXT:
+Exciting Career Opportunity for hashtag#Fullstack with 6 Months to 2 Year experience !
+
+We're hosting a hashtag#WalkInDrive exclusively for hashtag#Fullstack at Saawahi IT Solution LLP ! 🌟
+
+📅 Date: 11th April 2026
+⌚Time : 9:00 AM to 1:00 PM
+📍 Venue: 522, Saawahi IT Solution LLP, Maple Trade Centre, Near Surdhara Circle, Thaltej, Ahmedabad, Gujarat - 380054
+
+Registration link: https://docs.google.com/forms/d/e/1FAIpQLSfYxGV187sARAWQWvkGW4XKlS5M-hxobEmF-sOq4cW3k1_Tzw/viewform
+
+💼 What to bring:
+Your updated resume and a mindset ready to learn, grow, and innovate.
+We can’t wait to meet the next generation of developers ready to shape the future with us.
+--------------------------------------------------
+

@@ -1,6 +1,11 @@
 from app.models.job import Job
+from app.services.linkedin_generator import generate_linkedin_message
 
 def route_message(db, classified, telegram_msg):
+    existing = db.query(Job).filter_by(message_id=telegram_msg.id).first()
+
+    if existing:
+        return existing
     job = Job(
         user_id=telegram_msg.user_id,
         message_id=telegram_msg.id,

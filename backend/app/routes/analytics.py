@@ -7,6 +7,8 @@ from app.models.classified_message import ClassifiedMessage
 from app.models.job import Job
 from sqlalchemy import func
 from datetime import datetime, timedelta
+from app.models.profile import Profile  # ✅ ADD THIS
+
 
 router = APIRouter()
 
@@ -73,6 +75,7 @@ def dashboard(
         .count()
 
     # ---------------- EMAILS ----------------
+    
     email_sent = db.query(Job)\
         .filter(Job.user_id == user_id)\
         .filter(Job.type == "email")\
@@ -90,11 +93,22 @@ def dashboard(
         .filter(Job.user_id == user_id)\
         .filter(Job.type == "link")\
         .count()
+    
+    links_sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "link")\
+        .filter(Job.status == "sent")\
+        .count()
 
     # ---------------- GOOGLE FORMS ----------------
     forms_pending = db.query(Job)\
         .filter(Job.user_id == user_id)\
-        .filter(Job.type == "form")\
+        .filter(Job.type == "google_form")\
+        .count()
+    forms_sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "google_form")\
+        .filter(Job.status == "sent")\
         .count()
 
     # ---------------- PHONE ----------------
@@ -103,9 +117,48 @@ def dashboard(
         .filter(Job.type == "phone")\
         .count()
 
+    phones_sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "phone")\
+        .filter(Job.status == "sent")\
+        .count()
     # ---------------- TOTAL ----------------
     total_jobs = db.query(Job)\
         .filter(Job.user_id == user_id)\
+        .count()
+    # ---------------- EMAIL TOTAL ----------------
+    email_total = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "email")\
+        .count()
+
+    # ---------------- LINKS TOTAL ----------------
+    links_total = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "link")\
+        .count()
+
+    # ---------------- FORMS TOTAL ----------------
+    forms_total = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "google_form")\
+        .count()
+
+    # ---------------- PHONES TOTAL ----------------
+    phones_total = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "phone")\
+        .count()
+    # ---------------- LINKEDIN ----------------
+    linkedin_sent = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "linkedin")\
+        .filter(Job.status == "sent")\
+        .count()
+
+    linkedin_total = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "linkedin")\
         .count()
 
     return {
@@ -113,22 +166,26 @@ def dashboard(
 
         "emails": {
             "sent": email_sent,
-            "pending": email_pending
+            "total": email_total
         },
 
         "links": {
-            "sent": 0,  # not implemented yet
-            "pending": links_pending
+            "sent": links_sent,
+            "total": links_total
         },
 
         "forms": {
-            "sent": 0,
-            "pending": forms_pending
+            "sent": forms_sent,
+            "total": forms_total
         },
 
         "phones": {
-            "sent": 0,
-            "pending": phones_pending
+            "sent": phones_sent,
+            "total": phones_total
+        },
+        "linkedin": {   # ✅ ADD THIS
+            "sent": linkedin_sent,
+            "total": linkedin_total
         }
     }
 @router.get("/emails")
@@ -137,7 +194,9 @@ def get_emails(
     db: Session = Depends(get_db),
     user_id: int = Depends(get_current_user)
 ):
-    query = db.query(Job).filter(Job.user_id == user_id)
+    query = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type == "email")   # ✅ ADD THIS
 
     if status == "sent":
         query = query.filter(Job.status == "sent")
@@ -145,6 +204,9 @@ def get_emails(
         query = query.filter(Job.status == "pending")
 
     jobs = query.order_by(Job.created_at.desc()).all()
+     # ✅ GET USER RESUME ONCE
+    profile = db.query(Profile).filter(Profile.user_id == user_id).first()
+    resume = profile.resume_url if profile else None
 
     return [
         {
@@ -153,7 +215,51 @@ def get_emails(
             "status": j.status,
             "created_at": j.created_at,
             "subject": j.generated_subject,
-            "body": j.generated_body
+            "body": j.generated_body,
+            "emails": j.emails,
+            "attachment_path": resume
         }
         for j in jobs
     ]
+@router.get("/others")
+def get_others(
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    jobs = db.query(Job)\
+        .filter(Job.user_id == user_id)\
+        .filter(Job.type != "email")\
+        .order_by(Job.created_at.desc())\
+        .all()
+
+    return [
+        {
+            "id": j.id,
+            "type": j.type,              # ✅ IMPORTANT
+            "message": j.message_text,
+            "phones": j.phones,
+            "links": j.links,
+            "emails": j.emails,
+            "status": j.status
+        }
+        for j in jobs
+    ]
+
+@router.post("/complete/{job_id}")
+def mark_complete(
+    job_id: int,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user)
+):
+    job = db.query(Job).filter(
+        Job.id == job_id,
+        Job.user_id == user_id
+    ).first()
+
+    if not job:
+        return {"error": "Job not found"}
+
+    job.status = "sent"   # ✅ reuse same logic
+    db.commit()
+
+    return {"message": "completed"}

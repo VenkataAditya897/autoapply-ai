@@ -7,8 +7,8 @@ from app.models.job import Job
 from app.services.email_processor import process_email_job
 from app.core.logger import logger
 
-r = redis.Redis(host="localhost", port=6379, db=0)
-
+import os
+r = redis.Redis.from_url(os.getenv("REDIS_URL"))
 print("📧 Email Worker Started...")
 
 while True:
@@ -30,6 +30,7 @@ while True:
 
                 if success:
                     print(f"✅ Job {job.id} completed")
+                    job.status = "sent"
 
                 else:
                     job.retry_count = (job.retry_count or 0) + 1
