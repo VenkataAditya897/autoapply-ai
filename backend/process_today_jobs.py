@@ -137,9 +137,11 @@ async def fetch_and_process():
 
                 job = route_message(db, classified, db_msg)
 
-                if job.type == "email":
-                    push_job(job.id)
-                    queued += 1
+                push_job({
+                    "job_id": job.id,
+                    "type": job.type
+                })
+                queued += 1
 
                 print(f"✅ Job queued {job.id}")
 

@@ -21,6 +21,7 @@ class Job(Base):
     generated_subject = Column(Text)
     generated_body = Column(Text)
     retry_count = Column(Integer, default=0)
+    linkedin_message = Column(Text, nullable=True)
 
     status = Column(String, default="pending")
 

@@ -16,7 +16,8 @@ IGNORE_EXTENSIONS = {
 IGNORE_FILES = {
     OUTPUT_FILE,          # Ignore the generated report itself
     "project_inspector.py",  # Ignore this script file
-    "package-lock.json"
+    "package-lock.json",
+    "test.py"
 }
 
 

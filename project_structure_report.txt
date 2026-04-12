@@ -3,7 +3,6 @@
 ├── autoapply-ai/
 │   ├── .gitignore
 │   ├── run_all.bat
-│   ├── test.py
 │   ├── backend/
 │   │   ├── .env
 │   │   ├── .gitignore
@@ -12,8 +11,8 @@
 │   │   ├── process_today_jobs.py
 │   │   ├── requirements.txt
 │   │   ├── seed_data.py
-│   │   ├── test.py
 │   │   ├── worker_email.py
+│   │   ├── worker_linkedin.py
 │   │   ├── worker_telegram.py
 │   │   ├── app/
 │   │   │   ├── main.py
@@ -67,6 +66,7 @@
 │   │   │   │   ├── email_processor.py
 │   │   │   │   ├── email_sender.py
 │   │   │   │   ├── linkedin_generator.py
+│   │   │   │   ├── linkedin_processor.py
 │   │   │   │   ├── router.py
 │   │   │   │   ├── telegram_listener.py
 │   │   │   │   ├── user_data.py
@@ -109,135 +109,6 @@ start cmd /k python worker_email.py
 
 echo ✅ All services started!
 pause
-
-================================================================================
-📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\test.py
-================================================================================
-
-import asyncio
-from playwright.async_api import async_playwright
-
-FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSft3BZ8fwYAYlSKcBRXAdyC7eqpwDUvMXgcg46QoSSrp7YbyA/viewform"
-
-DATA = {
-    "name": "Venkata Aditya Gopalapuram",
-    "phone": "9876543210",
-    "college": "Your College Name",
-    "github": "https://github.com/VenkataAditya897",
-    "ai": "I built an AI-powered job automation system...",
-}
-
-RESUME_PATH = r"C:\Users\venka\Desktop\autoapply-ai\backend\uploads\1_VenkataAditya_Resume_m11.pdf"
-
-
-async def fill_form():
-    async with async_playwright() as p:
-        browser = await p.chromium.connect_over_cdp("http://localhost:9222")
-        context = browser.contexts[0]
-        page = await context.new_page()
-
-        await page.goto(FORM_URL)
-        await page.wait_for_timeout(4000)
-
-        questions = page.locator("div[role='listitem']")
-        count = await questions.count()
-
-        print(f"\n🚀 Filling {count} questions...\n")
-
-        resume_done = False  # ✅ prevent double upload
-
-        for i in range(count):
-            q = questions.nth(i)
-            text = (await q.inner_text()).lower()
-
-            print(f"\n👉 Processing: {text[:60]}")
-
-            try:
-                inputs = q.locator("input:visible")
-                textarea = q.locator("textarea")
-                label = text.strip()
-
-                # ✅ FULL NAME
-                if "full name" in label:
-                    await inputs.first.fill(DATA["name"])
-
-                # ✅ PHONE
-                elif "phone number" in label:
-                    await inputs.first.fill(DATA["phone"])
-
-                # ✅ COLLEGE (safe)
-                elif "college" in label and "github" not in label:
-                    await inputs.first.fill(DATA["college"])
-
-                # ✅ GITHUB (strict)
-                elif "github" in label:
-                    await inputs.first.wait_for(timeout=5000)
-                    await inputs.first.fill(DATA["github"])
-
-                # ✅ AI DESCRIPTION
-                elif "describe" in label:
-                    await textarea.first.fill(DATA["ai"])
-
-                # ✅ DATE (3 fields)
-                elif "date" in label:
-                    date_inputs = q.locator("input")
-
-                    if await date_inputs.count() >= 3:
-                        await date_inputs.nth(0).fill("01")
-                        await date_inputs.nth(1).fill("05")
-                        await date_inputs.nth(2).fill("2026")
-
-                # ✅ RESUME (FIXED)
-                elif "resume" in text and "upload" in text and not resume_done:
-                    print("📎 Uploading resume...")
-
-                    await q.locator("text=Add file").click()
-                    await page.wait_for_timeout(2000)
-
-                    frame = page.frame_locator("iframe").last
-
-                    # Upload tab
-                    try:
-                        await frame.locator("text=Upload").click(timeout=2000)
-                    except:
-                        pass
-
-                    # Browse → file chooser
-                    async with page.expect_file_chooser() as fc_info:
-                        await frame.locator("text=Browse").click()
-
-                    file_chooser = await fc_info.value
-
-                    await file_chooser.set_files(RESUME_PATH)
-                    print("✅ File selected")
-
-                    await page.wait_for_timeout(3000)
-
-                    # Click Upload / Insert
-                    try:
-                        await frame.locator("text=Upload").click(timeout=3000)
-                    except:
-                        try:
-                            await frame.locator("text=Insert").click(timeout=3000)
-                        except:
-                            print("⚠️ Could not click Upload/Insert")
-
-                    print("✅ Resume uploaded")
-                    resume_done = True  # ✅ prevent second run
-
-                print("✅ Done")
-
-            except Exception as e:
-                print("❌ Skipped:", e)
-
-        # ✅ SUBMIT
-        await page.click("div[role='button']:has-text('Submit')")
-        print("🚀 Submitted!")
-
-        await page.wait_for_timeout(3000)
-
-
-asyncio.run(fill_form())
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\.env
@@ -2798,9 +2669,11 @@ async def fetch_and_process():
 
                 job = route_message(db, classified, db_msg)
 
-                if job.type == "email":
-                    push_job(job.id)
-                    queued += 1
+                push_job({
+                    "job_id": job.id,
+                    "type": job.type
+                })
+                queued += 1
 
                 print(f"✅ Job queued {job.id}")
 
@@ -2996,213 +2869,97 @@ finally:
     db.close()
 
 ================================================================================
-📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\test.py
-================================================================================
-
-from groq import Groq
-import os
-import json
-from dotenv import load_dotenv
-
-load_dotenv()
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found in environment")
-
-client = Groq(api_key=GROQ_API_KEY)
-
-
-def generate_email(context, job_text):
-
-    # 🔥 trim context (IMPORTANT)
-    context["experience"] = context["experience"][:800]
-    context["projects"] = context["projects"][:400]
-
-    prompt = f"""
-Write a professional job application email.
-
-Return STRICT JSON:
-{{
-  "subject": "...",
-  "body": "..."
-}}
-
-RULES:
-- Natural human tone
-- 110–140 words
-- 3–4 short paragraphs using \\n\\n
-- No location (city/country)
-- No "I am excited to apply"
-- No fake metrics or exaggeration
-- Clear, simple English
-
-CONTENT:
-Name: {context['name']}
-Skills: {context['skills']}
-Experience: {context['experience']}
-Total Experience: {context['total_experience']}
-
-JOB:
-{job_text}
-
-JOB MATCHING:
-- Compare job role with candidate experience
-
-IF related:
-  → Use specific tools + real work (e.g., FastAPI, LangChain, APIs)
-
-IF NOT related:
-  → Do NOT fake experience
-  → Do NOT mention irrelevant tools
-  → Focus on transferable skills, learning, and problem-solving
-
-REQUIREMENTS:
-- Mention tools ONLY if relevant to the job
-- Include at least 1 real task (APIs, pipelines, automation, etc.)
-- Keep it concise, no long explanations
-
-SUBJECT:
-- "Application for [Role]" (add location only if explicitly required)
-
-FORMAT:
-
-Dear Hiring Manager,\\n\\n
-I’m Venkata Aditya Gopalapuram, currently working as an AI Innovation Associate Intern with hands-on experience in Python and Generative AI systems.\\n\\n
-During my internships at Tekisho Infotech and Smart Ecom Tech, I’ve worked on RAG pipelines using LangChain and built scalable backend APIs with FastAPI, Node.js, and Laravel. I’ve also developed automation pipelines and AI-driven systems using OpenAI and Gemini for real-world applications.\\n\\n
-I’m interested in this role as it focuses on practical AI development, which aligns closely with the work I’ve been doing and want to continue growing in.\\n\\n
-Thank you for your time and consideration.\\n\\n
-Regards,\\n
-{context['name']}
-
-OUTPUT:
-Only JSON. No explanation.
-"""
-
-    response = client.chat.completions.create(
-        model="openai/gpt-oss-120b",  # 🔥 better writing
-        messages=[
-            {"role": "system", "content": "You generate professional job emails in JSON only."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.4,   # 🔥 more natural
-        top_p=0.9
-    )
-
-    content = response.choices[0].message.content
-
-    print("\n🔍 RAW MODEL OUTPUT:\n")
-    print(content)
-
-    try:
-        parsed = json.loads(content)
-    except:
-        print("\n⚠ JSON failed, fallback used\n")
-        parsed = {
-            "subject": "Application for Role",
-            "body": content
-        }
-
-    return parsed
-
-
-# ✅ TEST DATA (your real data)
-
-context = {
-    "name": "Venkata Aditya Gopalapuram",
-    "email": "spidyaditya@gmail.com",
-    "skills": "Python, FastAPI, LangChain, RAG, Node.js, AI, APIs",
-    "projects": "",
-    "total_experience": "0 years 5 months",
-    "experience": """Software Developer AI Intern at Smart Ecom Tech
-Built AI backend systems using OpenAI and Gemini.
-Developed APIs and automation pipelines using Python and Node.js.
-
-AI Innovation Associate Intern at Tekisho Infotech
-Worked on RAG pipelines and multi-agent systems using LangChain and CrewAI."""
-}
-
-job_text = """
-UI/UX Designer (4+ Years Experience)
-
-Location: Bangalore / Remote (India)
-Experience: 4+ Years
-Employment Type: Full-time
-
-How to Apply:
-Send your resume and portfolio to spidyaditya@gmail.com
-
-About the Role
-
-We are looking for an experienced UI/UX Designer with 4+ years of hands-on experience in designing intuitive and user-centric digital products. You will work closely with product managers, developers, and stakeholders to create seamless user experiences across web and mobile platforms.
-"""
-
-# ✅ RUN TEST
-result = generate_email(context, job_text)
-
-print("\n✅ FINAL OUTPUT:\n")
-print("SUBJECT:", result["subject"])
-print("\nBODY:\n", result["body"])
-
-================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\worker_email.py
 ================================================================================
 
-import redis
-import json
-import time
 
 from app.core.db import SessionLocal
 from app.models.job import Job
 from app.services.email_processor import process_email_job
-from app.core.logger import logger
-
-import os
-r = redis.Redis.from_url(os.getenv("REDIS_URL"))
+from app.queue import pop_job, push_job
+import time
 print("📧 Email Worker Started...")
 
 while True:
-    data = r.brpop("email_queue")
+    job_data = pop_job("email")
 
-    if data:
-        job_data = json.loads(data[1])
-        job_id = job_data["job_id"]
+    if not job_data:
+        time.sleep(1)
+        continue
 
-        db = SessionLocal()
+    job_id = job_data["job_id"]
 
-        try:
-            job = db.get(Job, job_id)
+    db = SessionLocal()
 
-            if job:
-                print(f"📤 Processing job {job_id}")
+    try:
+        job = db.get(Job, job_id)
 
-                success = process_email_job(db, job, job.user_id)
+        if job:
+            print(f"📤 Processing job {job_id}")
 
-                if success:
-                    print(f"✅ Job {job.id} completed")
-                    job.status = "sent"
+            success = process_email_job(db, job, job.user_id)
 
+            if success:
+                print(f"✅ Job {job.id} completed")
+                job.status = "sent"
+            else:
+                job.retry_count = (job.retry_count or 0) + 1
+
+                if job.retry_count < 3:
+                    print(f"🔁 Retrying job {job.id}")
+
+                    push_job({
+                        "job_id": job.id,
+                        "type": "email"
+                    })
                 else:
-                    job.retry_count = (job.retry_count or 0) + 1
+                    print(f"❌ Job {job.id} failed")
 
-                    if job.retry_count < 3:
-                        print(f"🔁 Retrying job {job.id} (attempt {job.retry_count})")
+            db.commit()
 
-                        time.sleep(2)  # 🔥 delay before retry
-                        r.lpush("email_queue", json.dumps({"job_id": job.id}))
+    except Exception as e:
+        print("❌ Email worker error:", e)
 
-                    else:
-                        print(f"❌ Job {job.id} failed permanently")
+    finally:
+        db.close()
 
-                    db.commit()
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\worker_linkedin.py
+================================================================================
 
-        except Exception as e:
-            print("❌ Email worker error:", e)
+from app.core.db import SessionLocal
+from app.models.job import Job
+from app.queue import pop_job
+from app.services.linkedin_processor import process_linkedin_job
 
-        finally:
-            db.close()
-            time.sleep(1)  # global rate limit
+import time
+
+print("💼 LinkedIn Worker Started...")
+
+while True:
+    job_data = pop_job("linkedin")
+
+    if not job_data:
+        time.sleep(1)
+        continue
+
+    job_id = job_data["job_id"]
+    db = SessionLocal()
+
+    try:
+        job = db.get(Job, job_id)
+
+        if job:
+            print(f"💼 Processing LinkedIn job {job_id}")
+
+            process_linkedin_job(db, job, job.user_id)
+
+
+    except Exception as e:
+        print("❌ LinkedIn worker error:", e)
+
+    finally:
+        db.close()
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\worker_telegram.py
@@ -3338,9 +3095,23 @@ import redis
 import json
 
 import os
-r = redis.Redis.from_url(os.getenv("REDIS_URL"))
-def push_job(job_id):
-    r.lpush("email_queue", json.dumps({"job_id": job_id}))
+from dotenv import load_dotenv
+load_dotenv()
+redis_client = redis.Redis.from_url(os.getenv("REDIS_URL"))
+
+
+def push_job(job):
+    queue_name = f"jobs:{job['type']}"
+    redis_client.lpush(queue_name, json.dumps(job))
+
+
+def pop_job(job_type):
+    queue_name = f"jobs:{job_type}"
+    job = redis_client.rpop(queue_name)
+
+    if job:
+        return json.loads(job)
+    return None
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\__init__.py
@@ -3595,6 +3366,7 @@ class Job(Base):
     generated_subject = Column(Text)
     generated_body = Column(Text)
     retry_count = Column(Integer, default=0)
+    linkedin_message = Column(Text, nullable=True)
 
     status = Column(String, default="pending")
 
@@ -3974,7 +3746,8 @@ def get_others(
             "phones": j.phones,
             "links": j.links,
             "emails": j.emails,
-            "status": j.status
+            "status": j.status,
+            "linkedin_message": j.linkedin_message
         }
         for j in jobs
     ]
@@ -5219,9 +4992,7 @@ if not GROQ_API_KEY:
 client = Groq(api_key=GROQ_API_KEY)
 
 
-def generate_linkedin_message(job_text):
-    context = build_context()
-
+def generate_linkedin_message(context, job_text):
     prompt = f"""
 Write a SHORT LinkedIn message for a job application.
 
@@ -5257,6 +5028,39 @@ Only the message text. No JSON. No explanation.
     )
 
     return response.choices[0].message.content.strip()
+
+================================================================================
+📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\linkedin_processor.py
+================================================================================
+
+from app.services.user_data import get_user_data
+from app.services.context_builder import build_context
+from app.services.linkedin_generator import generate_linkedin_message
+
+
+def process_linkedin_job(db, job, user_id):
+    try:
+        # ✅ SAME AS EMAIL
+        user_data = get_user_data(db, user_id)
+
+        context = build_context(user_data, job.message_text)
+
+        message = generate_linkedin_message(context, job.message_text)
+
+        # ✅ STORE IN DB
+        job.linkedin_message = message
+        job.status = "sent"
+
+        db.commit()
+        print(f"💼 Completed LinkedIn job")
+
+        return True
+
+    except Exception as e:
+        print("ERROR:", e)
+        job.status = "pending"
+        db.commit()
+        return None
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\app\services\router.py
@@ -5357,8 +5161,10 @@ async def start_user_listener(user_id, session_name, channels, client_store):
                     job = route_message(db, classified, telegram_msg)
 
 
-                    if job.type == "email":
-                        push_job(job.id)
+                    push_job({
+                        "job_id": job.id,
+                        "type": job.type
+                    })
 
                 except Exception as e:
                     print("❌ Handler error:", e)
@@ -5415,7 +5221,7 @@ def get_user_data(db, user_id):
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\sessions\user_+918978057144.session
 ================================================================================
 
-⚠️ Could not read file: 'utf-8' codec can't decode byte 0xc6 in position 27: invalid continuation byte
+⚠️ Could not read file: 'utf-8' codec can't decode byte 0xe0 in position 27: invalid continuation byte
 
 ================================================================================
 📍 FULL PATH: C:\Users\venka\Desktop\autoapply-ai\backend\sessions\user_+918978957144.session

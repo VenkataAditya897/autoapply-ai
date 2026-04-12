@@ -65,8 +65,10 @@ async def start_user_listener(user_id, session_name, channels, client_store):
                     job = route_message(db, classified, telegram_msg)
 
 
-                    if job.type == "email":
-                        push_job(job.id)
+                    push_job({
+                        "job_id": job.id,
+                        "type": job.type
+                    })
 
                 except Exception as e:
                     print("❌ Handler error:", e)

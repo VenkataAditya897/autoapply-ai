@@ -240,7 +240,8 @@ def get_others(
             "phones": j.phones,
             "links": j.links,
             "emails": j.emails,
-            "status": j.status
+            "status": j.status,
+            "linkedin_message": j.linkedin_message
         }
         for j in jobs
     ]

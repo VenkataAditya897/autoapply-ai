@@ -22,7 +22,11 @@ export default function Others() {
       await API.post(`/analytics/complete/${id}`);
 
       // remove instantly from UI (no wait for refresh)
-      setData((prev) => prev.filter((item) => item.id !== id));
+      setData((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, status: "sent" } : item,
+        ),
+      );
     } catch (e) {
       console.error("Failed to mark complete");
     }
@@ -65,10 +69,11 @@ export default function Others() {
   };
 
   const typeColors: Record<string, { bg: string; color: string }> = {
-    phone: { bg: "rgba(37,99,235,0.12)", color: "#60a5fa" },
+    phone: { bg: "rgba(37,99,235,0.12)", color: "#fa60bf" },
     google_form: { bg: "rgba(16,185,129,0.12)", color: "#34d399" },
     link: { bg: "rgba(124,58,237,0.12)", color: "#a78bfa" },
     email: { bg: "rgba(245,158,11,0.12)", color: "#fbbf24" },
+    linkedin: { bg: "rgba(59,130,246,0.12)", color: "#60a5fa" },
     unknown: { bg: "rgba(100,100,100,0.12)", color: "#888" },
   };
 
@@ -392,6 +397,67 @@ export default function Others() {
                               >
                                 Contact Info
                               </p>
+                              {d.type === "linkedin" && d.linkedin_message && (
+                                <div style={{ marginTop: "16px" }}>
+                                  <p
+                                    style={{
+                                      fontSize: "0.65rem",
+                                      fontWeight: 700,
+                                      color: "#444",
+                                      letterSpacing: "0.1em",
+                                      textTransform: "uppercase",
+                                      marginBottom: "8px",
+                                    }}
+                                  >
+                                    Generated LinkedIn Message
+                                  </p>
+
+                                  <div
+                                    style={{
+                                      background: "#0d1a2a",
+                                      border: "1px solid #1e3a5a",
+                                      borderRadius: "8px",
+                                      padding: "12px 14px",
+                                      position: "relative",
+                                    }}
+                                  >
+                                    {/* COPY BUTTON */}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigator.clipboard.writeText(
+                                          d.linkedin_message,
+                                        );
+                                      }}
+                                      style={{
+                                        position: "absolute",
+                                        top: "8px",
+                                        right: "8px",
+                                        fontSize: "0.7rem",
+                                        padding: "4px 8px",
+                                        background: "#1e3a5a",
+                                        color: "#60a5fa",
+                                        border: "none",
+                                        borderRadius: "6px",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      Copy
+                                    </button>
+
+                                    <p
+                                      style={{
+                                        fontSize: "0.82rem",
+                                        color: "#999",
+                                        lineHeight: 1.7,
+                                        whiteSpace: "pre-line",
+                                      }}
+                                    >
+                                      {d.linkedin_message}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
                               <div
                                 style={{
                                   background: "#1a1a1a",
