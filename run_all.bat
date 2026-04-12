@@ -24,6 +24,7 @@ start cmd /k python process_today_jobs.py
 
 :: ================= FRONTEND =================
 cd ..
+cd frontend
 
 echo 🔹 Starting Frontend (Next.js)...
 start cmd /k npm run dev

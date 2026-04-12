@@ -483,12 +483,24 @@ export default function Others() {
                                       key={l}
                                       style={{
                                         fontSize: "0.78rem",
-                                        color: "#a78bfa",
                                         marginBottom: "4px",
                                         wordBreak: "break-all",
                                       }}
                                     >
-                                      🔗 {l}
+                                      🔗{" "}
+                                      <a
+                                        href={l}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                          color: "#a78bfa",
+                                          textDecoration: "underline",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={(e) => e.stopPropagation()} // ✅ IMPORTANT
+                                      >
+                                        {l}
+                                      </a>
                                     </p>
                                   ))}
                                 {d.emails?.length > 0 && (
