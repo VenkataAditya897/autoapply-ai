@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+
+  worker_email:
+    build: ./backend
+    command: python worker_email.py
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+
+  worker_linkedin:
+    build: ./backend
+    command: python worker_linkedin.py
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+
+  process_jobs:
+    build: ./backend
+    command: python process_today_jobs.py
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app

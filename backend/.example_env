@@ -1,0 +1,9 @@
+DATABASE_URL=postgresql://postgres:aditya01@localhost:5432/autoapply
+GROQ_API_KEY=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
+TELEGRAM_API_ID=34855418
+TELEGRAM_API_HASH=2b91a602f83f3414ab6b5af6fd39a5f0
+GOOGLE_CLIENT_ID=250168741529-t70npdv89s2j81vj84ec3kdsgjqss4qj.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+REDIS_URL=redis://localhost:6379
+DEBUG=True
