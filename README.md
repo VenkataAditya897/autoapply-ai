@@ -15,7 +15,7 @@ AutoApply AI discovers high-quality jobs and referrals, monitors Telegram job ch
 <!-- Drop your screenshot files into a `screenshots/` folder next to this README and they'll render below. -->
 
 **Home Page**
-![AutoApply AI Home Page](screenshots/homepage.png)
+![AutoApply AI Home Page](screenshots/Screenshot 2026-06-28 101338.png)
 
 **Dashboard**
 ![AutoApply AI Dashboard](screenshots/dashboard.png)
